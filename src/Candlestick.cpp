@@ -112,6 +112,9 @@ Candlestick::Candlestick(stick_s_t stick) {
       tm.tm_sec = std::stoi(time_v[2]);
       tm.tm_isdst = -1;
       setDate(std::mktime(&tm));
+      if (std::mktime(&tm) == -1) {
+        throw "ERRO! Ao trasformar data em std::tm";
+      }
     }
 #pragma omp section
     { setTime(std::stol(stick[9])); }
