@@ -60,7 +60,7 @@ std::vector<std::string> DataBase::getInformation(std::string file_name) {
     std::cerr << e.what() << '\n';
   }
   if (text.size() == 0) {
-    throw "ERRO! Não voi obtido nenhuma vela do arquivo.";
+    throw "ERRO! Não foi obtido nenhuma vela do arquivo.";
   }
   return text;
 }
