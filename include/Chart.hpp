@@ -28,8 +28,10 @@ class Chart {
   void setChartTimeString(std::string);
   void setChartTime(std::string);
   time_t getOlderCandleTime(DataBase&, time_t);
+  time_t getNewestCandleTime(DataBase&, time_t);
   Candlestick newVoidCandle(time_t, time_t);
   chart_t chartvector;
+  void transformMinutToMaxMinut(time_t, time_t, time_t);
 
  public:
   Chart(DataBase, std::string, std::string);

@@ -68,6 +68,7 @@ class Candlestick {
   time_t getDate(void);
   time_t getTime(void);
   std::string getStatus(void);
+  std::string getTZ(void);
 };
 
 #endif

@@ -100,7 +100,7 @@ Candlestick::Candlestick(stick_s_t stick) {
     { setSize(getHigh(), getLow()); }
 #pragma omp section
     {
-      putenv(tz.data());
+      putenv(getTZ().data());
       struct std::tm tm;
       std::vector<std::string> date_v = explode(stick[0], '.');
       tm.tm_year = std::stoi(date_v[0]) - 1900;
@@ -421,4 +421,13 @@ void Candlestick::setStatus(std::string new_status) {
       throw "ERRO! Ao definir status da vela, informação é incompatível com os status possíveis";
     }
   }
+}
+
+/**
+ * @brief Obter Time Zone usada para gravar Vela
+ * 
+ * @return std::string TZ
+ */
+std::string Candlestick::getTZ(void){
+  return tz;
 }
