@@ -10,6 +10,7 @@
  */
 
 #include "Chart.hpp"
+#include <iostream>
 #include <vector>
 #include "omp.h"
 
@@ -85,7 +86,8 @@ Chart::Chart(DataBase data_base, std::string time_chart,
     }
   }
 
-  if (getChartTime() < (86400)) {  // menor que um dia
+  if ((getChartTime() < (86400)) and
+      (getChartTime() >= (3600))) {  // menor que um dia maior igual a uma hora
     time_t data_inicial =
         getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);

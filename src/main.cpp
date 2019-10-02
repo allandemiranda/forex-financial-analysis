@@ -3,6 +3,7 @@
 #include <iostream>
 #include "DataBase.hpp"
 #include "ReadingFolderFiles.hpp"
+#include "Chart.hpp"
 
 int main(int argc, char const* argv[]) {
   try {
@@ -15,6 +16,7 @@ int main(int argc, char const* argv[]) {
     for (auto i : list_file.getListPath()) {
       std::cout << "Lendo " << i << " ";
       DataBase novo_bd(i);
+      Chart novo_grafico(novo_bd, "M5", "TESTE");
       std::cout << " OK! " << std::endl;
     }
     // std::cout << "Open    Close   Type    High    Low   UpperSize   "
