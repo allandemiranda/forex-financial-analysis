@@ -31,7 +31,8 @@ class Chart {
   time_t getNewestCandleTime(DataBase&, time_t);
   Candlestick newVoidCandle(time_t, time_t);
   chart_t chartvector;
-  void transformMinutToMaxMinut(time_t, time_t, time_t);
+  chart_t transformMinutToMaxMinut(time_t, time_t, time_t);
+  void putDataBaseOnChart(time_t, time_t, DataBase&);
 
  public:
   Chart(DataBase, std::string, std::string);

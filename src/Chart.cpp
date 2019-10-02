@@ -32,7 +32,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
   }
   if (getChartTime() < (24 * 60 * 60)) {
     time_t data_inicial = getOlderCandleTime(data_base, 60);
-    time_t data_inicial_too = data_inicial;  // Para a segunda parte
+    time_t data_final = getNewestCandleTime(data_base, 60);
     for (int i(0); i < data_base.getDBStick().size(); ++i) {
       if (data_base.getDBStick()[i].getDate() < data_inicial) {
         data_base.getDBStick().erase(data_base.getDBStick().begin() + i);
@@ -41,46 +41,117 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         break;
       }
     }
-    time_t data_final = getNewestCandleTime(data_base, 60);
-    data_final += (60 * 60);  // Adicione um dia
-    while (data_inicial < data_final) {
-      if (data_base.getDBStick().size() > 0) {
-        if (data_base.getDBStick().front().getDate() == data_inicial) {
-          chartvector.push_back(data_base.getDBStick().front());
-          data_base.getDBStick().erase(data_base.getDBStick().begin());
-        } else {
-          chartvector.push_back(newVoidCandle(60, data_inicial));
-        }
+    data_final += (24 * 60 * 60);  // Adicione um dia
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    if (getChartTime() > 60) {
+      chartvector =
+          transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    }
+  }
+  if (getChartTime() == (24 * 60 * 60)) {
+    time_t data_inicial = getOlderCandleTime(data_base, getChartTime());
+    time_t data_final = getNewestCandleTime(data_base, 60);    
+    data_final += getChartTime();  // Adicione um dia
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    if (getChartTime() > 60) {
+      chartvector =
+          transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    }
+  }
+  // fazer semana,mês e ano
+}
+
+/**
+ * @brief Colcoar velas do banco de dados no chat de forma correta
+ *
+ * @param data_inicial Data inicial de criação
+ * @param data_final Data final de criação
+ * @param data_base Banco de dados
+ */
+void Chart::putDataBaseOnChart(time_t data_inicial, time_t data_final,
+                               DataBase& data_base) {
+  while (data_inicial < data_final) {
+    if (data_base.getDBStick().size() > 0) {
+      if (data_base.getDBStick().front().getDate() == data_inicial) {
+        chartvector.push_back(data_base.getDBStick().front());
+        data_base.getDBStick().erase(data_base.getDBStick().begin());
       } else {
         chartvector.push_back(newVoidCandle(60, data_inicial));
       }
-      data_inicial += 60;
+    } else {
+      chartvector.push_back(newVoidCandle(60, data_inicial));
     }
-    if (getChartTime() > 60) {
-      while (data_inicial_too <= data_final) {
-        //
-      }
-    }
+    data_inicial += 60;
   }
 }
 
 /**
- * @brief Transformar um tempo gráfico de 1 minuto apra um tempo gráfico de mais
- * minutos
+ * @brief Transformar um tempo gráfico de 1 minuto apra um tempo gráfico de
+ * mais minutos
  *
  * @param data_inicial Data inicial da análise
  * @param data_final Data final da análise
  * @param tempoG Tempo do gráfico fulturo
+ * @return chart_t Gráfico final
  */
-void Chart::transformMinutToMaxMinut(time_t data_inicial, time_t data_final,
-                                     time_t tempoG) {
-  tempoG = tempoG / 60;
-  while (data_inicial <= data_final) {
-    stick_s_t temp_nova_vela;
-    for (auto i(0); i < tempoG; ++i) {
-      
+chart_t Chart::transformMinutToMaxMinut(time_t data_inicial, time_t data_final,
+                                        time_t tempoG) {
+  chart_t new_chartvector;
+  while (data_inicial < data_final) {
+    pip_t new_open;
+    pip_t new_close;
+    pip_t new_high;
+    pip_t new_low;
+    bool primeiro_manitulador = true;
+    for (auto i(0u); i < (tempoG / 60); ++i) {
+      if (chartvector.front().getStatus() != "OK") {
+        chartvector.erase(chartvector.begin());
+      } else {
+        if (primeiro_manitulador) {
+#pragma omp parallel sections
+          {
+#pragma omp section
+            { new_open = chartvector.front().getOpen(); }
+#pragma omp section
+            { new_high = chartvector.front().getHigh(); }
+#pragma omp section
+            { new_low = chartvector.front().getLow(); }
+#pragma omp section
+            { primeiro_manitulador = false; }
+          }
+        } else {
+#pragma omp parallel sections
+          {
+#pragma omp section
+            {
+              if (chartvector.front().getHigh() > new_high) {
+                new_high = chartvector.front().getHigh();
+              }
+            }
+#pragma omp section
+            {
+              if (chartvector.front().getLow() < new_low) {
+                new_low = chartvector.front().getLow();
+              }
+            }
+          }
+        }
+        new_close = chartvector.front().getClose();
+        chartvector.erase(chartvector.begin());
+      }
     }
+    if (primeiro_manitulador) {
+      Candlestick nova_vela(tempoG, data_inicial);
+      new_chartvector.push_back(nova_vela);
+    } else {
+      Candlestick nova_vela(data_inicial, new_open, new_close, new_high,
+                            new_low, tempoG);
+      new_chartvector.push_back(nova_vela);
+    }
+    data_inicial += tempoG;
   }
+  chartvector.clear();
+  return new_chartvector;
 }
 
 /**

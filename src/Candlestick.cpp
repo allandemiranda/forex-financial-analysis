@@ -122,6 +122,85 @@ Candlestick::Candlestick(stick_s_t stick) {
 }
 
 /**
+ * @brief Construa um novo objeto Candlestick:: Candlestick
+ *
+ * @param new_date Data da abertura da vela (em segundos apartir de 1900)
+ * @param new_open Valor de abertura da vela
+ * @param new_close valor de fechamento da vela
+ * @param new_high Valor mais alto da vela
+ * @param new_low Valor mais baixo da vela
+ * @param new_time Tempo da vela (em segundos)
+ */
+Candlestick::Candlestick(time_t new_date, pip_t new_open, pip_t new_close,
+                         pip_t new_high, pip_t new_low, time_t new_time) {
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { setStatus("OK"); }
+#pragma omp section
+    { setOpen(new_open); }
+#pragma omp section
+    { setClose(new_close); }
+#pragma omp section
+    { setHigh(new_high); }
+#pragma omp section
+    { setLow(new_low); }
+  }
+  if (getOpen() >= getClose()) {
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { setType("DOWN"); }
+#pragma omp section
+      { setUpperShandowSize(getHigh(), getOpen()); }
+#pragma omp section
+      { setLowerShandowSize(getClose(), getLow()); }
+#pragma omp section
+      { setBodySize(getOpen(), getClose()); }
+    }
+  } else {
+    if (getOpen() < getClose()) {
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { setType("UP"); }
+#pragma omp section
+        { setUpperShandowSize(getHigh(), getClose()); }
+#pragma omp section
+        { setLowerShandowSize(getOpen(), getLow()); }
+#pragma omp section
+        { setBodySize(getClose(), getOpen()); }
+      }
+    } else {
+      if (getOpen() == getClose()) {
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { setType("STABLE"); }
+#pragma omp section
+          { setUpperShandowSize(getHigh(), getOpen()); }
+#pragma omp section
+          { setLowerShandowSize(getClose(), getLow()); }
+#pragma omp section
+          { setBodySize(0.0, 0.0); }
+        }
+      } else {
+        throw "ERRO! Abertura e Fechamento de vela inderetminado na criação da vela";
+      }
+    }
+  }
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { setSize(getHigh(), getLow()); }
+#pragma omp section
+    { setDate(new_date); }
+#pragma omp section
+    { setTime(new_time); }
+  }
+}
+
+/**
  * @brief Destrua o objeto Candlestick:: Candlestick
  *
  */
@@ -425,9 +504,7 @@ void Candlestick::setStatus(std::string new_status) {
 
 /**
  * @brief Obter Time Zone usada para gravar Vela
- * 
+ *
  * @return std::string TZ
  */
-std::string Candlestick::getTZ(void){
-  return tz;
-}
+std::string Candlestick::getTZ(void) { return tz; }

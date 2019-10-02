@@ -55,6 +55,7 @@ class Candlestick {
  public:
   Candlestick(time_t, time_t);
   Candlestick(stick_s_t);
+  Candlestick(time_t, pip_t, pip_t, pip_t, pip_t, time_t);
   ~Candlestick(void);
   pip_t getOpen(void);
   pip_t getClose(void);
