@@ -608,62 +608,65 @@ time_t Chart::convertStringTimeToSeconds(std::string time) {
   // 1 mês (30dias) = 2592000 segundos
   // 1 ano (365dias) = 31536000 segundos
   unsigned long time_final = 0;
-#pragma omp parallel for
-  for (unsigned int i = 0; i < tempos_permitidos.size(); ++i) {
-    if (time == tempos_permitidos[i]) {
-      if (time[0] == 'M') {
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned int i = 0; i < tempos_permitidos.size(); ++i) {
+      if (time == tempos_permitidos[i]) {
+        if (time[0] == 'M') {
 #pragma omp critical
-        {
-          time.erase(0, 1);
-          int new_time = std::stoi(time);
-          time_final = (unsigned long)(60 * (unsigned long)new_time);
-        }
+          {
+            time.erase(0, 1);
+            int new_time = std::stoi(time);
+            time_final = (unsigned long)(60 * (unsigned long)new_time);
+          }
 #pragma omp cancel for
-      }
-      if (time[0] == 'H') {
+        }
+        if (time[0] == 'H') {
 #pragma omp critical
-        {
-          time.erase(0, 1);
-          int new_time = std::stoi(time);
-          time_final = (unsigned long)(3600 * (unsigned long)new_time);
-        }
+          {
+            time.erase(0, 1);
+            int new_time = std::stoi(time);
+            time_final = (unsigned long)(3600 * (unsigned long)new_time);
+          }
 #pragma omp cancel for
-      }
-      if (time[0] == 'D') {
+        }
+        if (time[0] == 'D') {
 #pragma omp critical
-        {
-          time.erase(0, 1);
-          int new_time = std::stoi(time);
-          time_final = (unsigned long)(86400 * (unsigned long)new_time);
-        }
+          {
+            time.erase(0, 1);
+            int new_time = std::stoi(time);
+            time_final = (unsigned long)(86400 * (unsigned long)new_time);
+          }
 #pragma omp cancel for
-      }
-      if (time[0] == 'D') {
+        }
+        if (time[0] == 'D') {
 #pragma omp critical
-        {
-          time.erase(0, 1);
-          int new_time = std::stoi(time);
-          time_final = (unsigned long)(86400 * (unsigned long)new_time);
-        }
+          {
+            time.erase(0, 1);
+            int new_time = std::stoi(time);
+            time_final = (unsigned long)(86400 * (unsigned long)new_time);
+          }
 #pragma omp cancel for
-      }
-      if (time[0] == 'J') {
+        }
+        if (time[0] == 'J') {
 #pragma omp critical
-        {
-          time.erase(0, 1);
-          int new_time = std::stoi(time);
-          time_final = (unsigned long)(2592000 * (unsigned long)new_time);
-        }
+          {
+            time.erase(0, 1);
+            int new_time = std::stoi(time);
+            time_final = (unsigned long)(2592000 * (unsigned long)new_time);
+          }
 #pragma omp cancel for
-      }
-      if (time[0] == 'Y') {
+        }
+        if (time[0] == 'Y') {
 #pragma omp critical
-        {
-          time.erase(0, 1);
-          int new_time = std::stoi(time);
-          time_final = (unsigned long)(31536000 * (unsigned long)new_time);
-        }
+          {
+            time.erase(0, 1);
+            int new_time = std::stoi(time);
+            time_final = (unsigned long)(31536000 * (unsigned long)new_time);
+          }
 #pragma omp cancel for
+        }
       }
     }
   }
@@ -699,7 +702,7 @@ time_t Chart::getOlderCandleTime(DataBase& data_base, time_t tempo) {
  * @param tempo Tempo da vela requerida
  * @return time_t Data da vela mais nova
  */
-time_t getNewestCandleTime(DataBase& data_base, time_t tempo) {
+time_t Chart::getNewestCandleTime(DataBase& data_base, time_t tempo) {
   if (data_base.getDBStick().back().getTime() == tempo) {
     return data_base.getDBStick().back().getDate();
   }
