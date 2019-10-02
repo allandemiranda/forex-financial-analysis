@@ -38,6 +38,19 @@ Candlestick::Candlestick(time_t time, time_t date) {
  * @param stick Vela com os dados
  */
 Candlestick::Candlestick(stick_s_t stick) {
+  putenv(getTZ().data());
+  struct std::tm tm;
+  std::vector<std::string> date_v;
+  std::vector<std::string> time_v;
+
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { date_v = explode(stick[0], '.'); }
+#pragma omp section
+    { time_v = explode(stick[1], ':'); }
+  }
+
 #pragma omp parallel sections
   {
 #pragma omp section
@@ -50,7 +63,37 @@ Candlestick::Candlestick(stick_s_t stick) {
     { setHigh(std::stold(stick[3])); }
 #pragma omp section
     { setLow(std::stold(stick[4])); }
+#pragma omp section
+    { tm.tm_year = std::stoi(date_v[0]) - 1900; }
+#pragma omp section
+    { tm.tm_mon = std::stoi(date_v[1]) - 1; }
+#pragma omp section
+    { tm.tm_mday = std::stoi(date_v[2]); }
+#pragma omp section
+    { tm.tm_hour = std::stoi(time_v[0]); }
+#pragma omp section
+    { tm.tm_min = std::stoi(time_v[1]); }
+#pragma omp section
+    { tm.tm_sec = std::stoi(time_v[2]); }
+#pragma omp section
+    { tm.tm_isdst = -1; }
+#pragma omp section
+    { setTime(std::stol(stick[9])); }
   }
+
+#pragma omp parallel sections
+  {
+#pragma omp section
+    {
+      setDate(std::mktime(&tm));
+      if (std::mktime(&tm) == -1) {
+        throw "ERRO! Ao trasformar data em std::tm";
+      }
+    }
+#pragma omp section
+    { setSize(getHigh(), getLow()); }
+  }
+
   if (getOpen() >= getClose()) {
 #pragma omp parallel sections
     {
@@ -93,31 +136,6 @@ Candlestick::Candlestick(stick_s_t stick) {
         throw "ERRO! Abertura e Fechamento de vela inderetminado na criação da vela";
       }
     }
-  }
-#pragma omp parallel sections
-  {
-#pragma omp section
-    { setSize(getHigh(), getLow()); }
-#pragma omp section
-    {
-      putenv(getTZ().data());
-      struct std::tm tm;
-      std::vector<std::string> date_v = explode(stick[0], '.');
-      tm.tm_year = std::stoi(date_v[0]) - 1900;
-      tm.tm_mon = std::stoi(date_v[1]) - 1;
-      tm.tm_mday = std::stoi(date_v[2]);
-      std::vector<std::string> time_v = explode(stick[1], ':');
-      tm.tm_hour = std::stoi(time_v[0]);
-      tm.tm_min = std::stoi(time_v[1]);
-      tm.tm_sec = std::stoi(time_v[2]);
-      tm.tm_isdst = -1;
-      setDate(std::mktime(&tm));
-      if (std::mktime(&tm) == -1) {
-        throw "ERRO! Ao trasformar data em std::tm";
-      }
-    }
-#pragma omp section
-    { setTime(std::stol(stick[9])); }
   }
 }
 
@@ -145,7 +163,14 @@ Candlestick::Candlestick(time_t new_date, pip_t new_open, pip_t new_close,
     { setHigh(new_high); }
 #pragma omp section
     { setLow(new_low); }
+#pragma omp section
+    { setDate(new_date); }
+#pragma omp section
+    { setTime(new_time); }
   }
+
+  setSize(getHigh(), getLow());
+
   if (getOpen() >= getClose()) {
 #pragma omp parallel sections
     {
@@ -188,15 +213,6 @@ Candlestick::Candlestick(time_t new_date, pip_t new_open, pip_t new_close,
         throw "ERRO! Abertura e Fechamento de vela inderetminado na criação da vela";
       }
     }
-  }
-#pragma omp parallel sections
-  {
-#pragma omp section
-    { setSize(getHigh(), getLow()); }
-#pragma omp section
-    { setDate(new_date); }
-#pragma omp section
-    { setTime(new_time); }
   }
 }
 

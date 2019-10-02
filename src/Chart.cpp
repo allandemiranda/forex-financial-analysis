@@ -10,6 +10,7 @@
  */
 
 #include "Chart.hpp"
+#include <vector>
 #include "omp.h"
 
 /**
@@ -30,9 +31,19 @@ Chart::Chart(DataBase data_base, std::string time_chart,
 #pragma omp section
     { setChartTimeString(time_chart); }
   }
-  if (getChartTime() < (24 * 60 * 60)) {
-    time_t data_inicial = getOlderCandleTime(data_base, 60);
+
+  // 1 hora = 3600 segundos
+  // 1 dia = 86400 segundos
+  // 1 semana = 604800 segundos
+  // 1 mês (30dias) = 2592000 segundos
+  // 1 ano (365dias) = 31536000 segundos
+
+  if (getChartTime() < (3600)) {  // menor que uma hora
+    time_t data_inicial =
+        getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);
+    // Apague as barras menores de 60 segundos (não vamos precisar e precisa de
+    // memória)
     for (int i(0); i < data_base.getDBStick().size(); ++i) {
       if (data_base.getDBStick()[i].getDate() < data_inicial) {
         data_base.getDBStick().erase(data_base.getDBStick().begin() + i);
@@ -41,26 +52,420 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         break;
       }
     }
-    data_final += (24 * 60 * 60);  // Adicione um dia
+    // voltar as 0 minuto
+    char mbstr[5];
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_inicial))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_inicial -= (60);  // Diminua um minuto
+      }
+    }
+    // Avançar até o próximo 0 minutos
+    data_final += (60);  // Aumente um minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_final))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente um minuto
+      }
+    }
     putDataBaseOnChart(data_inicial, data_final, data_base);
     if (getChartTime() > 60) {
       chartvector =
           transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
     }
   }
-  if (getChartTime() == (24 * 60 * 60)) {
-    time_t data_inicial = getOlderCandleTime(data_base, getChartTime());
+
+  if (getChartTime() < (86400)) {  // menor que um dia
+    time_t data_inicial =
+        getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);
-    data_final += getChartTime();  // Adicione um dia
+    // Apague as barras menores de 60 segundos (não vamos precisar e precisa de
+    // memória)
+    for (int i(0); i < data_base.getDBStick().size(); ++i) {
+      if (data_base.getDBStick()[i].getDate() < data_inicial) {
+        data_base.getDBStick().erase(data_base.getDBStick().begin() + i);
+        --i;
+      } else {
+        break;
+      }
+    }
+    char mbstr[5];
+    // voltar as 0 minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_inicial))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_inicial -= (60);  // Diminua um minuto
+      }
+    }
+    // voltar as 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_inicial))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_inicial -= (3600);  // Diminua uma hora
+      }
+    }
+    // Avançar até o próximo 0 minutos
+    data_final += (60);  // Aumente um minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_final))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente um minuto
+      }
+    }
+    // Avançar até o próximo 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_final))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente uma hora
+      }
+    }
     putDataBaseOnChart(data_inicial, data_final, data_base);
     if (getChartTime() > 60) {
       chartvector =
           transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
     }
   }
-  if (getChartTime() == (7 * 24 * 60 * 60)) {
-    time_t data_inicial = getOlderCandleTime(data_base, getChartTime());
-    
+
+  if (getChartTime() == (86400)) {  // para um dia
+    time_t data_inicial =
+        getOlderCandleTime(data_base, 86400);  // pegue todas as velas
+    time_t data_final = getNewestCandleTime(data_base, 60);
+    char mbstr[5];
+    // voltar as 0 minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_inicial))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_inicial -= (60);  // Diminua um minuto
+      }
+    }
+    // voltar as 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_inicial))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_inicial -= (3600);  // Diminua uma hora
+      }
+    }
+    // Avançar até o próximo 0 minutos
+    data_final += (60);  // Aumente um minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_final))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente um minuto
+      }
+    }
+    // Avançar até o próximo 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_final))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente uma hora
+      }
+    }
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    if (getChartTime() > 60) {
+      chartvector =
+          transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    }
+  }
+
+  if (getChartTime() == (604800)) {
+    time_t data_inicial =
+        getOlderCandleTime(data_base, 86400);  // pegue todas as velas
+    time_t data_final = getNewestCandleTime(data_base, 60);
+    char mbstr[5];
+    // voltar as 0 minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_inicial))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_inicial -= (60);  // Diminua um minuto
+      }
+    }
+    // voltar as 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_inicial))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_inicial -= (3600);  // Diminua uma hora
+      }
+    }
+    // 0 = Sunday
+    while (std::strftime(mbstr, sizeof(mbstr), "%w",
+                         std::localtime(&data_inicial))) {
+      if (mbstr[0] == '0') {
+        break;
+      } else {
+        data_inicial -= (86400);  // Diminua um dia
+      }
+    }
+    // Avançar até o próximo 0 minutos
+    data_final += (60);  // Aumente um minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_final))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente um minuto
+      }
+    }
+    // Avançar até o próximo 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_final))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente uma hora
+      }
+    }
+    while (std::strftime(mbstr, sizeof(mbstr), "%w",
+                         std::localtime(&data_final))) {  // 0 = Sunday
+      if (mbstr[0] == '0') {
+        break;
+      } else {
+        data_final += (86400);  // Adicione um dia
+      }
+    }
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    chartvector =
+        transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+  }
+
+  if (getChartTime() == (2592000)) {  // para 1 mês
+    time_t data_inicial = getOlderCandleTime(data_base, (86400));
+    time_t data_final = getNewestCandleTime(data_base, 60);
+    char mbstr[5];
+    // voltar as 0 minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_inicial))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_inicial -= (60);  // Diminua um minuto
+      }
+    }
+    // voltar as 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_inicial))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_inicial -= (3600);  // Diminua uma hora
+      }
+    }
+    // dia
+    while (std::strftime(mbstr, sizeof(mbstr), "%d",
+                         std::localtime(&data_inicial))) {
+      std::string dia_a;
+      dia_a.push_back(mbstr[0]);
+      dia_a.push_back(mbstr[1]);
+      if (dia_a == "01") {
+        break;
+      } else {
+        data_inicial -= (86400);  // Diminua um dia
+      }
+    }
+    // Avançar até o próximo 0 minutos
+    data_final += (60);  // Aumente um minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_final))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente um minuto
+      }
+    }
+    // Avançar até o próximo 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_final))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente uma hora
+      }
+    }
+    while (std::strftime(mbstr, sizeof(mbstr), "%d",
+                         std::localtime(&data_final))) {
+      std::string dia_a;
+      dia_a.push_back(mbstr[0]);
+      dia_a.push_back(mbstr[1]);
+      if (dia_a == "01") {
+        break;
+      } else {
+        data_inicial += (24 * 60 * 60);  // almente um dia
+      }
+    }
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    chartvector =
+        transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+  }
+
+  if (getChartTime() == (31536000)) {
+    time_t data_inicial = getOlderCandleTime(data_base, (86400));
+    time_t data_final = getNewestCandleTime(data_base, 60);
+    char mbstr[5];
+    // dia
+    // voltar as 0 minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_inicial))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_inicial -= (60);  // Diminua um minuto
+      }
+    }
+    // voltar as 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_inicial))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_inicial -= (3600);  // Diminua uma hora
+      }
+    }
+    // dia
+    while (std::strftime(mbstr, sizeof(mbstr), "%d",
+                         std::localtime(&data_inicial))) {
+      std::string dia_a;
+      dia_a.push_back(mbstr[0]);
+      dia_a.push_back(mbstr[1]);
+      if (dia_a == "01") {
+        break;
+      } else {
+        data_inicial -= (86400);  // Diminua um dia
+      }
+    }
+    // Ano
+    while (std::strftime(mbstr, sizeof(mbstr), "%j",
+                         std::localtime(&data_inicial))) {
+      std::string ano_a;
+      ano_a.push_back(mbstr[0]);
+      ano_a.push_back(mbstr[1]);
+      if (ano_a == "001") {
+        break;
+      } else {
+        data_inicial -= (86400);  // Diminua um dia
+      }
+    }
+    // Avançar até o próximo 0 minutos
+    data_final += (60);  // Aumente um minuto
+    while (std::strftime(mbstr, sizeof(mbstr), "%M",
+                         std::localtime(&data_final))) {
+      std::string min_a;
+      min_a.push_back(mbstr[0]);
+      min_a.push_back(mbstr[1]);
+      if (min_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente um minuto
+      }
+    }
+    // Avançar até o próximo 00 horas
+    while (std::strftime(mbstr, sizeof(mbstr), "%H",
+                         std::localtime(&data_final))) {
+      std::string hora_a;
+      hora_a.push_back(mbstr[0]);
+      hora_a.push_back(mbstr[1]);
+      if (hora_a == "00") {
+        break;
+      } else {
+        data_final += (60);  // Aumente uma hora
+      }
+    }
+    while (std::strftime(mbstr, sizeof(mbstr), "%j",
+                         std::localtime(&data_final))) {
+      std::string ano_a;
+      ano_a.push_back(mbstr[0]);
+      ano_a.push_back(mbstr[1]);
+      if (ano_a == "001") {
+        break;
+      } else {
+        data_inicial += (86400);  // almente um dia
+      }
+    }
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    chartvector =
+        transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
 }
 
@@ -193,83 +598,79 @@ void Chart::setChartTime(std::string time) {
  * @return time_t Tempo em segundos
  */
 time_t Chart::convertStringTimeToSeconds(std::string time) {
-#pragma omp parallel sections
-  {
-#pragma omp section
-    {
+  std::vector<std::string> tempos_permitidos = {
+      "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
+      "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",  "J1",  "Y1"};
+  // OBS: J1 = Mês 1
+  // 1 hora = 3600 segundos
+  // 1 dia = 86400 segundos
+  // 1 semana = 604800 segundos
+  // 1 mês (30dias) = 2592000 segundos
+  // 1 ano (365dias) = 31536000 segundos
+  unsigned long time_final = 0;
+#pragma omp parallel for
+  for (unsigned int i = 0; i < tempos_permitidos.size(); ++i) {
+    if (time == tempos_permitidos[i]) {
       if (time[0] == 'M') {
-        time.erase(0, 1);
-        int new_time = std::stoi(time);
-        if (new_time > 0) {
-          return (unsigned long)(60 * (unsigned long)new_time);
-        } else {
-          throw "ERRO! Formato do tempo gráfico de M está incorreto";
+#pragma omp critical
+        {
+          time.erase(0, 1);
+          int new_time = std::stoi(time);
+          time_final = (unsigned long)(60 * (unsigned long)new_time);
         }
+#pragma omp cancel for
       }
-    }
-#pragma omp section
-    {
       if (time[0] == 'H') {
-        time.erase(0, 1);
-        int new_time = std::stoi(time);
-        if (new_time > 0) {
-          return (unsigned long)(60 * 60 * (unsigned long)new_time);
-        } else {
-          throw "ERRO! Formato do tempo gráfico de H está incorreto";
+#pragma omp critical
+        {
+          time.erase(0, 1);
+          int new_time = std::stoi(time);
+          time_final = (unsigned long)(3600 * (unsigned long)new_time);
         }
+#pragma omp cancel for
       }
-    }
-#pragma omp section
-    {
       if (time[0] == 'D') {
-        time.erase(0, 1);
-        int new_time = std::stoi(time);
-        if (new_time > 0) {
-          return (unsigned long)(24 * 60 * 60 * (unsigned long)new_time);
-        } else {
-          throw "ERRO! Formato do tempo gráfico de D está incorreto";
+#pragma omp critical
+        {
+          time.erase(0, 1);
+          int new_time = std::stoi(time);
+          time_final = (unsigned long)(86400 * (unsigned long)new_time);
         }
+#pragma omp cancel for
       }
-    }
-#pragma omp section
-    {
-      if (time[0] == 'W') {
-        time.erase(0, 1);
-        int new_time = std::stoi(time);
-        if (new_time > 0) {
-          return (unsigned long)(7 * 24 * 60 * 60 * (unsigned long)new_time);
-        } else {
-          throw "ERRO! Formato do tempo gráfico de W está incorreto";
+      if (time[0] == 'D') {
+#pragma omp critical
+        {
+          time.erase(0, 1);
+          int new_time = std::stoi(time);
+          time_final = (unsigned long)(86400 * (unsigned long)new_time);
         }
+#pragma omp cancel for
       }
-    }
-#pragma omp section
-    {
       if (time[0] == 'J') {
-        time.erase(0, 1);
-        int new_time = std::stoi(time);
-        if (new_time == 1) {
-          return (unsigned long)(4 * 7 * 24 * 60 * 60 *
-                                 (unsigned long)new_time);
-        } else {
-          throw "ERRO! Formato do tempo gráfico de J está incorreto";
+#pragma omp critical
+        {
+          time.erase(0, 1);
+          int new_time = std::stoi(time);
+          time_final = (unsigned long)(2592000 * (unsigned long)new_time);
         }
+#pragma omp cancel for
       }
-    }
-#pragma omp section
-    {
       if (time[0] == 'Y') {
-        time.erase(0, 1);
-        int new_time = std::stoi(time);
-        if (new_time == 1) {
-          return (unsigned long)(12 * 4 * 7 * 24 * 60 * 60 *
-                                 (unsigned long)new_time);
-        } else {
-          throw "ERRO! Formato do tempo gráfico de Y está incorreto";
+#pragma omp critical
+        {
+          time.erase(0, 1);
+          int new_time = std::stoi(time);
+          time_final = (unsigned long)(31536000 * (unsigned long)new_time);
         }
+#pragma omp cancel for
       }
     }
   }
+  if (time_final == 0) {
+    throw "ERRO! Formato do tempo gráfico está incorreto";
+  }
+  return time_final;
 }
 
 /**
@@ -282,18 +683,11 @@ time_t Chart::convertStringTimeToSeconds(std::string time) {
 time_t Chart::getOlderCandleTime(DataBase& data_base, time_t tempo) {
   for (auto i : data_base.getDBStick()) {
     if (i.getTime() == tempo) {
-      putenv(i.getTZ().data());
-      std::time_t at = i.getDate();
-      std::tm atm = *std::localtime(&at);
-      atm.tm_hour = 0;
-      atm.tm_min = 0;
-      atm.tm_sec = 0;
-      time_t final = std::mktime(&atm);
-      if (final == -1) {
-        throw "ERRO! Ao tentar encontrar o dia inicial, não foi possivel criar o dia";
-      }
-      return final;
+      return i.getDate();
     }
+  }
+  if (data_base.getDBStick().front().getTime() == 60) {
+    return data_base.getDBStick().front().getDate();
   }
   throw "ERRO! Não foi possivel detectar vela mais velha para o tempo";
 }
@@ -307,17 +701,7 @@ time_t Chart::getOlderCandleTime(DataBase& data_base, time_t tempo) {
  */
 time_t getNewestCandleTime(DataBase& data_base, time_t tempo) {
   if (data_base.getDBStick().back().getTime() == tempo) {
-    putenv(data_base.getDBStick().back().getTZ().data());
-    std::time_t at = data_base.getDBStick().back().getDate();
-    std::tm atm = *std::localtime(&at);
-    atm.tm_hour = 0;
-    atm.tm_min = 0;
-    atm.tm_sec = 0;
-    time_t final = std::mktime(&atm);
-    if (final == -1) {
-      throw "ERRO! Ao tentar encontrar o dia final, não foi possivel criar o dia";
-    }
-    return final;
+    return data_base.getDBStick().back().getDate();
   }
   throw "ERRO! Não foi possivel detectar vela mais nova para o tempo";
 }
