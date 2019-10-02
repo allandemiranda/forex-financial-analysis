@@ -50,7 +50,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
   }
   if (getChartTime() == (24 * 60 * 60)) {
     time_t data_inicial = getOlderCandleTime(data_base, getChartTime());
-    time_t data_final = getNewestCandleTime(data_base, 60);    
+    time_t data_final = getNewestCandleTime(data_base, 60);
     data_final += getChartTime();  // Adicione um dia
     putDataBaseOnChart(data_inicial, data_final, data_base);
     if (getChartTime() > 60) {
@@ -58,7 +58,10 @@ Chart::Chart(DataBase data_base, std::string time_chart,
           transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
     }
   }
-  // fazer semana,mês e ano
+  if (getChartTime() == (7 * 24 * 60 * 60)) {
+    time_t data_inicial = getOlderCandleTime(data_base, getChartTime());
+    
+  }
 }
 
 /**
