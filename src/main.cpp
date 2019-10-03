@@ -2,9 +2,9 @@
 #include <iomanip>
 #include <iostream>
 #include "Chart.hpp"
-#include "ChartGoogle.hpp"
 #include "DataBase.hpp"
 #include "ReadingFolderFiles.hpp"
+#include "Dashboard.hpp"
 
 int main(int argc, char const* argv[]) {
   try {
@@ -18,15 +18,15 @@ int main(int argc, char const* argv[]) {
     // for (auto i : list_file.getListPath()) {
       std::cout << "Lendo " << a << " ";
       DataBase novo_bd(a);
-      Chart novo_grafico(novo_bd, "D1", "TESTE");
-      ChartGoogle(novo_grafico.getChart(), "", "out/teste.html");
+      Chart novo_grafico(novo_bd, "M1", "TESTE");
+      Dashboard(&novo_grafico.chartvector, "out/teste.html", "TESTE");
       std::cout << " OK! " << std::endl;
       std::string TimeZone = "TZ=America/Recife";
       putenv(TimeZone.data());
       for (auto j : novo_grafico.getChart()) {
         char mbstr[100];
         time_t temp_time_t_ = j.getDate();
-        std::strftime(mbstr, sizeof(mbstr), "%c",
+        std::strftime(mbstr, sizeof(mbstr), "%D %T",
                       std::localtime(&temp_time_t_));
         if (j.getStatus() == "OK") {
           std::cout << j.getStatus() << " " << mbstr << " " << j.getOpen()
