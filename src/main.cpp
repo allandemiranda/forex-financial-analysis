@@ -1,24 +1,42 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
+#include "Chart.hpp"
+#include "ChartGoogle.hpp"
 #include "DataBase.hpp"
 #include "ReadingFolderFiles.hpp"
-#include "Chart.hpp"
 
 int main(int argc, char const* argv[]) {
   try {
     std::string a = argv[1];
-    ReadingFolderFiles list_file(a);
-    for (auto i : list_file.getListPath()) {
-      std::cout << i << std::endl;
-    }
+    // ReadingFolderFiles list_file(a);
+    // for (auto i : list_file.getListPath()) {
+    //   std::cout << i << std::endl;
+    // }
+    
     std::cout << "------------------" << std::endl;
-    for (auto i : list_file.getListPath()) {
-      std::cout << "Lendo " << i << " ";
-      DataBase novo_bd(i);
-      Chart novo_grafico(novo_bd, "H6", "TESTE");
+    // for (auto i : list_file.getListPath()) {
+      std::cout << "Lendo " << a << " ";
+      DataBase novo_bd(a);
+      Chart novo_grafico(novo_bd, "D1", "TESTE");
+      ChartGoogle(novo_grafico.getChart(), "", "out/teste.html");
       std::cout << " OK! " << std::endl;
-    }
+      std::string TimeZone = "TZ=America/Recife";
+      putenv(TimeZone.data());
+      for (auto j : novo_grafico.getChart()) {
+        char mbstr[100];
+        time_t temp_time_t_ = j.getDate();
+        std::strftime(mbstr, sizeof(mbstr), "%c",
+                      std::localtime(&temp_time_t_));
+        if (j.getStatus() == "OK") {
+          std::cout << j.getStatus() << " " << mbstr << " " << j.getOpen()
+                    << " " << j.getClose() << " " << j.getTime() << std::endl;
+        } else {
+          std::cout << mbstr << " " << j.getStatus() << " " << j.getTime()
+                    << std::endl;
+        }
+      }
+    // }
     // std::cout << "Open    Close   Type    High    Low   UpperSize   "
     //              "LowerSize   BodySize    Size    Data    Time    Status"
     //           << std::endl;

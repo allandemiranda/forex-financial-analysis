@@ -21,7 +21,7 @@
  * @param time_chart Tempo do gráfico
  * @param name_chart Nome do gráfico
  */
-Chart::Chart(DataBase data_base, std::string time_chart,
+Chart::Chart(DataBase& data_base, std::string time_chart,
              std::string name_chart) {
 #pragma omp parallel sections
   {
@@ -43,16 +43,6 @@ Chart::Chart(DataBase data_base, std::string time_chart,
     time_t data_inicial =
         getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);
-    // Apague as barras menores de 60 segundos (não vamos precisar e precisa de
-    // memória)
-    for (int i(0); i < data_base.getDBStick().size(); ++i) {
-      if (data_base.getDBStick()[i].getDate() < data_inicial) {
-        data_base.getDBStick().erase(data_base.getDBStick().begin() + i);
-        --i;
-      } else {
-        break;
-      }
-    }
     // voltar as 0 minuto
     char mbstr[5];
     while (std::strftime(mbstr, sizeof(mbstr), "%M",
@@ -79,7 +69,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         data_final += (60);  // Aumente um minuto
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
     if (getChartTime() > 60) {
       chartvector =
           transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
@@ -91,16 +81,6 @@ Chart::Chart(DataBase data_base, std::string time_chart,
     time_t data_inicial =
         getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);
-    // Apague as barras menores de 60 segundos (não vamos precisar e precisa de
-    // memória)
-    for (int i(0); i < data_base.getDBStick().size(); ++i) {
-      if (data_base.getDBStick()[i].getDate() < data_inicial) {
-        data_base.getDBStick().erase(data_base.getDBStick().begin() + i);
-        --i;
-      } else {
-        break;
-      }
-    }
     char mbstr[5];
     // voltar as 0 minuto
     while (std::strftime(mbstr, sizeof(mbstr), "%M",
@@ -151,7 +131,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         data_final += (60);  // Aumente uma hora
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
     if (getChartTime() > 60) {
       chartvector =
           transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
@@ -212,7 +192,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         data_final += (60);  // Aumente uma hora
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
     if (getChartTime() > 60) {
       chartvector =
           transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
@@ -290,7 +270,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         data_final += (86400);  // Adicione um dia
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
     chartvector =
         transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
@@ -371,7 +351,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         data_inicial += (24 * 60 * 60);  // almente um dia
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
     chartvector =
         transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
@@ -465,7 +445,7 @@ Chart::Chart(DataBase data_base, std::string time_chart,
         data_inicial += (86400);  // almente um dia
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
     chartvector =
         transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
@@ -479,12 +459,13 @@ Chart::Chart(DataBase data_base, std::string time_chart,
  * @param data_base Banco de dados
  */
 void Chart::putDataBaseOnChart(time_t data_inicial, time_t data_final,
-                               DataBase& data_base) {
+                               std::vector<Candlestick>* data_base) {
   while (data_inicial < data_final) {
-    if (data_base.getDBStick().size() > 0) {
-      if (data_base.getDBStick().front().getDate() == data_inicial) {
-        chartvector.push_back(data_base.getDBStick().front());
-        data_base.getDBStick().erase(data_base.getDBStick().begin());
+    if (data_base->size() > 0) {
+      if (data_base->front().getDate() == data_inicial) {
+        chartvector.push_back(data_base->front());
+        data_base->erase(data_base->begin());
+
       } else {
         chartvector.push_back(newVoidCandle(60, data_inicial));
       }
@@ -513,7 +494,8 @@ chart_t Chart::transformMinutToMaxMinut(time_t data_inicial, time_t data_final,
     pip_t new_high;
     pip_t new_low;
     bool primeiro_manitulador = true;
-    for (auto i(0u); i < (tempoG / 60); ++i) {
+    auto tempoG_dividido = (tempoG / 60);
+    for (auto i(0u); i < tempoG_dividido; ++i) {
       if (chartvector.front().getStatus() != "OK") {
         chartvector.erase(chartvector.begin());
       } else {
@@ -686,15 +668,14 @@ time_t Chart::convertStringTimeToSeconds(std::string time) {
  * @return time_t Data da vela mais velha
  */
 time_t Chart::getOlderCandleTime(DataBase& data_base, time_t tempo) {
-  for (auto i : data_base.getDBStick()) {
-    if (i.getTime() == tempo) {
-      return i.getDate();
+  if (tempo < 86400) {
+    while (data_base.getDBStick().front().getTime() >= 86400) {
+      data_base.getDBStick().erase(data_base.getDBStick().begin());
     }
-  }
-  if (data_base.getDBStick().front().getTime() == 60) {
+    return data_base.getDBStick().front().getDate();
+  } else {
     return data_base.getDBStick().front().getDate();
   }
-  throw "ERRO! Não foi possivel detectar vela mais velha para o tempo";
 }
 
 /**

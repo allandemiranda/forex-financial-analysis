@@ -20,10 +20,10 @@ class DataBase {
  private:
   std::vector<std::string> getInformation(std::string);
   void setDBStick(std::vector<std::string>);
-  std::vector<Candlestick> DBStick;
   stick_s_t explode(const std::string);
 
  public:
+ std::vector<Candlestick> DBStick;
   DataBase(std::string);
   ~DataBase(void);
   std::vector<Candlestick> getDBStick(void);

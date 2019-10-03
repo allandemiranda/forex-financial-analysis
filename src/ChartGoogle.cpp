@@ -25,9 +25,10 @@
  * @param data Dados do gráfico
  * @param opitions_s opções adicionais
  */
-ChartGoogle::ChartGoogle(Chart &data, std::string opitions_s,
+ChartGoogle::ChartGoogle(std::vector<Candlestick> data, std::string opitions_s,
                          std::string fileName) {
-  setNameChart(data.getNameChart() + " " + data.getChartTimeString());
+  //setNameChart(data.getNameChart() + " " + data.getChartTimeString());
+  setNameChart("aaa");
   setOpitions(opitions_s);
   save(write(data, header, opitions, footer), fileName);
 }
@@ -47,28 +48,47 @@ ChartGoogle::~ChartGoogle(void) {}
  * @param rodape Pré definido
  * @return std::string Html final
  */
-std::string ChartGoogle::write(Chart &data, std::string cabecalho,
+std::string ChartGoogle::write(std::vector<Candlestick> &data, std::string cabecalho,
                                std::string opcoes, std::string rodape) {
   std::string html;
   putenv(TimeZone.data());
   html = cabecalho;
-  html += "var data = google.visualization.arrayToDataTable([";
-  for (auto i : data.getChart()) {
-    html += "['";
-    char mbstr[100];
-    std::strftime(mbstr, sizeof(mbstr), "%c", std::localtime(i.getDate));
-    html += mbstr;
-    html += "']";
-    html += ",";
-    html += std::to_string(i.getLow());
-    html += ",";
-    html += std::to_string(i.getOpen());
-    html += ",";
-    html += std::to_string(i.getClose());
-    html += ",";
-    html += std::to_string(i.getHigh());
-    html += "],";
+  html += "var data = google.visualization.arrayToDataTable([\n";
+  std::cout << "Size: " << data.size() << std::endl;
+  int cont_a = 0;
+  int cont_b = 0;
+  for (auto i : data) {
+    if (i.getStatus() != "VOID") {
+      html += "['";
+      char mbstr[100];
+      time_t temp_time_t_ = i.getDate();
+      std::strftime(mbstr, sizeof(mbstr), "%c", std::localtime(&temp_time_t_));
+      html += mbstr;
+      html += "',";
+      html += std::to_string(i.getLow());
+      html += ",";
+      html += std::to_string(i.getOpen());
+      html += ",";
+      html += std::to_string(i.getClose());
+      html += ",";
+      html += std::to_string(i.getHigh());
+      html += "]\n,";
+      ++cont_a;
+    } else {
+      // html += "['void";
+      // html += "',";
+      // html += std::to_string(0);
+      // html += ",";
+      // html += std::to_string(0);
+      // html += ",";
+      // html += std::to_string(0);
+      // html += ",";
+      // html += std::to_string(0);
+      // html += "],";
+      ++cont_b;
+    }
   }
+  std::cout << "NORMAL: " << cont_a << "   VOID: " << cont_b << std::endl;
   html.pop_back();
   html += "], true);";
   html += opitions;
@@ -104,8 +124,6 @@ void ChartGoogle::save(std::string html, std::string path) {
       new_p.push_back('/');
     }
     DIR *dir = 0;
-    struct dirent *entrada = 0;
-    unsigned char isFile = 0x8;
     dir = opendir(new_p.c_str());
     if (dir == 0) {
       std::string t = "mkdir " + new_p;
