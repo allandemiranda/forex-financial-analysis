@@ -15,16 +15,18 @@
 #include <string>
 #include <vector>
 #include "Candlestick.hpp"
+#include <ctime>
 
 class DataBase {
  private:
-  std::vector<std::string> getInformation(std::string);
-  void setDBStick(std::vector<std::string>*);
+  std::vector<std::vector<std::string>> getInformation(std::string*);
+  void setDBStick(std::vector<std::vector<std::string>>*, time_t*);
   stick_s_t explode(const std::string*);
+  time_t convertStringTimeToSeconds(std::string*);
 
  public:
   std::vector<Candlestick> Banco_De_Dados;
-  DataBase(std::string);
+  DataBase(std::string*, std::string);
   ~DataBase(void);
 };
 

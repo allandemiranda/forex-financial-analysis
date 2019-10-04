@@ -27,8 +27,8 @@ class Chart {
   time_t convertStringTimeToSeconds(std::string*);
   void setChartTimeString(std::string*);
   void setChartTime(std::string*);
-  time_t getOlderCandleTime(std::vector<Candlestick>*, time_t);
-  time_t getNewestCandleTime(std::vector<Candlestick>*, time_t);
+  time_t getOlderCandleTime(std::vector<Candlestick>*);
+  time_t getNewestCandleTime(std::vector<Candlestick>*);
   Candlestick newVoidCandle(time_t*, time_t*);
   void putDataBaseOnChartToMaxMinut(time_t, time_t, time_t*,
                                 std::vector<Candlestick>*);
@@ -36,7 +36,7 @@ class Chart {
 
  public:
   chart_t Chart_Vetor;
-  Chart(std::vector<Candlestick>*, std::string, std::string);
+  Chart(std::vector<Candlestick>*, std::string, std::string*);
   ~Chart(void);
   time_t* getChartTime(void);
   std::string* getChartTimeString(void);
