@@ -21,7 +21,8 @@
  * @param name_file Caminho do arquivo com os dados do MT5
  */
 DataBase::DataBase(std::string name_file) {
-  setDBStick(getInformation(name_file));
+  std::vector<std::string> info = getInformation(name_file);
+  setDBStick(&info);
 }
 
 /**
@@ -29,13 +30,6 @@ DataBase::DataBase(std::string name_file) {
  *
  */
 DataBase::~DataBase(void) {}
-
-/**
- * @brief Obter Velas processadas do arquivo MT5
- *
- * @return std::vector<Candlestick> Vetor de velas obtidas
- */
-std::vector<Candlestick> DataBase::getDBStick(void) { return DBStick; }
 
 /**
  * @brief Obter o objeto Information
@@ -71,11 +65,11 @@ std::vector<std::string> DataBase::getInformation(std::string file_name) {
  * @param line Linha com informaçẽos em string
  * @return stick_s_t Vetor de informações em string
  */
-stick_s_t DataBase::explode(const std::string line) {
+stick_s_t DataBase::explode(const std::string* line) {
   char c = static_cast<char>(std::bitset<8>("00001001").to_ulong());
   std::string buff{""};
   std::vector<std::string> v;
-  for (auto n : line) {
+  for (auto n : *line) {
     if (n != c) {
       buff += n;
     } else if (n == c && buff != "") {
@@ -94,23 +88,23 @@ stick_s_t DataBase::explode(const std::string line) {
  *
  * @param data Dados do arquivo já em um vetor
  */
-void DataBase::setDBStick(std::vector<std::string> data) {
+void DataBase::setDBStick(std::vector<std::string>* data) {
   bool formato_um_dia = true;
-  for (auto i(0u); i < data.size(); ++i) {
+  while(data->size() != 0){  
     if (formato_um_dia) {
-      stick_s_t linha_atual = explode(data[i]);
-      stick_s_t linha_seguinte = explode(data[i + 1]);
+      stick_s_t linha_atual = explode(&data->at(0));
+      stick_s_t linha_seguinte = explode(&data->at(1));
       if (linha_atual[1] == "00:00:00") {
         if (linha_atual[0] != linha_seguinte[0]) {
           if (linha_atual[1] == linha_seguinte[1]) {
             linha_atual.push_back("86400");
-            Candlestick nova_vela(linha_atual);
-            DBStick.push_back(nova_vela);
+            Candlestick nova_vela(&linha_atual);
+            Banco_De_Dados.push_back(nova_vela);
           } else {
             formato_um_dia = false;
             linha_atual.push_back("86400");
-            Candlestick nova_vela(linha_atual);
-            DBStick.push_back(nova_vela);
+            Candlestick nova_vela(&linha_atual);
+            Banco_De_Dados.push_back(nova_vela);
           }
         } else {
           if (linha_atual[1] == linha_seguinte[1]) {
@@ -118,21 +112,23 @@ void DataBase::setDBStick(std::vector<std::string> data) {
           } else {
             formato_um_dia = false;
             linha_atual.push_back("60");
-            Candlestick nova_vela(linha_atual);
-            DBStick.push_back(nova_vela);
+            Candlestick nova_vela(&linha_atual);
+            Banco_De_Dados.push_back(nova_vela);
           }
         }
       } else {
         formato_um_dia = false;
         linha_atual.push_back("60");
-        Candlestick nova_vela(linha_atual);
-        DBStick.push_back(nova_vela);
+        Candlestick nova_vela(&linha_atual);
+        Banco_De_Dados.push_back(nova_vela);
       }
     } else {
-      stick_s_t linha_atual = explode(data[i]);
+      stick_s_t linha_atual = explode(&data->at(0));
       linha_atual.push_back("60");
-      Candlestick nova_vela(linha_atual);
-      DBStick.push_back(nova_vela);
+      Candlestick nova_vela(&linha_atual);
+      Banco_De_Dados.push_back(nova_vela);
     }
+    data->erase(data->begin());
   }
+  data->clear();
 }

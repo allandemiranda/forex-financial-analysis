@@ -21,16 +21,16 @@
  * @param time_chart Tempo do gráfico
  * @param name_chart Nome do gráfico
  */
-Chart::Chart(DataBase& data_base, std::string time_chart,
+Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
              std::string name_chart) {
 #pragma omp parallel sections
   {
 #pragma omp section
-    { setNameChart(name_chart); }
+    { setNameChart(&name_chart); }
 #pragma omp section
-    { setChartTime(time_chart); }
+    { setChartTime(&time_chart); }
 #pragma omp section
-    { setChartTimeString(time_chart); }
+    { setChartTimeString(&time_chart); }
   }
 
   // 1 hora = 3600 segundos
@@ -39,7 +39,7 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
   // 1 mês (30dias) = 2592000 segundos
   // 1 ano (365dias) = 31536000 segundos
 
-  if (getChartTime() < (3600)) {  // menor que uma hora
+  if (*getChartTime() < (3600)) {  // menor que uma hora
     time_t data_inicial =
         getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);
@@ -69,15 +69,14 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
         data_final += (60);  // Aumente um minuto
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
-    if (getChartTime() > 60) {
-      chartvector =
-          transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    if (*getChartTime() > 60) {
+      transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
     }
   }
 
-  if ((getChartTime() < (86400)) and
-      (getChartTime() >= (3600))) {  // menor que um dia maior igual a uma hora
+  if ((*getChartTime() < (86400)) and
+      (*getChartTime() >= (3600))) {  // menor que um dia maior igual a uma hora
     time_t data_inicial =
         getOlderCandleTime(data_base, 60);  // pegue so barras de 60 segundos
     time_t data_final = getNewestCandleTime(data_base, 60);
@@ -131,14 +130,13 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
         data_final += (60);  // Aumente uma hora
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
-    if (getChartTime() > 60) {
-      chartvector =
-          transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    if (*getChartTime() > 60) {
+      transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
     }
   }
 
-  if (getChartTime() == (86400)) {  // para um dia
+  if (*getChartTime() == (86400)) {  // para um dia
     time_t data_inicial =
         getOlderCandleTime(data_base, 86400);  // pegue todas as velas
     time_t data_final = getNewestCandleTime(data_base, 60);
@@ -192,14 +190,13 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
         data_final += (60);  // Aumente uma hora
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
-    if (getChartTime() > 60) {
-      chartvector =
-          transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    if (*getChartTime() > 60) {
+      transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
     }
   }
 
-  if (getChartTime() == (604800)) {
+  if (*getChartTime() == (604800)) {
     time_t data_inicial =
         getOlderCandleTime(data_base, 86400);  // pegue todas as velas
     time_t data_final = getNewestCandleTime(data_base, 60);
@@ -270,12 +267,11 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
         data_final += (86400);  // Adicione um dia
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
-    chartvector =
-        transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
   }
 
-  if (getChartTime() == (2592000)) {  // para 1 mês
+  if (*getChartTime() == (2592000)) {  // para 1 mês
     time_t data_inicial = getOlderCandleTime(data_base, (86400));
     time_t data_final = getNewestCandleTime(data_base, 60);
     char mbstr[5];
@@ -351,12 +347,11 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
         data_inicial += (24 * 60 * 60);  // almente um dia
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
-    chartvector =
-        transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
   }
 
-  if (getChartTime() == (31536000)) {
+  if (*getChartTime() == (31536000)) {
     time_t data_inicial = getOlderCandleTime(data_base, (86400));
     time_t data_final = getNewestCandleTime(data_base, 60);
     char mbstr[5];
@@ -445,9 +440,8 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
         data_inicial += (86400);  // almente um dia
       }
     }
-    putDataBaseOnChart(data_inicial, data_final, &data_base.DBStick);
-    chartvector =
-        transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
+    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
   }
 }
 
@@ -458,21 +452,22 @@ Chart::Chart(DataBase& data_base, std::string time_chart,
  * @param data_final Data final de criação
  * @param data_base Banco de dados
  */
-void Chart::putDataBaseOnChart(time_t data_inicial, time_t data_final,
+void Chart::putDataBaseOnChart(time_t* data_inicial, time_t* data_final,
                                std::vector<Candlestick>* data_base) {
-  while (data_inicial < data_final) {
+  time_t tempo_segundos = 60;    
+  while (*data_inicial < *data_final) {
     if (data_base->size() > 0) {
-      if (data_base->front().getDate() == data_inicial) {
-        chartvector.push_back(data_base->front());
+      if (data_base->front().getDate() == *data_inicial) {
+        Chart_Vetor.push_back(data_base->front());
         data_base->erase(data_base->begin());
 
       } else {
-        chartvector.push_back(newVoidCandle(60, data_inicial));
+        Chart_Vetor.push_back(newVoidCandle(&tempo_segundos, data_inicial));
       }
     } else {
-      chartvector.push_back(newVoidCandle(60, data_inicial));
+      Chart_Vetor.push_back(newVoidCandle(&tempo_segundos, data_inicial));
     }
-    data_inicial += 60;
+    *data_inicial += 60;
   }
 }
 
@@ -483,31 +478,30 @@ void Chart::putDataBaseOnChart(time_t data_inicial, time_t data_final,
  * @param data_inicial Data inicial da análise
  * @param data_final Data final da análise
  * @param tempoG Tempo do gráfico fulturo
- * @return chart_t Gráfico final
  */
-chart_t Chart::transformMinutToMaxMinut(time_t data_inicial, time_t data_final,
-                                        time_t tempoG) {
+void Chart::transformMinutToMaxMinut(time_t* data_inicial, time_t* data_final,
+                                     time_t* tempoG) {
   chart_t new_chartvector;
-  while (data_inicial < data_final) {
+  while (*data_inicial < *data_final) {
     pip_t new_open;
     pip_t new_close;
     pip_t new_high;
     pip_t new_low;
     bool primeiro_manitulador = true;
-    auto tempoG_dividido = (tempoG / 60);
+    auto tempoG_dividido = (*tempoG / 60);
     for (auto i(0u); i < tempoG_dividido; ++i) {
-      if (chartvector.front().getStatus() != "OK") {
-        chartvector.erase(chartvector.begin());
+      if (Chart_Vetor.front().getStatus() != "OK") {
+        Chart_Vetor.erase(Chart_Vetor.begin());
       } else {
         if (primeiro_manitulador) {
 #pragma omp parallel sections
           {
 #pragma omp section
-            { new_open = chartvector.front().getOpen(); }
+            { new_open = Chart_Vetor.front().getOpen(); }
 #pragma omp section
-            { new_high = chartvector.front().getHigh(); }
+            { new_high = Chart_Vetor.front().getHigh(); }
 #pragma omp section
-            { new_low = chartvector.front().getLow(); }
+            { new_low = Chart_Vetor.front().getLow(); }
 #pragma omp section
             { primeiro_manitulador = false; }
           }
@@ -516,34 +510,34 @@ chart_t Chart::transformMinutToMaxMinut(time_t data_inicial, time_t data_final,
           {
 #pragma omp section
             {
-              if (chartvector.front().getHigh() > new_high) {
-                new_high = chartvector.front().getHigh();
+              if (Chart_Vetor.front().getHigh() > new_high) {
+                new_high = Chart_Vetor.front().getHigh();
               }
             }
 #pragma omp section
             {
-              if (chartvector.front().getLow() < new_low) {
-                new_low = chartvector.front().getLow();
+              if (Chart_Vetor.front().getLow() < new_low) {
+                new_low = Chart_Vetor.front().getLow();
               }
             }
           }
         }
-        new_close = chartvector.front().getClose();
-        chartvector.erase(chartvector.begin());
+        new_close = Chart_Vetor.front().getClose();
+        Chart_Vetor.erase(Chart_Vetor.begin());
       }
     }
     if (primeiro_manitulador) {
       Candlestick nova_vela(tempoG, data_inicial);
       new_chartvector.push_back(nova_vela);
     } else {
-      Candlestick nova_vela(data_inicial, new_open, new_close, new_high,
-                            new_low, tempoG);
+      Candlestick nova_vela(data_inicial, &new_open, &new_close, &new_high,
+                            &new_low, tempoG);
       new_chartvector.push_back(nova_vela);
     }
-    data_inicial += tempoG;
+    *data_inicial += *tempoG;
   }
-  chartvector.clear();
-  return new_chartvector;
+  Chart_Vetor.clear();
+  Chart_Vetor = new_chartvector;
 }
 
 /**
@@ -557,21 +551,21 @@ Chart::~Chart(void) {}
  *
  * @param name_chart Nome do gráfico
  */
-void Chart::setNameChart(std::string name_chart) { name = name_chart; }
+void Chart::setNameChart(std::string* name_chart) { name = *name_chart; }
 
 /**
  * @brief Defina o objeto Chart Time String
  *
  * @param time Tempo do gráfico (M1, H2, W1, M1, Y1)
  */
-void Chart::setChartTimeString(std::string time) { chartTime_S = time; }
+void Chart::setChartTimeString(std::string* time) { chartTime_S = *time; }
 
 /**
  * @brief Defina o objeto Chart Time
  *
  * @param time Tempo do gráfico (M1, H2, W1, M1, Y1)
  */
-void Chart::setChartTime(std::string time) {
+void Chart::setChartTime(std::string* time) {
   chartTime = convertStringTimeToSeconds(time);
 }
 
@@ -581,7 +575,7 @@ void Chart::setChartTime(std::string time) {
  * @param time Tempo gráfico em strings
  * @return time_t Tempo em segundos
  */
-time_t Chart::convertStringTimeToSeconds(std::string time) {
+time_t Chart::convertStringTimeToSeconds(std::string* time) {
   std::vector<std::string> tempos_permitidos = {
       "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
       "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",  "J1",  "Y1"};
@@ -596,58 +590,57 @@ time_t Chart::convertStringTimeToSeconds(std::string time) {
   {
 #pragma omp for
     for (unsigned int i = 0; i < tempos_permitidos.size(); ++i) {
-      if (time == tempos_permitidos[i]) {
-        if (time[0] == 'M') {
+      if (*time == tempos_permitidos[i]) {
+        if (time->at(0) == 'M') {
 #pragma omp critical
           {
-            time.erase(0, 1);
-            int new_time = std::stoi(time);
-            time_final = (unsigned long)(60 * (unsigned long)new_time);
+            time->erase(0, 1);
+            time_final = (unsigned long)(60 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
-        if (time[0] == 'H') {
+        if (time->at(0) == 'H') {
 #pragma omp critical
           {
-            time.erase(0, 1);
-            int new_time = std::stoi(time);
-            time_final = (unsigned long)(3600 * (unsigned long)new_time);
+            time->erase(0, 1);
+            time_final =
+                (unsigned long)(3600 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
-        if (time[0] == 'D') {
+        if (time->at(0) == 'D') {
 #pragma omp critical
           {
-            time.erase(0, 1);
-            int new_time = std::stoi(time);
-            time_final = (unsigned long)(86400 * (unsigned long)new_time);
+            time->erase(0, 1);
+            time_final =
+                (unsigned long)(86400 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
-        if (time[0] == 'D') {
+        if (time->at(0) == 'D') {
 #pragma omp critical
           {
-            time.erase(0, 1);
-            int new_time = std::stoi(time);
-            time_final = (unsigned long)(86400 * (unsigned long)new_time);
+            time->erase(0, 1);
+            time_final =
+                (unsigned long)(86400 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
-        if (time[0] == 'J') {
+        if (time->at(0) == 'J') {
 #pragma omp critical
           {
-            time.erase(0, 1);
-            int new_time = std::stoi(time);
-            time_final = (unsigned long)(2592000 * (unsigned long)new_time);
+            time->erase(0, 1);
+            time_final =
+                (unsigned long)(2592000 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
-        if (time[0] == 'Y') {
+        if (time->at(0) == 'Y') {
 #pragma omp critical
           {
-            time.erase(0, 1);
-            int new_time = std::stoi(time);
-            time_final = (unsigned long)(31536000 * (unsigned long)new_time);
+            time->erase(0, 1);
+            time_final =
+                (unsigned long)(31536000 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
@@ -667,14 +660,15 @@ time_t Chart::convertStringTimeToSeconds(std::string time) {
  * @param tempo Tempo da vela requerida
  * @return time_t Data da vela mais velha
  */
-time_t Chart::getOlderCandleTime(DataBase& data_base, time_t tempo) {
+time_t Chart::getOlderCandleTime(std::vector<Candlestick>* data_base,
+                                 time_t tempo) {
   if (tempo < 86400) {
-    while (data_base.getDBStick().front().getTime() >= 86400) {
-      data_base.getDBStick().erase(data_base.getDBStick().begin());
+    while (data_base->front().getTime() >= 86400) {
+      data_base->erase(data_base->begin());
     }
-    return data_base.getDBStick().front().getDate();
+    return data_base->front().getDate();
   } else {
-    return data_base.getDBStick().front().getDate();
+    return data_base->front().getDate();
   }
 }
 
@@ -685,9 +679,10 @@ time_t Chart::getOlderCandleTime(DataBase& data_base, time_t tempo) {
  * @param tempo Tempo da vela requerida
  * @return time_t Data da vela mais nova
  */
-time_t Chart::getNewestCandleTime(DataBase& data_base, time_t tempo) {
-  if (data_base.getDBStick().back().getTime() == tempo) {
-    return data_base.getDBStick().back().getDate();
+time_t Chart::getNewestCandleTime(std::vector<Candlestick>* data_base,
+                                  time_t tempo) {
+  if (data_base->back().getTime() == tempo) {
+    return data_base->back().getDate();
   }
   throw "ERRO! Não foi possivel detectar vela mais nova para o tempo";
 }
@@ -699,7 +694,7 @@ time_t Chart::getNewestCandleTime(DataBase& data_base, time_t tempo) {
  * @param date Data da abertura da vela em Epoch
  * @return Candlestick Nova vela VOID
  */
-Candlestick Chart::newVoidCandle(time_t time, time_t date) {
+Candlestick Chart::newVoidCandle(time_t* time, time_t* date) {
   Candlestick new_void_candle(time, date);
   return new_void_candle;
 }
@@ -709,25 +704,18 @@ Candlestick Chart::newVoidCandle(time_t time, time_t date) {
  *
  * @return time_t Tempo gráfico em segundos
  */
-time_t Chart::getChartTime(void) { return chartTime; }
+time_t* Chart::getChartTime(void) { return &chartTime; }
 
 /**
  * @brief Obter o objeto Chart Time String
  *
- * @return std::string Tempo gráfico em String
+ * @return std::string* Tempo gráfico em String
  */
-std::string Chart::getChartTimeString(void) { return chartTime_S; }
-
-/**
- * @brief Obter o objeto Chart
- *
- * @return chart_t Vetor gráfico
- */
-chart_t Chart::getChart(void) { return chartvector; }
+std::string* Chart::getChartTimeString(void) { return &chartTime_S; }
 
 /**
  * @brief Obter o objeto Name Chart
  *
- * @return std::string Nome do gráfico
+ * @return std::string* Nome do gráfico
  */
-std::string Chart::getNameChart(void) { return name; }
+std::string* Chart::getNameChart(void) { return &name; }

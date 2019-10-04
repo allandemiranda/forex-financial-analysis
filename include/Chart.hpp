@@ -21,26 +21,25 @@ typedef std::vector<Candlestick> chart_t;
 class Chart {
  private:
   std::string name;
-  void setNameChart(std::string);
+  void setNameChart(std::string*);
   time_t chartTime;
   std::string chartTime_S;
-  time_t convertStringTimeToSeconds(std::string);
-  void setChartTimeString(std::string);
-  void setChartTime(std::string);
-  time_t getOlderCandleTime(DataBase&, time_t);
-  time_t getNewestCandleTime(DataBase&, time_t);
-  Candlestick newVoidCandle(time_t, time_t);
-  chart_t transformMinutToMaxMinut(time_t, time_t, time_t);
-  void putDataBaseOnChart(time_t, time_t, std::vector<Candlestick>*);
+  time_t convertStringTimeToSeconds(std::string*);
+  void setChartTimeString(std::string*);
+  void setChartTime(std::string*);
+  time_t getOlderCandleTime(std::vector<Candlestick>*, time_t);
+  time_t getNewestCandleTime(std::vector<Candlestick>*, time_t);
+  Candlestick newVoidCandle(time_t*, time_t*);
+  void transformMinutToMaxMinut(time_t*, time_t*, time_t*);
+  void putDataBaseOnChart(time_t*, time_t*, std::vector<Candlestick>*);
 
  public:
-  chart_t chartvector;
-  Chart(DataBase&, std::string, std::string);
+  chart_t Chart_Vetor;
+  Chart(std::vector<Candlestick>*, std::string, std::string);
   ~Chart(void);
-  time_t getChartTime(void);
-  std::string getChartTimeString(void);
-  chart_t getChart(void);
-  std::string getNameChart(void);
+  time_t* getChartTime(void);
+  std::string* getChartTimeString(void);
+  std::string* getNameChart(void);
 };
 
 #endif

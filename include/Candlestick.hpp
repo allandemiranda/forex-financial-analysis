@@ -49,13 +49,13 @@ class Candlestick {
   void setTime(time_t);
   bool status;  // Status da vela: true -> OK, false -> VOID
   void setStatus(std::string);
-  std::vector<std::string> explode(const std::string, char);
+  std::vector<std::string> explode(const std::string*, char);
   std::string tz = "TZ=EET";  // Time Zone do banco de dados
 
  public:
-  Candlestick(time_t, time_t);
-  Candlestick(stick_s_t);
-  Candlestick(time_t, pip_t, pip_t, pip_t, pip_t, time_t);
+  Candlestick(time_t*, time_t*);
+  Candlestick(stick_s_t*);
+  Candlestick(time_t*, pip_t*, pip_t*, pip_t*, pip_t*, time_t*);
   ~Candlestick(void);
   pip_t getOpen(void);
   pip_t getClose(void);

@@ -20,13 +20,13 @@
  * @param time Tempo da vela em segundos
  * @param date Data da abertura da vela em Epoch
  */
-Candlestick::Candlestick(time_t time, time_t date) {
+Candlestick::Candlestick(time_t* time, time_t* date) {
 #pragma omp parallel sections
   {
 #pragma omp section
-    { setTime(time); }
+    { setTime(*time); }
 #pragma omp section
-    { setDate(date); }
+    { setDate(*date); }
 #pragma omp section
     { setStatus("VOID"); }
   }
@@ -37,7 +37,7 @@ Candlestick::Candlestick(time_t time, time_t date) {
  *
  * @param stick Vela com os dados
  */
-Candlestick::Candlestick(stick_s_t stick) {
+Candlestick::Candlestick(stick_s_t* stick) {
   putenv(getTZ().data());
   struct std::tm tm;
   std::vector<std::string> date_v;
@@ -46,9 +46,9 @@ Candlestick::Candlestick(stick_s_t stick) {
 #pragma omp parallel sections
   {
 #pragma omp section
-    { date_v = explode(stick[0], '.'); }
+    { date_v = explode(&stick->at(0), '.'); }
 #pragma omp section
-    { time_v = explode(stick[1], ':'); }
+    { time_v = explode(&stick->at(1), ':'); }
   }
 
 #pragma omp parallel sections
@@ -56,13 +56,13 @@ Candlestick::Candlestick(stick_s_t stick) {
 #pragma omp section
     { setStatus("OK"); }
 #pragma omp section
-    { setOpen(std::stold(stick[2])); }
+    { setOpen(std::stold(stick->at(2))); }
 #pragma omp section
-    { setClose(std::stold(stick[5])); }
+    { setClose(std::stold(stick->at(5))); }
 #pragma omp section
-    { setHigh(std::stold(stick[3])); }
+    { setHigh(std::stold(stick->at(3))); }
 #pragma omp section
-    { setLow(std::stold(stick[4])); }
+    { setLow(std::stold(stick->at(4))); }
 #pragma omp section
     { tm.tm_year = std::stoi(date_v[0]) - 1900; }
 #pragma omp section
@@ -78,7 +78,7 @@ Candlestick::Candlestick(stick_s_t stick) {
 #pragma omp section
     { tm.tm_isdst = -1; }
 #pragma omp section
-    { setTime(std::stol(stick[9])); }
+    { setTime(std::stol(stick->at(9))); }
   }
 
 #pragma omp parallel sections
@@ -149,24 +149,24 @@ Candlestick::Candlestick(stick_s_t stick) {
  * @param new_low Valor mais baixo da vela
  * @param new_time Tempo da vela (em segundos)
  */
-Candlestick::Candlestick(time_t new_date, pip_t new_open, pip_t new_close,
-                         pip_t new_high, pip_t new_low, time_t new_time) {
+Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
+                         pip_t* new_high, pip_t* new_low, time_t* new_time) {
 #pragma omp parallel sections
   {
 #pragma omp section
     { setStatus("OK"); }
 #pragma omp section
-    { setOpen(new_open); }
+    { setOpen(*new_open); }
 #pragma omp section
-    { setClose(new_close); }
+    { setClose(*new_close); }
 #pragma omp section
-    { setHigh(new_high); }
+    { setHigh(*new_high); }
 #pragma omp section
-    { setLow(new_low); }
+    { setLow(*new_low); }
 #pragma omp section
-    { setDate(new_date); }
+    { setDate(*new_date); }
 #pragma omp section
-    { setTime(new_time); }
+    { setTime(*new_time); }
   }
 
   setSize(getHigh(), getLow());
@@ -229,10 +229,10 @@ Candlestick::~Candlestick(void) {}
  * @param c Caracter de quebra
  * @return std::vector<std::string> Vetor com as partes
  */
-std::vector<std::string> Candlestick::explode(const std::string line, char c) {
+std::vector<std::string> Candlestick::explode(const std::string* line, char c) {
   std::string buff{""};
   std::vector<std::string> v;
-  for (auto n : line) {
+  for (auto n : *line) {
     if (n != c) {
       buff += n;
     } else if (n == c && buff != "") {

@@ -19,14 +19,13 @@
 class DataBase {
  private:
   std::vector<std::string> getInformation(std::string);
-  void setDBStick(std::vector<std::string>);
-  stick_s_t explode(const std::string);
+  void setDBStick(std::vector<std::string>*);
+  stick_s_t explode(const std::string*);
 
  public:
- std::vector<Candlestick> DBStick;
+  std::vector<Candlestick> Banco_De_Dados;
   DataBase(std::string);
   ~DataBase(void);
-  std::vector<Candlestick> getDBStick(void);
 };
 
 #endif
