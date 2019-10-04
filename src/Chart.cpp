@@ -69,9 +69,9 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
         data_final += (60);  // Aumente um minuto
       }
     }
-    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, data_base);
     if (*getChartTime() > 60) {
-      transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
+      transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
     }
   }
 
@@ -130,9 +130,9 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
         data_final += (60);  // Aumente uma hora
       }
     }
-    putDataBaseOnChart(&data_inicial, &data_final, data_base);
-    if (*getChartTime() > 60) {
-      transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    if (*getChartTime() > 60) {      
+      transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
     }
   }
 
@@ -190,9 +190,9 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
         data_final += (60);  // Aumente uma hora
       }
     }
-    putDataBaseOnChart(&data_inicial, &data_final, data_base);
+    putDataBaseOnChart(data_inicial, data_final, data_base);
     if (*getChartTime() > 60) {
-      transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
+      transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
     }
   }
 
@@ -267,8 +267,8 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
         data_final += (86400);  // Adicione um dia
       }
     }
-    putDataBaseOnChart(&data_inicial, &data_final, data_base);
-    transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
 
   if (*getChartTime() == (2592000)) {  // para 1 mês
@@ -347,8 +347,8 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
         data_inicial += (24 * 60 * 60);  // almente um dia
       }
     }
-    putDataBaseOnChart(&data_inicial, &data_final, data_base);
-    transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
 
   if (*getChartTime() == (31536000)) {
@@ -440,8 +440,8 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
         data_inicial += (86400);  // almente um dia
       }
     }
-    putDataBaseOnChart(&data_inicial, &data_final, data_base);
-    transformMinutToMaxMinut(&data_inicial, &data_final, getChartTime());
+    putDataBaseOnChart(data_inicial, data_final, data_base);
+    transformMinutToMaxMinut(data_inicial, data_final, getChartTime());
   }
 }
 
@@ -452,22 +452,22 @@ Chart::Chart(std::vector<Candlestick>* data_base, std::string time_chart,
  * @param data_final Data final de criação
  * @param data_base Banco de dados
  */
-void Chart::putDataBaseOnChart(time_t* data_inicial, time_t* data_final,
+void Chart::putDataBaseOnChart(time_t data_inicial, time_t data_final,
                                std::vector<Candlestick>* data_base) {
   time_t tempo_segundos = 60;    
-  while (*data_inicial < *data_final) {
+  while (data_inicial < data_final) {
     if (data_base->size() > 0) {
-      if (data_base->front().getDate() == *data_inicial) {
+      if (data_base->front().getDate() == data_inicial) {
         Chart_Vetor.push_back(data_base->front());
         data_base->erase(data_base->begin());
 
       } else {
-        Chart_Vetor.push_back(newVoidCandle(&tempo_segundos, data_inicial));
+        Chart_Vetor.push_back(newVoidCandle(&tempo_segundos, &data_inicial));
       }
     } else {
-      Chart_Vetor.push_back(newVoidCandle(&tempo_segundos, data_inicial));
+      Chart_Vetor.push_back(newVoidCandle(&tempo_segundos, &data_inicial));
     }
-    *data_inicial += 60;
+    data_inicial += 60;
   }
 }
 
@@ -479,16 +479,16 @@ void Chart::putDataBaseOnChart(time_t* data_inicial, time_t* data_final,
  * @param data_final Data final da análise
  * @param tempoG Tempo do gráfico fulturo
  */
-void Chart::transformMinutToMaxMinut(time_t* data_inicial, time_t* data_final,
+void Chart::transformMinutToMaxMinut(time_t data_inicial, time_t data_final,
                                      time_t* tempoG) {
   chart_t new_chartvector;
-  while (*data_inicial < *data_final) {
+  while (data_inicial < data_final) {
     pip_t new_open;
     pip_t new_close;
     pip_t new_high;
     pip_t new_low;
     bool primeiro_manitulador = true;
-    auto tempoG_dividido = (*tempoG / 60);
+    unsigned int tempoG_dividido = (*tempoG / 60);
     for (auto i(0u); i < tempoG_dividido; ++i) {
       if (Chart_Vetor.front().getStatus() != "OK") {
         Chart_Vetor.erase(Chart_Vetor.begin());
@@ -527,14 +527,13 @@ void Chart::transformMinutToMaxMinut(time_t* data_inicial, time_t* data_final,
       }
     }
     if (primeiro_manitulador) {
-      Candlestick nova_vela(tempoG, data_inicial);
-      new_chartvector.push_back(nova_vela);
+      new_chartvector.push_back(newVoidCandle(tempoG, &data_inicial));
     } else {
-      Candlestick nova_vela(data_inicial, &new_open, &new_close, &new_high,
+      Candlestick nova_vela(&data_inicial, &new_open, &new_close, &new_high,
                             &new_low, tempoG);
       new_chartvector.push_back(nova_vela);
     }
-    *data_inicial += *tempoG;
+    data_inicial += *tempoG;
   }
   Chart_Vetor.clear();
   Chart_Vetor = new_chartvector;
