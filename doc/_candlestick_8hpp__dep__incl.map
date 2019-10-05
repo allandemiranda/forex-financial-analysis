@@ -1,0 +1,8 @@
+<map id="include/Candlestick.hpp" name="include/Candlestick.hpp">
+<area shape="rect" id="node2" href="$_chart_8hpp.html" title="Classe com as informações do gráfico. " alt="" coords="43,80,167,107"/>
+<area shape="rect" id="node5" href="$_dashboard_8hpp.html" title="Classe contendo as funçẽos para desenhar um gráfico. " alt="" coords="192,80,347,107"/>
+<area shape="rect" id="node7" href="$_candlestick_8cpp.html" title="Métodos para classe Candlestick. " alt="" coords="371,80,509,107"/>
+<area shape="rect" id="node3" href="$_chart_8cpp.html" title="Métodos da classe Chart. " alt="" coords="5,155,107,181"/>
+<area shape="rect" id="node4" href="$main_8cpp.html" title="src/main.cpp" alt="" coords="131,155,229,181"/>
+<area shape="rect" id="node6" href="$_dashboard_8cpp.html" title="Métodos para Classe Dashboard. " alt="" coords="253,155,385,181"/>
+</map>

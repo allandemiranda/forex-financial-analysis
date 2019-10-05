@@ -71,7 +71,9 @@
         "map": "cpp",
         "ratio": "cpp",
         "thread": "cpp",
-        "cfenv": "cpp"
+        "cfenv": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp"
     },
     "editor.tabSize": 2
 }

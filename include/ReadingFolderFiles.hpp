@@ -18,11 +18,10 @@
 
 class ReadingFolderFiles {
  private:
-  std::vector<std::string> list_path;
   void getFilesPath(std::string);
 
  public:
-  std::vector<std::string> getListPath(void);
+  std::vector<std::string> list_path;
   ReadingFolderFiles(std::string);
   ~ReadingFolderFiles(void);
 };

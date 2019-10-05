@@ -1,0 +1,6 @@
+<map id="Candlestick::Candlestick" name="Candlestick::Candlestick">
+<area shape="rect" id="node2" href="$class_candlestick.html#addc351a14cfe674a2ad06fe7151c46fd" title="Obter Time Zone usada para gravar Vela. " alt="" coords="232,5,365,32"/>
+<area shape="rect" id="node3" href="$class_candlestick.html#af22ea5d376ac87a80c0efa1326987a74" title="Defina o objeto Time. " alt="" coords="225,56,372,83"/>
+<area shape="rect" id="node4" href="$class_candlestick.html#a435512d8195d718719bacecf72d458b8" title="Defina o objeto Date. " alt="" coords="226,107,371,133"/>
+<area shape="rect" id="node5" href="$class_candlestick.html#a8f1ab6cabd9040ecc7ec07572a2c8f90" title="Defina o objeto Status. " alt="" coords="221,157,376,184"/>
+</map>

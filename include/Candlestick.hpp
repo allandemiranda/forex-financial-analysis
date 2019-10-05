@@ -21,55 +21,62 @@ typedef long double pip_t;  // Unidade de medida forex
  * Vela em formato puro:
  * DATE, TIME, OPEN, HIGH, LOW, CLOSE, TICKVOL, VOL, SPREAD
  */
-typedef std::vector<std::string> stick_s_t;  // Vela em formato de vetor puro
 
 class Candlestick {
  private:
   pip_t open;  // Valor de abertura da vela
-  void setOpen(pip_t);
+  void setOpen(pip_t*);
   pip_t close;  // Valor de fechamento da vela
-  void setClose(pip_t);
+  void setClose(pip_t*);
   unsigned int type;  // Tipo de vela: 0 -> UP, 1 -> DOWN, 2 -> STABLE
-  void setType(std::string);
+  void setType(unsigned int*);
   pip_t high;  // Valor mais alto da vela
-  void setHigh(pip_t);
+  void setHigh(pip_t*);
   pip_t low;  // Valor mais baixo da vela
-  void setLow(pip_t);
+  void setLow(pip_t*);
   pip_t upperShandowSize;  // Volume da calda superior da vela
-  void setUpperShandowSize(pip_t, pip_t);
+  void setUpperShandowSize(pip_t*, pip_t*);
   pip_t lowerShandowSize;  // Volume da calda inferior da vela
-  void setLowerShandowSize(pip_t, pip_t);
+  void setLowerShandowSize(pip_t*, pip_t*);
   pip_t bodySize;  // Volume do corpo da vela
-  void setBodySize(pip_t, pip_t);
+  void setBodySize(pip_t*, pip_t*);
   pip_t size;  // Volume da vela
-  void setSize(pip_t, pip_t);
+  void setSize(pip_t*, pip_t*);
   time_t date;  // Data da vela
-  void setDate(time_t);
+  void setDate(time_t*);
   time_t time;  // Tempo da vela
-  void setTime(time_t);
+  void setTime(time_t*);
   bool status;  // Status da vela: true -> OK, false -> VOID
-  void setStatus(std::string);
-  std::vector<std::string> explode(const std::string*, char);
+  void setStatus(bool*);
+  std::vector<std::string> explode(const std::string*, char*);
   std::string tz = "TZ=EET";  // Time Zone do banco de dados
 
  public:
   Candlestick(time_t*, time_t*);
-  Candlestick(stick_s_t*);
+  Candlestick(std::vector<std::string>*);
   Candlestick(time_t*, pip_t*, pip_t*, pip_t*, pip_t*, time_t*);
   ~Candlestick(void);
-  pip_t getOpen(void);
-  pip_t getClose(void);
-  std::string getType(void);
-  pip_t getHigh(void);
-  pip_t getLow(void);
-  pip_t getUpperShandowSize(void);
-  pip_t getLowerShandowSize(void);
-  pip_t getBodySize(void);
-  pip_t getSize(void);
-  time_t getDate(void);
-  time_t getTime(void);
-  std::string getStatus(void);
+  pip_t* getOpen(void);
+  pip_t* getClose(void);
+  unsigned int* getType(void);
+  pip_t* getHigh(void);
+  pip_t* getLow(void);
+  pip_t* getUpperShandowSize(void);
+  pip_t* getLowerShandowSize(void);
+  pip_t* getBodySize(void);
+  pip_t* getSize(void);
+  time_t* getDate(void);
+  time_t* getTime(void);
+  void addTime(time_t);
+  bool* getStatus(void);
   std::string getTZ(void);
+  bool operator<(Candlestick&);
+  bool operator<(time_t);
+  bool operator<=(Candlestick&);
+  bool operator>(Candlestick&);
+  bool operator>=(Candlestick&);
+  bool operator==(Candlestick&);
+  Candlestick operator+(Candlestick&);
 };
 
 #endif

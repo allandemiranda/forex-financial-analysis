@@ -1,0 +1,5 @@
+<map id="Chart::candleSearch" name="Chart::candleSearch">
+<area shape="rect" id="node2" href="$class_chart.html#a836e695ea60070dd5e6848a5af9e593f" title="Obtenha tempo inicial e final, organize o vetor do gráfico. " alt="" coords="195,5,399,32"/>
+<area shape="rect" id="node3" href="$class_chart.html#ac3882887602bed7a1a2bcbc9f20748f0" title="Converte vetor do gráfico para tempo do gráfico Usar antes de finalizar as operações. " alt="" coords="447,5,613,32"/>
+<area shape="rect" id="node4" href="$class_chart.html#a6901188beedfc842235d2eb2574bd443" title="Construa um novo objeto Chart:: Chart. " alt="" coords="661,5,756,32"/>
+</map>

@@ -1,0 +1,21 @@
+<map id="Candlestick::Candlestick" name="Candlestick::Candlestick">
+<area shape="rect" id="node2" href="$class_candlestick.html#addc351a14cfe674a2ad06fe7151c46fd" title="Obter Time Zone usada para gravar Vela. " alt="" coords="271,5,404,32"/>
+<area shape="rect" id="node3" href="$class_candlestick.html#ac98cbc6f03849754faf607e0eb649764" title="Explodir uma string. " alt="" coords="265,56,409,83"/>
+<area shape="rect" id="node4" href="$class_candlestick.html#a8f1ab6cabd9040ecc7ec07572a2c8f90" title="Defina o objeto Status. " alt="" coords="260,107,415,133"/>
+<area shape="rect" id="node5" href="$class_candlestick.html#a31988abd705de1da3da1dc9be7391b1f" title="Defina o objeto Open. " alt="" coords="263,157,411,184"/>
+<area shape="rect" id="node6" href="$class_candlestick.html#a3f971a3b8d98644312465796aeae8812" title="Defina o objeto Close. " alt="" coords="262,208,413,235"/>
+<area shape="rect" id="node7" href="$class_candlestick.html#a31baae93a57bc4e45b22572ccc7c8c24" title="Defina o objeto High. " alt="" coords="265,259,409,285"/>
+<area shape="rect" id="node8" href="$class_candlestick.html#a4180ed3605bc27c1be144060d29295de" title="Defina o objeto Low. " alt="" coords="267,309,408,336"/>
+<area shape="rect" id="node9" href="$class_candlestick.html#af22ea5d376ac87a80c0efa1326987a74" title="Defina o objeto Time. " alt="" coords="264,360,411,387"/>
+<area shape="rect" id="node10" href="$class_candlestick.html#a435512d8195d718719bacecf72d458b8" title="Defina o objeto Date. " alt="" coords="265,411,410,437"/>
+<area shape="rect" id="node11" href="$class_candlestick.html#a96eeccb4017f3a076fc5521f4c2de606" title="Defina o objeto Size. " alt="" coords="266,461,409,488"/>
+<area shape="rect" id="node12" href="$class_candlestick.html#af8121e6c0d6942cc215fbe2aa982497a" title="Obter o objeto High. " alt="" coords="265,512,409,539"/>
+<area shape="rect" id="node14" href="$class_candlestick.html#adec8f069adeb6aa601c3d66eb8d8dfc1" title="Obter o objeto Low. " alt="" coords="267,563,408,589"/>
+<area shape="rect" id="node15" href="$class_candlestick.html#a98bf32fe6290dd4c55edcd6fe01ad9cf" title="Obter o objeto Open. " alt="" coords="263,613,411,640"/>
+<area shape="rect" id="node16" href="$class_candlestick.html#a0b130d8e4d8d54b3073f03592b93d1e9" title="Obter o objeto Close. " alt="" coords="262,664,413,691"/>
+<area shape="rect" id="node17" href="$class_candlestick.html#a76a66286620d6aeeceea89b247848082" title="Defina o objeto Type. " alt="" coords="264,715,411,741"/>
+<area shape="rect" id="node18" href="$class_candlestick.html#a56afb76bd61ba4f762cdb4819602f292" title="Defina o objeto Upper Shandow Size. " alt="" coords="221,765,453,792"/>
+<area shape="rect" id="node19" href="$class_candlestick.html#a0be42c4f3335ba6bf6b31c17a1a7b6d1" title="Defina o objeto Lower Shandow Size. " alt="" coords="221,816,453,843"/>
+<area shape="rect" id="node20" href="$class_candlestick.html#ac22ecbb76e3443bdbbbc337f4f1cd1eb" title="Defina o objeto Body Size. " alt="" coords="251,867,424,893"/>
+<area shape="rect" id="node13" href="$class_candlestick.html#a22db1a5504d2dc4d7dc6985697fd3ae1" title="Obter o objeto Status. " alt="" coords="501,588,656,615"/>
+</map>

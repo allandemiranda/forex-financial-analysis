@@ -10,9 +10,7 @@
  */
 
 #include "Candlestick.hpp"
-#include <iomanip>
-#include <iostream>
-#include "omp.h"
+#include <omp.h>
 
 /**
  * @brief Construa um novo objeto Candlestick:: Candlestick
@@ -21,14 +19,18 @@
  * @param date Data da abertura da vela em Epoch
  */
 Candlestick::Candlestick(time_t* time, time_t* date) {
+  putenv(getTZ().data());
 #pragma omp parallel sections
   {
 #pragma omp section
-    { setTime(*time); }
+    { setTime(time); }
 #pragma omp section
-    { setDate(*date); }
+    { setDate(date); }
 #pragma omp section
-    { setStatus("VOID"); }
+    {
+      bool void_status = false;
+      setStatus(&void_status);
+    }
   }
 }
 
@@ -37,7 +39,7 @@ Candlestick::Candlestick(time_t* time, time_t* date) {
  *
  * @param stick Vela com os dados
  */
-Candlestick::Candlestick(stick_s_t* stick) {
+Candlestick::Candlestick(std::vector<std::string>* stick) {
   putenv(getTZ().data());
   struct std::tm tm;
   std::vector<std::string> date_v;
@@ -46,23 +48,44 @@ Candlestick::Candlestick(stick_s_t* stick) {
 #pragma omp parallel sections
   {
 #pragma omp section
-    { date_v = explode(&stick->at(0), '.'); }
+    {
+      char ponto = '.';
+      date_v = explode(&stick->at(0), &ponto);
+    }
 #pragma omp section
-    { time_v = explode(&stick->at(1), ':'); }
+    {
+      char dois_pontos = ':';
+      time_v = explode(&stick->at(1), &dois_pontos);
+    }
   }
 
 #pragma omp parallel sections
   {
 #pragma omp section
-    { setStatus("OK"); }
+    {
+      bool status_agora = true;
+      setStatus(&status_agora);
+    }
 #pragma omp section
-    { setOpen(std::stold(stick->at(2))); }
+    {
+      pip_t open_new = std::stold(stick->at(2));
+      setOpen(&open_new);
+    }
 #pragma omp section
-    { setClose(std::stold(stick->at(5))); }
+    {
+      pip_t close_new = std::stold(stick->at(5));
+      setClose(&close_new);
+    }
 #pragma omp section
-    { setHigh(std::stold(stick->at(3))); }
+    {
+      pip_t high_new = std::stold(stick->at(3));
+      setHigh(&high_new);
+    }
 #pragma omp section
-    { setLow(std::stold(stick->at(4))); }
+    {
+      pip_t low_new = std::stold(stick->at(4));
+      setLow(&low_new);
+    }
 #pragma omp section
     { tm.tm_year = std::stoi(date_v[0]) - 1900; }
 #pragma omp section
@@ -78,15 +101,19 @@ Candlestick::Candlestick(stick_s_t* stick) {
 #pragma omp section
     { tm.tm_isdst = -1; }
 #pragma omp section
-    { setTime(std::stol(stick->at(9))); }
+    {
+      time_t set_new_time = std::stol(stick->at(9));
+      setTime(&set_new_time);
+    }
   }
 
 #pragma omp parallel sections
   {
 #pragma omp section
     {
-      setDate(std::mktime(&tm));
-      if (std::mktime(&tm) == -1) {
+      time_t new_tempo = std::mktime(&tm);
+      setDate(&new_tempo);
+      if (new_tempo == -1) {
         throw "ERRO! Ao trasformar data em std::tm";
       }
     }
@@ -94,11 +121,14 @@ Candlestick::Candlestick(stick_s_t* stick) {
     { setSize(getHigh(), getLow()); }
   }
 
-  if (getOpen() >= getClose()) {
+  if (*getOpen() >= *getClose()) {
 #pragma omp parallel sections
     {
 #pragma omp section
-      { setType("DOWN"); }
+      {
+        unsigned int new_type = 1;
+        setType(&new_type);
+      }
 #pragma omp section
       { setUpperShandowSize(getHigh(), getOpen()); }
 #pragma omp section
@@ -107,11 +137,14 @@ Candlestick::Candlestick(stick_s_t* stick) {
       { setBodySize(getOpen(), getClose()); }
     }
   } else {
-    if (getOpen() < getClose()) {
+    if (*getOpen() < *getClose()) {
 #pragma omp parallel sections
       {
 #pragma omp section
-        { setType("UP"); }
+        {
+          unsigned int new_type = 0;
+          setType(&new_type);
+        }
 #pragma omp section
         { setUpperShandowSize(getHigh(), getClose()); }
 #pragma omp section
@@ -120,17 +153,23 @@ Candlestick::Candlestick(stick_s_t* stick) {
         { setBodySize(getClose(), getOpen()); }
       }
     } else {
-      if (getOpen() == getClose()) {
+      if (*getOpen() == *getClose()) {
 #pragma omp parallel sections
         {
 #pragma omp section
-          { setType("STABLE"); }
+          {
+            unsigned int new_type = 2;
+            setType(&new_type);
+          }
 #pragma omp section
           { setUpperShandowSize(getHigh(), getOpen()); }
 #pragma omp section
           { setLowerShandowSize(getClose(), getLow()); }
 #pragma omp section
-          { setBodySize(0.0, 0.0); }
+          {
+            pip_t num = 0.0;
+            setBodySize(&num, &num);
+          }
         }
       } else {
         throw "ERRO! Abertura e Fechamento de vela inderetminado na criação da vela";
@@ -151,31 +190,38 @@ Candlestick::Candlestick(stick_s_t* stick) {
  */
 Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
                          pip_t* new_high, pip_t* new_low, time_t* new_time) {
+  putenv(getTZ().data());
 #pragma omp parallel sections
   {
 #pragma omp section
-    { setStatus("OK"); }
+    {
+      bool new_status = true;
+      setStatus(&new_status);
+    }
 #pragma omp section
-    { setOpen(*new_open); }
+    { setOpen(new_open); }
 #pragma omp section
-    { setClose(*new_close); }
+    { setClose(new_close); }
 #pragma omp section
-    { setHigh(*new_high); }
+    { setHigh(new_high); }
 #pragma omp section
-    { setLow(*new_low); }
+    { setLow(new_low); }
 #pragma omp section
-    { setDate(*new_date); }
+    { setDate(new_date); }
 #pragma omp section
-    { setTime(*new_time); }
+    { setTime(new_time); }
   }
 
   setSize(getHigh(), getLow());
 
-  if (getOpen() >= getClose()) {
+  if (*getOpen() >= *getClose()) {
 #pragma omp parallel sections
     {
 #pragma omp section
-      { setType("DOWN"); }
+      {
+        unsigned int new_type = 1;
+        setType(&new_type);
+      }
 #pragma omp section
       { setUpperShandowSize(getHigh(), getOpen()); }
 #pragma omp section
@@ -184,11 +230,14 @@ Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
       { setBodySize(getOpen(), getClose()); }
     }
   } else {
-    if (getOpen() < getClose()) {
+    if (*getOpen() < *getClose()) {
 #pragma omp parallel sections
       {
 #pragma omp section
-        { setType("UP"); }
+        {
+          unsigned int new_type = 0;
+          setType(&new_type);
+        }
 #pragma omp section
         { setUpperShandowSize(getHigh(), getClose()); }
 #pragma omp section
@@ -197,17 +246,23 @@ Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
         { setBodySize(getClose(), getOpen()); }
       }
     } else {
-      if (getOpen() == getClose()) {
+      if (*getOpen() == *getClose()) {
 #pragma omp parallel sections
         {
 #pragma omp section
-          { setType("STABLE"); }
+          {
+            unsigned int new_type = 2;
+            setType(&new_type);
+          }
 #pragma omp section
           { setUpperShandowSize(getHigh(), getOpen()); }
 #pragma omp section
           { setLowerShandowSize(getClose(), getLow()); }
 #pragma omp section
-          { setBodySize(0.0, 0.0); }
+          {
+            pip_t num = 0.0;
+            setBodySize(&num, &num);
+          }
         }
       } else {
         throw "ERRO! Abertura e Fechamento de vela inderetminado na criação da vela";
@@ -225,17 +280,18 @@ Candlestick::~Candlestick(void) {}
 /**
  * @brief Explodir uma string
  *
- * @param line String
- * @param c Caracter de quebra
+ * @param line* String
+ * @param c* Caracter de quebra
  * @return std::vector<std::string> Vetor com as partes
  */
-std::vector<std::string> Candlestick::explode(const std::string* line, char c) {
+std::vector<std::string> Candlestick::explode(const std::string* line,
+                                              char* c) {
   std::string buff{""};
   std::vector<std::string> v;
   for (auto n : *line) {
-    if (n != c) {
+    if (n != *c) {
       buff += n;
-    } else if (n == c && buff != "") {
+    } else if (n == *c && buff != "") {
       v.push_back(buff);
       buff = "";
     }
@@ -249,182 +305,161 @@ std::vector<std::string> Candlestick::explode(const std::string* line, char c) {
 /**
  * @brief Obter o objeto Open
  *
- * @return pip_t Valor de abertura
+ * @return pip_t* Valor de abertura
  */
-pip_t Candlestick::getOpen(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getOpen(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getOpen.";
   }
-  return open;
+  return &open;
 }
 
 /**
  * @brief Obter o objeto Close
  *
- * @return pip_t Valor de fechamento
+ * @return pip_t* Valor de fechamento
  */
-pip_t Candlestick::getClose(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getClose(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getClose.";
   }
-  return close;
+  return &close;
 }
 
 /**
  * @brief Obter o objeto Type
  *
- * @return std::string Tipo de vela
+ * @return unsigned int* 0 UP,
+ * @return unsigned int* 1 DOWN
+ * @return unsigned int* 2 STABLE
  */
-std::string Candlestick::getType(void) {
-  if (getStatus() == "VOID") {
+unsigned int* Candlestick::getType(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getType.";
   }
-  if (type == 0) {
-    return "UP";
-  } else {
-    if (type == 1) {
-      return "DOWN";
-    } else {
-      if (type == 2) {
-        return "STABLE";
-      } else {
-        throw "ERRO! Ao obter tipo da vela, tipo está indisponível";
-      }
-    }
-  }
+  return &type;
 }
 
 /**
  * @brief Obter o objeto High
  *
- * @return pip_t Valor mais alto da vela
+ * @return pip_t* Valor mais alto da vela
  */
-pip_t Candlestick::getHigh(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getHigh(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getHigh.";
   }
-  return high;
+  return &high;
 }
 
 /**
  * @brief Obter o objeto Low
  *
- * @return pip_t Valor mais baixo da vela
+ * @return pip_t* Valor mais baixo da vela
  */
-pip_t Candlestick::getLow(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getLow(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getLow.";
   }
-  return low;
+  return &low;
 }
 
 /**
  * @brief Obter o objeto Upper Shandow Size
  *
- * @return pip_t Tamanho da calda superior
+ * @return pip_t* Tamanho da calda superior
  */
-pip_t Candlestick::getUpperShandowSize(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getUpperShandowSize(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getUpperShandowSize.";
   }
-  return upperShandowSize;
+  return &upperShandowSize;
 }
 
 /**
  * @brief Obter o objeto Lower Shandow Size
  *
- * @return pip_t Tamanho da calda inferior
+ * @return pip_t* Tamanho da calda inferior
  */
-pip_t Candlestick::getLowerShandowSize(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getLowerShandowSize(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getLowerShandowSize.";
   }
-  return lowerShandowSize;
+  return &lowerShandowSize;
 }
 
 /**
  * @brief Obter o objeto Body Size
  *
- * @return pip_t Tamanho do corpo
+ * @return pip_t* Tamanho do corpo
  */
-pip_t Candlestick::getBodySize(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getBodySize(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getBodySize.";
   }
-  return bodySize;
+  return &bodySize;
 }
 
 /**
  * @brief Obter o objeto Size
  *
- * @return pip_t Tamanho total da vela
+ * @return pip_t* Tamanho total da vela
  */
-pip_t Candlestick::getSize(void) {
-  if (getStatus() == "VOID") {
+pip_t* Candlestick::getSize(void) {
+  if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getSize.";
   }
-  return size;
+  return &size;
 }
 
 /**
  * @brief Obter o objeto Date
  *
- * @return time_t Data da abertura da vela em
+ * @return time_t* Data da abertura da vela em
  */
-time_t Candlestick::getDate(void) { return date; }
+time_t* Candlestick::getDate(void) { return &date; }
 
 /**
  * @brief Obter o objeto Time
  *
- * @return time_t Tempo da vela em segundos
+ * @return time_t* Tempo da vela em segundos
  */
-time_t Candlestick::getTime(void) { return time; }
+time_t* Candlestick::getTime(void) { return &time; }
 
 /**
  * @brief Obter o objeto Status
  *
- * @return std::string Status da vela
+ * @return bool* true OK
+ * @return bool* false VOID
  */
-std::string Candlestick::getStatus(void) {
-  if (status) {
-    return "OK";
-  } else {
-    return "VOID";
-  }
-}
+bool* Candlestick::getStatus(void) { return &status; }
 
 /**
  * @brief Defina o objeto Open
  *
  * @param new_pip Novo valor de abertura
  */
-void Candlestick::setOpen(pip_t new_pip) { open = new_pip; }
+void Candlestick::setOpen(pip_t* new_pip) { open = *new_pip; }
 
 /**
  * @brief Defina o objeto Close
  *
  * @param new_pip Novo valor de fechamento
  */
-void Candlestick::setClose(pip_t new_pip) { close = new_pip; }
+void Candlestick::setClose(pip_t* new_pip) { close = *new_pip; }
 
 /**
  * @brief Defina o objeto Type
  *
- * @param new_type Novo valor de tipo
+ * @param new_type 0 UP
+ * @param new_type 1 DOWN
+ * @param new_type 2 STABLE
  */
-void Candlestick::setType(std::string new_type) {
-  if (new_type == "UP") {
-    type = 0;
+void Candlestick::setType(unsigned int* new_type) {
+  if ((*new_type == 0) or (*new_type == 1) or (*new_type == 2)) {
+    type = *new_type;
   } else {
-    if (new_type == "DOWN") {
-      type = 1;
-    } else {
-      if (new_type == "STABLE") {
-        type = 2;
-      } else {
-        throw "ERRO! Ao definir valor da vela, informação é incompatível com os tipos possíveis";
-      }
-    }
+    throw "ERRO! Ao definir valor da vela, informação é incompatível com os tipos possíveis";
   }
 }
 
@@ -433,14 +468,14 @@ void Candlestick::setType(std::string new_type) {
  *
  * @param new_pip Novo valor mais alto
  */
-void Candlestick::setHigh(pip_t new_pip) { high = new_pip; }
+void Candlestick::setHigh(pip_t* new_pip) { high = *new_pip; }
 
 /**
  * @brief Defina o objeto Low
  *
  * @param new_pip Novo valor mais baixo
  */
-void Candlestick::setLow(pip_t new_pip) { low = new_pip; }
+void Candlestick::setLow(pip_t* new_pip) { low = *new_pip; }
 
 /**
  * @brief Defina o objeto Upper Shandow Size
@@ -448,8 +483,8 @@ void Candlestick::setLow(pip_t new_pip) { low = new_pip; }
  * @param pip_high Valor mais alto a vela
  * @param number Valor inferior da calda alta
  */
-void Candlestick::setUpperShandowSize(pip_t pip_high, pip_t number) {
-  upperShandowSize = pip_high - number;
+void Candlestick::setUpperShandowSize(pip_t* pip_high, pip_t* number) {
+  upperShandowSize = *pip_high - *number;
 }
 
 /**
@@ -458,8 +493,8 @@ void Candlestick::setUpperShandowSize(pip_t pip_high, pip_t number) {
  * @param number Valor superior da calda baixa
  * @param pip_low Valor mais baixo da vela
  */
-void Candlestick::setLowerShandowSize(pip_t number, pip_t pip_low) {
-  lowerShandowSize = number - pip_low;
+void Candlestick::setLowerShandowSize(pip_t* number, pip_t* pip_low) {
+  lowerShandowSize = *number - *pip_low;
 }
 
 /**
@@ -468,8 +503,8 @@ void Candlestick::setLowerShandowSize(pip_t number, pip_t pip_low) {
  * @param number_high Valor mais alto do corpo
  * @param number_low Valor mais baixo do corpo
  */
-void Candlestick::setBodySize(pip_t number_high, pip_t number_low) {
-  bodySize = number_high - number_low;
+void Candlestick::setBodySize(pip_t* number_high, pip_t* number_low) {
+  bodySize = *number_high - *number_low;
 }
 
 /**
@@ -478,49 +513,162 @@ void Candlestick::setBodySize(pip_t number_high, pip_t number_low) {
  * @param pip_high Valor mais alto da vela
  * @param pip_low Valor mais baixo da vela
  */
-void Candlestick::setSize(pip_t pip_high, pip_t pip_low) {
-  size = pip_high - pip_low;
+void Candlestick::setSize(pip_t* pip_high, pip_t* pip_low) {
+  size = *pip_high - *pip_low;
 }
 
 /**
  * @brief Defina o objeto Date
  *
- * @param new_date Data em
+ * @param new_date Data de abertura da vela em segundos
  */
-void Candlestick::setDate(time_t new_date) {
-  if (new_date == -1) {
-    // throw "ERRO! Foi definida uma data como -1";
+void Candlestick::setDate(time_t* new_date) {
+  if (*new_date == -1) {
+    throw "ERRO! Foi definida uma data como -1";
   }
-  date = new_date;
+  date = *new_date;
 }
 
 /**
  * @brief Defina o objeto Time
  *
- * @param new_time Tempo da vela em segundos
+ * @param new_time Tempo da vela
  */
-void Candlestick::setTime(time_t new_time) { time = new_time; }
+void Candlestick::setTime(time_t* new_time) { time = *new_time; }
 
 /**
  * @brief Defina o objeto Status
  *
- * @param new_status Status da vela
+ * @param new_status true OK
+ * @param new_status false VOID
  */
-void Candlestick::setStatus(std::string new_status) {
-  if (new_status == "OK") {
-    status = true;
-  } else {
-    if (new_status == "VOID") {
-      status = false;
+void Candlestick::setStatus(bool* new_status) { status = *new_status; }
+
+/**
+ * @brief Obter Time Zone usada para gravar Vela
+ *
+ * @return std::string Informção da zona
+ */
+std::string Candlestick::getTZ(void) { return tz; }
+
+/**
+ * @brief Sobrecarga do operador < comparando duas velas
+ *
+ * @param a Vela à validar
+ * @return true a maior que a vela
+ * @return false a menor que a vela
+ */
+bool Candlestick::operator<(Candlestick& a) { return date < a.date; }
+
+/**
+ * @brief Sobrecarga do operador < comparando a vela com o tempo
+ *
+ * @param a tempo a ser comparado
+ * @return true Se a vela é menor
+ * @return false Se a vela é maior
+ */
+bool Candlestick::operator<(time_t a) { return date < a; }
+
+/**
+ * @brief Sobrecarga do operador <= comparando duas velas
+ *
+ * @param a Vela a ser comparada
+ * @return true a maior igual que vela
+ * @return false a menor que vela
+ */
+bool Candlestick::operator<=(Candlestick& a) { return date <= a.date; }
+
+/**
+ * @brief Sobrecarga do operador >
+ *
+ * @param a Vela a ser comparada
+ * @return true a menor que vela
+ * @return false a maior que vela
+ */
+bool Candlestick::operator>(Candlestick& a) { return date > a.date; }
+
+/**
+ * @brief Sobrecarga do operador >=
+ *
+ * @param a Vela a ser comparada
+ * @return true a menor igual a vela
+ * @return false a maior que vela
+ */
+bool Candlestick::operator>=(Candlestick& a) { return date >= a.date; }
+
+/**
+ * @brief Sobrecarga do operador ==
+ *
+ * @param a Vela a ser comparada
+ * @return true Se as velas são iguais
+ * @return false Se as velas não são iguais
+ */
+bool Candlestick::operator==(Candlestick& a) { return date == a.date; }
+
+/**
+ * @brief sobrecarga de operador +
+ *
+ * @param a Vela a somar
+ * @return Candlestick Vela fundida
+ */
+Candlestick Candlestick::operator+(Candlestick& a) {
+  if (status) {
+    if (a.status) {
+      pip_t high_p;
+      pip_t low_p;
+      time_t time_p;
+#pragma omp parallel sections
+      {
+#pragma omp section
+        {
+          if (high > a.high) {
+            high_p = high;
+          }
+        }
+#pragma omp section
+        {
+          if (high <= a.high) {
+            high_p = a.high;
+          }
+        }
+#pragma omp section
+        {
+          if (low < a.low) {
+            low_p = low;
+          }
+        }
+#pragma omp section
+        {
+          if (low >= a.low) {
+            low_p = a.low;
+          }
+        }
+#pragma omp section
+        { time_p = time + a.time; }
+      }
+      Candlestick new_p(&date, &open, &a.close, &high_p, &low_p, &time_p);
+      return new_p;
     } else {
-      throw "ERRO! Ao definir status da vela, informação é incompatível com os status possíveis";
+      time_t time_p = time + a.time;
+      Candlestick new_p(&date, &open, &close, &high, &low, &time_p);
+      return new_p;
+    }
+  } else {
+    if (a.status) {
+      time_t time_p = time + a.time;
+      Candlestick new_p(&date, &a.open, &a.close, &a.high, &a.low, &time_p);
+      return new_p;
+    } else {
+      time_t time_p = time + a.time;
+      Candlestick new_p(&time_p, &date);
+      return new_p;
     }
   }
 }
 
 /**
- * @brief Obter Time Zone usada para gravar Vela
+ * @brief Adicionar tempo a vela
  *
- * @return std::string TZ
+ * @param plus_time Tempo a ser adicionado
  */
-std::string Candlestick::getTZ(void) { return tz; }
+void Candlestick::addTime(time_t plus_time) { time = time + plus_time; }

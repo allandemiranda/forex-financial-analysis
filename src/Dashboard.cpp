@@ -184,25 +184,25 @@ void Dashboard::createDados(std::vector<Candlestick>* new_dados) {
   dados += "dataPoints: [";
   dados += "\n";
   for (auto i : *new_dados) {
-    if (i.getStatus() == "OK") {
+    if (*i.getStatus()) {
       dados += "{ x: new Date(";
-      dados += std::to_string(i.getDate() * 1000);
+      dados += std::to_string(*i.getDate() * 1000);
       dados += "), y: [";
-      dados += std::to_string(i.getOpen());
+      dados += std::to_string(*i.getOpen());
       dados += ", ";
-      dados += std::to_string(i.getHigh());
+      dados += std::to_string(*i.getHigh());
       dados += ", ";
-      dados += std::to_string(i.getLow());
+      dados += std::to_string(*i.getLow());
       dados += ", ";
-      dados += std::to_string(i.getClose());
+      dados += std::to_string(*i.getClose());
       dados += "], ";
-      if (i.getType() == "UP") {
+      if (*i.getType() == 0) {
         dados += "color: 'green'";
       } else {
-        if (i.getType() == "DOWN") {
+        if (*i.getType() == 1) {
           dados += "color: 'red'";
         } else {
-          if (i.getType() == "STABLE") {
+          if (*i.getType() == 2) {
             dados += "color: 'black'";
           } else {
             throw "ERRO! ao criar gráfico tipo de vela inválido";

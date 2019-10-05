@@ -1,9 +1,9 @@
 /**
  * @file Chart.hpp
  * @author Allan de Miranda Silva (allandemiranda@gmail.com)
- * @brief Classe contendo o gráfico de análise
+ * @brief Classe com as informações do gráfico
  * @version 0.1
- * @date 01-10-2019
+ * @date 04-10-2019
  *
  * @copyright Copyright (c) 2019
  *
@@ -13,34 +13,35 @@
 #define CHART_HPP_
 
 #include <ctime>
+#include <string>
+#include <vector>
 #include "Candlestick.hpp"
-#include "DataBase.hpp"
-
-typedef std::vector<Candlestick> chart_t;
 
 class Chart {
  private:
-  std::string name;
+  time_t timeChart;
+  void setTimeChart(std::string*);
+  std::string nameChart;
   void setNameChart(std::string*);
-  time_t chartTime;
-  std::string chartTime_S;
-  time_t convertStringTimeToSeconds(std::string*);
-  void setChartTimeString(std::string*);
-  void setChartTime(std::string*);
-  time_t getOlderCandleTime(std::vector<Candlestick>*);
-  time_t getNewestCandleTime(std::vector<Candlestick>*);
-  Candlestick newVoidCandle(time_t*, time_t*);
-  void putDataBaseOnChartToMaxMinut(time_t, time_t, time_t*,
-                                std::vector<Candlestick>*);
-  void putDataBaseOnChart(time_t, time_t, std::vector<Candlestick>*);
+  std::vector<std::string> explode(const std::string*, char*);
+  void openFile(std::string*);  // Abre o arquivo
+  std::vector<std::vector<std::string>> fileVector;
+  void convertingToTime(void);  // converte para o tempo do gráfico
+  void convertingToTimeVector(
+      time_t*,
+      time_t*);  // Bote void onde precisar e some também
+  void convertingToCandlestick(void);
+  void cleanOutTime(void);
+  std::string timeZoneChart = "TZ=EET";  // Time Zone do banco de dados
+  std::vector<Candlestick>::iterator candleSearch(std::vector<Candlestick>*,
+                                                  time_t);
 
  public:
-  chart_t Chart_Vetor;
-  Chart(std::vector<Candlestick>*, std::string, std::string*);
-  ~Chart(void);
-  time_t* getChartTime(void);
-  std::string* getChartTimeString(void);
+  std::vector<Candlestick> chart;
+  time_t* getTimeChart(void);
   std::string* getNameChart(void);
+  Chart(std::string*, std::string*, std::string*);
+  ~Chart(void);
 };
 
 #endif

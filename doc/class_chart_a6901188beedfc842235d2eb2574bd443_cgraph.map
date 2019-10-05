@@ -1,0 +1,14 @@
+<map id="Chart::Chart" name="Chart::Chart">
+<area shape="rect" id="node2" href="$class_chart.html#a3180d137c4d60910647feb2085111896" title="Defina o objeto Time Chart. " alt="" coords="181,5,322,32"/>
+<area shape="rect" id="node3" href="$class_chart.html#a5621d97637c05765c1fe215af860c19f" title="Defina o objeto Name Chart. " alt="" coords="178,56,325,83"/>
+<area shape="rect" id="node4" href="$class_chart.html#a418fa4822e2da2abe17dd359ee7e61a1" title="Abrir arquivo csv. " alt="" coords="196,107,307,133"/>
+<area shape="rect" id="node6" href="$class_chart.html#a475b1bcb1c2b91cdbc3ef6f17e086af1" title="Limpe do velor de arquivo as velas fora do tempo se necessário. " alt="" coords="433,157,576,184"/>
+<area shape="rect" id="node8" href="$class_chart.html#a78ae5f3715198aa238ab9b7dfe551249" title="Converter Vetor de arquivo em um vetor de velas. " alt="" coords="148,208,355,235"/>
+<area shape="rect" id="node9" href="$class_chart.html#ac3882887602bed7a1a2bcbc9f20748f0" title="Converte vetor do gráfico para tempo do gráfico Usar antes de finalizar as operações. " alt="" coords="168,259,335,285"/>
+<area shape="rect" id="node5" href="$class_chart.html#a20bfa6620be0e70bad8b0ef6a3a5a258" title="Difidir vetor. " alt="" coords="451,107,558,133"/>
+<area shape="rect" id="node7" href="$class_chart.html#a7687b9553faae95358c24b8f15b05d0d" title="Obter o objeto Time Chart. " alt="" coords="659,183,800,209"/>
+<area shape="rect" id="node10" href="$class_chart.html#a836e695ea60070dd5e6848a5af9e593f" title="Obtenha tempo inicial e final, organize o vetor do gráfico. " alt="" coords="403,259,607,285"/>
+<area shape="rect" id="node11" href="$class_chart.html#a2d1f29dad61d3cf550bdee8cc3ea66d1" title="Buscar vela pela data. " alt="" coords="659,233,800,260"/>
+<area shape="rect" id="node12" href="$class_candlestick.html#ac3d9f30b0f538b2e3974fe9c198ff48f" title="Obter o objeto Time. " alt="" coords="656,284,803,311"/>
+<area shape="rect" id="node13" href="$class_candlestick.html#a82ff125282b0db132ad31e4afdfa313b" title="Adicionar tempo a vela. " alt="" coords="655,335,804,361"/>
+</map>

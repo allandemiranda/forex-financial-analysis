@@ -22,6 +22,7 @@
  */
 ReadingFolderFiles::ReadingFolderFiles(std::string loop_path) {
   getFilesPath(loop_path);
+  list_path.shrink_to_fit();
 }
 
 /**
@@ -29,15 +30,6 @@ ReadingFolderFiles::ReadingFolderFiles(std::string loop_path) {
  *
  */
 ReadingFolderFiles::~ReadingFolderFiles(void) {}
-
-/**
- * @brief Get the List Path object
- *
- * @return std::vector<std::string> Lista de caminhos de arquivos encontrados
- */
-std::vector<std::string> ReadingFolderFiles::getListPath(void) {
-  return list_path;
-}
 
 /**
  * @brief Get the Files Path object

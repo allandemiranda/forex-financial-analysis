@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['get_5fthread_5fcontext_5ffor_5fthread_5fid',['get_thread_context_for_thread_id',['../structompd__callbacks__t.html#a7065c1067b07ed93cf8db664da8cd8d9',1,'ompd_callbacks_t']]],
+  ['getbodysize',['getBodySize',['../class_candlestick.html#a42d1a0aee14fd0b6d33441a90d73d82a',1,'Candlestick']]],
+  ['getclose',['getClose',['../class_candlestick.html#a0b130d8e4d8d54b3073f03592b93d1e9',1,'Candlestick']]],
+  ['getdate',['getDate',['../class_candlestick.html#a244e6e9c9b1508e656047782b196320c',1,'Candlestick']]],
+  ['getfilespath',['getFilesPath',['../class_reading_folder_files.html#ab8d58510f9a95f2b576e6119f47ef5c1',1,'ReadingFolderFiles']]],
+  ['gethigh',['getHigh',['../class_candlestick.html#af8121e6c0d6942cc215fbe2aa982497a',1,'Candlestick']]],
+  ['getlow',['getLow',['../class_candlestick.html#adec8f069adeb6aa601c3d66eb8d8dfc1',1,'Candlestick']]],
+  ['getlowershandowsize',['getLowerShandowSize',['../class_candlestick.html#aa87af3c2400f7f997a0d1743e8364391',1,'Candlestick']]],
+  ['getnamechart',['getNameChart',['../class_chart.html#a5777e982e54f0b6b9d9ded8529432870',1,'Chart']]],
+  ['getopen',['getOpen',['../class_candlestick.html#a98bf32fe6290dd4c55edcd6fe01ad9cf',1,'Candlestick']]],
+  ['getsize',['getSize',['../class_candlestick.html#a658cbebfd465d74b2bb0e4efac9349b4',1,'Candlestick']]],
+  ['getstatus',['getStatus',['../class_candlestick.html#a22db1a5504d2dc4d7dc6985697fd3ae1',1,'Candlestick']]],
+  ['gettime',['getTime',['../class_candlestick.html#ac3d9f30b0f538b2e3974fe9c198ff48f',1,'Candlestick']]],
+  ['gettimechart',['getTimeChart',['../class_chart.html#a7687b9553faae95358c24b8f15b05d0d',1,'Chart']]],
+  ['gettype',['getType',['../class_candlestick.html#af370926d188a72e8498ec8f4f90e0ecf',1,'Candlestick']]],
+  ['gettz',['getTZ',['../class_candlestick.html#addc351a14cfe674a2ad06fe7151c46fd',1,'Candlestick']]],
+  ['getuppershandowsize',['getUpperShandowSize',['../class_candlestick.html#a0b8a8154bcdf00e1c3d4d8ac8a283eeb',1,'Candlestick']]],
+  ['granted_5fnum_5fteams',['granted_num_teams',['../structompt__record__target__kernel__t.html#a249fa315bf8dc478f9ac1983f556b10f',1,'ompt_record_target_kernel_t']]],
+  ['griddim',['gridDim',['../structompd__cudathread__coord__t.html#abc5057e9218d7b72d2f3a118b2be3d70',1,'ompd_cudathread_coord_t']]],
+  ['gridid',['gridId',['../structompd__cudathread__coord__t.html#a77878aac1836a166cedca326d9d9dc70',1,'ompd_cudathread_coord_t']]]
+];

@@ -1,0 +1,5 @@
+<map id="Candlestick::addTime" name="Candlestick::addTime">
+<area shape="rect" id="node2" href="$class_chart.html#a836e695ea60070dd5e6848a5af9e593f" title="Obtenha tempo inicial e final, organize o vetor do gráfico. " alt="" coords="203,5,407,32"/>
+<area shape="rect" id="node3" href="$class_chart.html#ac3882887602bed7a1a2bcbc9f20748f0" title="Converte vetor do gráfico para tempo do gráfico Usar antes de finalizar as operações. " alt="" coords="455,5,621,32"/>
+<area shape="rect" id="node4" href="$class_chart.html#a6901188beedfc842235d2eb2574bd443" title="Construa um novo objeto Chart:: Chart. " alt="" coords="669,5,764,32"/>
+</map>

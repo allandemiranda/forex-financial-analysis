@@ -1,0 +1,7 @@
+<map id="Chart::convertingToTime" name="Chart::convertingToTime">
+<area shape="rect" id="node2" href="$class_chart.html#a7687b9553faae95358c24b8f15b05d0d" title="Obter o objeto Time Chart. " alt="" coords="476,5,617,32"/>
+<area shape="rect" id="node3" href="$class_chart.html#a836e695ea60070dd5e6848a5af9e593f" title="Obtenha tempo inicial e final, organize o vetor do gráfico. " alt="" coords="220,56,424,83"/>
+<area shape="rect" id="node4" href="$class_chart.html#a2d1f29dad61d3cf550bdee8cc3ea66d1" title="Buscar vela pela data. " alt="" coords="476,56,617,83"/>
+<area shape="rect" id="node5" href="$class_candlestick.html#ac3d9f30b0f538b2e3974fe9c198ff48f" title="Obter o objeto Time. " alt="" coords="473,107,620,133"/>
+<area shape="rect" id="node6" href="$class_candlestick.html#a82ff125282b0db132ad31e4afdfa313b" title="Adicionar tempo a vela. " alt="" coords="472,157,621,184"/>
+</map>

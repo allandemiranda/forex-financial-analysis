@@ -1,0 +1,12 @@
+<map id="Candlestick::getStatus" name="Candlestick::getStatus">
+<area shape="rect" id="node2" href="$class_candlestick.html#a98bf32fe6290dd4c55edcd6fe01ad9cf" title="Obter o objeto Open. " alt="" coords="250,5,398,32"/>
+<area shape="rect" id="node4" href="$class_candlestick.html#a0b130d8e4d8d54b3073f03592b93d1e9" title="Obter o objeto Close. " alt="" coords="249,56,399,83"/>
+<area shape="rect" id="node5" href="$class_candlestick.html#af370926d188a72e8498ec8f4f90e0ecf" title="Obter o objeto Type. " alt="" coords="251,107,397,133"/>
+<area shape="rect" id="node6" href="$class_candlestick.html#af8121e6c0d6942cc215fbe2aa982497a" title="Obter o objeto High. " alt="" coords="252,157,396,184"/>
+<area shape="rect" id="node7" href="$class_candlestick.html#adec8f069adeb6aa601c3d66eb8d8dfc1" title="Obter o objeto Low. " alt="" coords="253,208,395,235"/>
+<area shape="rect" id="node8" href="$class_candlestick.html#a0b8a8154bcdf00e1c3d4d8ac8a283eeb" title="Obter o objeto Upper Shandow Size. " alt="" coords="208,259,440,285"/>
+<area shape="rect" id="node9" href="$class_candlestick.html#aa87af3c2400f7f997a0d1743e8364391" title="Obter o objeto Lower Shandow Size. " alt="" coords="208,309,440,336"/>
+<area shape="rect" id="node10" href="$class_candlestick.html#a42d1a0aee14fd0b6d33441a90d73d82a" title="Obter o objeto Body Size. " alt="" coords="237,360,411,387"/>
+<area shape="rect" id="node11" href="$class_candlestick.html#a658cbebfd465d74b2bb0e4efac9349b4" title="Obter o objeto Size. " alt="" coords="253,411,395,437"/>
+<area shape="rect" id="node3" href="$class_candlestick.html#a7e0b26f65a32585afddd35bafe70f385" title="Construa um novo objeto Candlestick:: Candlestick. " alt="" coords="488,107,656,133"/>
+</map>

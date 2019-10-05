@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Forex Financial Analysis: Implementações</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Forex Financial Analysis
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Gerado por Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Localizar');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Localizar');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">Implementações </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h2>FULLTRINARIA</h2>
+<p>Análise de todos os dados de modo sequencial verificando inconsistências na quantidade de velas seguindo os três sentidos (vela de alta, vela de baixa ou vela estável).</p>
+<p>Dados obtidos: Disponíves em data/EURUSD_analysis/FULLTRINARIA.csv</p>
+<h2>FULLBINAIAOCULT</h2>
+<p>Análise de todos os dados de velas de modo sequencial verificando inconsistências na quantidade de velas seguindo os dois sentidos (vela de alta e vela de baixa), ocutando-se os valores das velas estáveis.</p>
+<p>Dados obtidos: Disponíves em data/EURUSD_analysis/FULLBINAIAOCULT.csv</p>
+<h2>FULLBINAIA</h2>
+<p>Análise de todos os dados de velas de modo sequencial verificando inconsistências na quantidade de velas seguindo os dois sentidos (vela de alta e vela de baixa), transferindo os valores de estável para vela de alta.</p>
+<p>Dados obtidos: Disponíves em data/EURUSD_analysis/FULLBINAIA.csv</p>
+<h2>FULLTRINARIADISTANCIA</h2>
+<p>Análise de todos os dados de velas de modo sequencial verificando seus distanciamentos.</p>
+<p>Dados obtidos: Disponíveis em data/EURUSD_analysis/FULLTRINARIADISTANCE{time}.csv</p>
+<h2>FULLTRINARIAREPETICAO</h2>
+<p>Análise de todos os dados de velas de modo sequencial a fim de obter a maior repetição contínua de um tipo de vela.</p>
+<p>Dados obtidos: Disponíveis em data/EURUSD_analysis/FULLTRINARIAREPETICAO.csv</p>
+<h2>FULLTRINATIACONTEINER2</h2>
+<p>Análise de todos os dados da forma de contêiner de dois, retornando as possíveis combinações e sua porcentagem de frequência.</p>
+<p>Dados obtidos: Disponíveis em data/EURUSD_analysis/FULLTRINATIACONTEINER2-{time}.csv</p>
+<h2>FULLTRINATIACONTEINER3</h2>
+<p>Análise de todos os dados da forma de contêiner de três, retornando as possíveis combinações e sua porcentagem de frequência.</p>
+<p>Dados obtidos: Disponíveis em data/EURUSD_analysis/FULLTRINATIACONTEINER3-{time}.csv</p>
+<h2>FULLTRINATIACONTEINER5</h2>
+<p>Análise de todos os dados da forma de contêiner de cinco, retornando as possíveis combinações e sua porcentagem de frequência.</p>
+<p>Dados obtidos: Disponíveis em data/EURUSD_analysis/FULLTRINATIACONTEINER5-{time}.csv</p>
+<h2>FULLTRINATIACONTEINER8</h2>
+<p>Análise de todos os dados da forma de contêiner de oito, retornando as possíveis combinações e sua porcentagem de frequência.</p>
+<p>Dados obtidos: Disponíveis em data/EURUSD_analysis/FULLTRINATIACONTEINER8-{time}.csv </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Gerado por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Forex Financial Analysis: Referência à estrutura ompt_record_ompt_t</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Forex Financial Analysis
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Gerado por Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Localizar');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Localizar');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Atributos Públicos</a> &#124;
+<a href="structompt__record__ompt__t-members.html">Mostrar lista completa dos membros</a>  </div>
+  <div class="headertitle">
+<div class="title">Referência à estrutura ompt_record_ompt_t</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>&gt;</code></p>
+<div class="dynheader">
+Diagrama de colaboração para ompt_record_ompt_t:</div>
+<div class="dyncontent">
+<div class="center"><img src="structompt__record__ompt__t__coll__graph.png" border="0" usemap="#ompt__record__ompt__t_coll__map" alt="Collaboration graph"/></div>
+<map name="ompt__record__ompt__t_coll__map" id="ompt__record__ompt__t_coll__map">
+<area shape="rect" id="node2" href="structompt__record__cancel__t.html" title="ompt_record_cancel_t" alt="" coords="581,17,732,44"/>
+<area shape="rect" id="node3" href="structompt__record__target__kernel__t.html" title="ompt_record_target\l_kernel_t" alt="" coords="589,69,724,110"/>
+<area shape="rect" id="node4" href="structompt__record__target__data__op__t.html" title="ompt_record_target\l_data_op_t" alt="" coords="589,134,724,175"/>
+<area shape="rect" id="node5" href="structompt__record__mutex__acquire__t.html" title="ompt_record_mutex_acquire_t" alt="" coords="558,200,755,227"/>
+<area shape="rect" id="node6" href="structompt__record__sync__region__t.html" title="ompt_record_sync_region_t" alt="" coords="565,251,748,277"/>
+<area shape="rect" id="node7" href="structompt__record__master__t.html" title="ompt_record_master_t" alt="" coords="581,301,733,328"/>
+<area shape="rect" id="node8" href="structompt__record__implicit__task__t.html" title="ompt_record_implicit\l_task_t" alt="" coords="585,353,728,394"/>
+<area shape="rect" id="node9" href="structompt__record__parallel__begin__t.html" title="ompt_record_parallel\l_begin_t" alt="" coords="585,418,728,459"/>
+<area shape="rect" id="node10" href="structompt__record__target__t.html" title="ompt_record_target_t" alt="" coords="584,484,729,511"/>
+<area shape="rect" id="node11" href="structompt__record__task__dependence__t.html" title="ompt_record_task_dependence_t" alt="" coords="549,535,764,561"/>
+<area shape="rect" id="node12" href="structompt__record__task__create__t.html" title="ompt_record_task_create_t" alt="" coords="567,585,747,612"/>
+<area shape="rect" id="node13" href="structompt__record__parallel__end__t.html" title="ompt_record_parallel\l_end_t" alt="" coords="585,637,728,678"/>
+<area shape="rect" id="node14" href="structompt__record__thread__begin__t.html" title="ompt_record_thread\l_begin_t" alt="" coords="588,702,725,743"/>
+<area shape="rect" id="node15" href="structompt__record__target__map__t.html" title="ompt_record_target\l_map_t" alt="" coords="589,767,724,809"/>
+<area shape="rect" id="node16" href="structompt__record__mutex__t.html" title="ompt_record_mutex_t" alt="" coords="583,833,731,860"/>
+<area shape="rect" id="node17" href="structompt__record__dispatch__t.html" title="ompt_record_dispatch_t" alt="" coords="364,887,525,913"/>
+<area shape="rect" id="node18" href="unionompt__data__t.html" title="ompt_data_t" alt="" coords="5,912,100,939"/>
+<area shape="rect" id="node21" href="structompt__dependence__t.html" title="ompt_dependence_t" alt="" coords="201,939,340,965"/>
+<area shape="rect" id="node19" href="structompt__record__work__t.html" title="ompt_record_work_t" alt="" coords="587,997,727,1024"/>
+<area shape="rect" id="node20" href="structompt__record__dependences__t.html" title="ompt_record_dependences_t" alt="" coords="562,947,751,973"/>
+<area shape="rect" id="node22" href="structompt__record__task__schedule__t.html" title="ompt_record_task_schedule_t" alt="" coords="559,1048,755,1075"/>
+<area shape="rect" id="node23" href="structompt__record__control__tool__t.html" title="ompt_record_control\l_tool_t" alt="" coords="587,1099,727,1141"/>
+<area shape="rect" id="node24" href="structompt__record__flush__t.html" title="ompt_record_flush_t" alt="" coords="587,1165,727,1192"/>
+<area shape="rect" id="node25" href="structompt__record__nest__lock__t.html" title="ompt_record_nest_lock_t" alt="" coords="573,1216,741,1243"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legenda</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Atributos Públicos</h2></td></tr>
+<tr class="memitem:ae44301ac52d8e5e1377017f530449765"><td class="memItemLeft" align="right" valign="top"><a class="el" href="omp-tools_8h.html#a9e0fc401bcad1ace04456bf938aeb46e">ompt_callbacks_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structompt__record__ompt__t.html#ae44301ac52d8e5e1377017f530449765">type</a></td></tr>
+<tr class="separator:ae44301ac52d8e5e1377017f530449765"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa844697af4cfdce09898b406f0100c79"><td class="memItemLeft" align="right" valign="top"><a class="el" href="omp-tools_8h.html#a4555dbb337292e8aaae24b71ecde90e0">ompt_device_time_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structompt__record__ompt__t.html#aa844697af4cfdce09898b406f0100c79">time</a></td></tr>
+<tr class="separator:aa844697af4cfdce09898b406f0100c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a559207a2809b82ff6cf7cdf40de09216"><td class="memItemLeft" align="right" valign="top"><a class="el" href="omp-tools_8h.html#a866c621745e7b719540caff151c76b4e">ompt_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structompt__record__ompt__t.html#a559207a2809b82ff6cf7cdf40de09216">thread_id</a></td></tr>
+<tr class="separator:a559207a2809b82ff6cf7cdf40de09216"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a888a2d7818405f7b356a96a789313d9d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="omp-tools_8h.html#a866c621745e7b719540caff151c76b4e">ompt_id_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structompt__record__ompt__t.html#a888a2d7818405f7b356a96a789313d9d">target_id</a></td></tr>
+<tr class="separator:a888a2d7818405f7b356a96a789313d9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ed30e01311d8163f225f9d79066b2b0"><td class="memItemLeft" >union {</td></tr>
+<tr class="memitem:a02ddcf27f649832cff435dce99402ea5"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__thread__begin__t.html">ompt_record_thread_begin_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#ac5c99ecce6ad3173c55369de8c13f731">thread_begin</a></td></tr>
+<tr class="separator:a02ddcf27f649832cff435dce99402ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d7aec6bbd4cd6fe44264d9bdeb0ac45"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__parallel__begin__t.html">ompt_record_parallel_begin_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#aa19afecc1572e3693ebf6797b7041f7b">parallel_begin</a></td></tr>
+<tr class="separator:a1d7aec6bbd4cd6fe44264d9bdeb0ac45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac94d9445e43fd1aa1acc0688ed5e5847"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__parallel__end__t.html">ompt_record_parallel_end_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#ae86546002debbf806c834cf09d374b29">parallel_end</a></td></tr>
+<tr class="separator:ac94d9445e43fd1aa1acc0688ed5e5847"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69eb858b2a98b208e22c626aa45428de"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__work__t.html">ompt_record_work_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#acddc477f49b7321d4fcc4f392d53dc47">work</a></td></tr>
+<tr class="separator:a69eb858b2a98b208e22c626aa45428de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcd7a7074f750af3c02193e5e3f9b858"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__dispatch__t.html">ompt_record_dispatch_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#af7667aaffaa48a5c16d28e39ac5f0f5c">dispatch</a></td></tr>
+<tr class="separator:adcd7a7074f750af3c02193e5e3f9b858"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab97a1201f473b1491a9eacff4e843f35"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__task__create__t.html">ompt_record_task_create_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a01a35d6bd081ec1c25aa5e15b51759b0">task_create</a></td></tr>
+<tr class="separator:ab97a1201f473b1491a9eacff4e843f35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03a6071d554abba5fb21d03e4f5b87d1"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__dependences__t.html">ompt_record_dependences_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a4e1ff553f5428336ee56feb0002b425a">dependences</a></td></tr>
+<tr class="separator:a03a6071d554abba5fb21d03e4f5b87d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69d5c45abb8f46b0342b72c815ac23d1"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__task__dependence__t.html">ompt_record_task_dependence_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a617b8526abcebf486fe4540a561d7024">task_dependence</a></td></tr>
+<tr class="separator:a69d5c45abb8f46b0342b72c815ac23d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d2b29f4ecf362b99303e31dffbc9303"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__task__schedule__t.html">ompt_record_task_schedule_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#aaa32569593dcba10e664dd756f13d701">task_schedule</a></td></tr>
+<tr class="separator:a4d2b29f4ecf362b99303e31dffbc9303"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69247053c7263dff784658bb46226354"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__implicit__task__t.html">ompt_record_implicit_task_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#ad142ab1f4f8079c2fd1425e541d71500">implicit_task</a></td></tr>
+<tr class="separator:a69247053c7263dff784658bb46226354"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98f98ee1c1406b8d3f248f9dd18667e4"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__master__t.html">ompt_record_master_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a110ada1c6095da06eaefd494f5c02b90">master</a></td></tr>
+<tr class="separator:a98f98ee1c1406b8d3f248f9dd18667e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af94e939b02192ef3cbe8f6a1320d26e0"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__sync__region__t.html">ompt_record_sync_region_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a0f6e39a5bb910c067a3fe2a77d1b78a6">sync_region</a></td></tr>
+<tr class="separator:af94e939b02192ef3cbe8f6a1320d26e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2470b0c2017319c307fc642ee11f657"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__mutex__acquire__t.html">ompt_record_mutex_acquire_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#abc9b3dd31b7f686bf621e6d1dfd067e8">mutex_acquire</a></td></tr>
+<tr class="separator:aa2470b0c2017319c307fc642ee11f657"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab63f48fa672bb34daea57208de03560d"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__mutex__t.html">ompt_record_mutex_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#ade3ca658013190b71f624bf09fe2db51">mutex</a></td></tr>
+<tr class="separator:ab63f48fa672bb34daea57208de03560d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ce42782f4445fd5e5e8aec9b0b248b1"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__nest__lock__t.html">ompt_record_nest_lock_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a50a7058ece36808417afd50a7baba98d">nest_lock</a></td></tr>
+<tr class="separator:a4ce42782f4445fd5e5e8aec9b0b248b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cad09f6f6d849e9dad088e58d343b79"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__flush__t.html">ompt_record_flush_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a61d3d02d3fc8665a1d9af138c59eeabc">flush</a></td></tr>
+<tr class="separator:a0cad09f6f6d849e9dad088e58d343b79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afda79e12e6a119806c83e05ddd439800"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__cancel__t.html">ompt_record_cancel_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a14185f0b82589521571774e127eb5a4d">cancel</a></td></tr>
+<tr class="separator:afda79e12e6a119806c83e05ddd439800"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a429ed7c8f0bda8dde7308115bd280849"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__target__t.html">ompt_record_target_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a54b854180e728c88fa7d568edc4cb30f">target</a></td></tr>
+<tr class="separator:a429ed7c8f0bda8dde7308115bd280849"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a342cc6e14909b9ee534b973ea60baa0e"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__target__data__op__t.html">ompt_record_target_data_op_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#abd74e6217c936401ea9a429ff84a6fff">target_data_op</a></td></tr>
+<tr class="separator:a342cc6e14909b9ee534b973ea60baa0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f5b4f67ad6e564b44a3104bb355b11b"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__target__map__t.html">ompt_record_target_map_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#ac11ec269d1fdfda9bda82a57880febac">target_map</a></td></tr>
+<tr class="separator:a8f5b4f67ad6e564b44a3104bb355b11b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e4081d7a6d7284d8421ec07856d5754"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__target__kernel__t.html">ompt_record_target_kernel_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a7c7b2c485577d98e1528540e6b058111">target_kernel</a></td></tr>
+<tr class="separator:a9e4081d7a6d7284d8421ec07856d5754"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0abdb7249e3503f01ac17db829b0c5c0"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="structompt__record__control__tool__t.html">ompt_record_control_tool_t</a>&#160;&#160;&#160;<a class="el" href="structompt__record__ompt__t.html#a2018de8427498d88ff95efe7bb3edfd8">control_tool</a></td></tr>
+<tr class="separator:a0abdb7249e3503f01ac17db829b0c5c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ed30e01311d8163f225f9d79066b2b0"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structompt__record__ompt__t.html#a1ed30e01311d8163f225f9d79066b2b0">record</a></td></tr>
+<tr class="separator:a1ed30e01311d8163f225f9d79066b2b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descrição detalhada</h2>
+<div class="textblock">
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00937">937</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+</div><h2 class="groupheader">Documentação dos dados membro</h2>
+<a id="a14185f0b82589521571774e127eb5a4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14185f0b82589521571774e127eb5a4d">&#9670;&nbsp;</a></span>cancel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__cancel__t.html">ompt_record_cancel_t</a> ompt_record_ompt_t::cancel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00959">959</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a2018de8427498d88ff95efe7bb3edfd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2018de8427498d88ff95efe7bb3edfd8">&#9670;&nbsp;</a></span>control_tool</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__control__tool__t.html">ompt_record_control_tool_t</a> ompt_record_ompt_t::control_tool</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00964">964</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a4e1ff553f5428336ee56feb0002b425a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e1ff553f5428336ee56feb0002b425a">&#9670;&nbsp;</a></span>dependences</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__dependences__t.html">ompt_record_dependences_t</a> ompt_record_ompt_t::dependences</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00949">949</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="af7667aaffaa48a5c16d28e39ac5f0f5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7667aaffaa48a5c16d28e39ac5f0f5c">&#9670;&nbsp;</a></span>dispatch</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__dispatch__t.html">ompt_record_dispatch_t</a> ompt_record_ompt_t::dispatch</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00947">947</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a61d3d02d3fc8665a1d9af138c59eeabc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61d3d02d3fc8665a1d9af138c59eeabc">&#9670;&nbsp;</a></span>flush</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__flush__t.html">ompt_record_flush_t</a> ompt_record_ompt_t::flush</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00958">958</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="ad142ab1f4f8079c2fd1425e541d71500"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad142ab1f4f8079c2fd1425e541d71500">&#9670;&nbsp;</a></span>implicit_task</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__implicit__task__t.html">ompt_record_implicit_task_t</a> ompt_record_ompt_t::implicit_task</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00952">952</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a110ada1c6095da06eaefd494f5c02b90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a110ada1c6095da06eaefd494f5c02b90">&#9670;&nbsp;</a></span>master</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__master__t.html">ompt_record_master_t</a> ompt_record_ompt_t::master</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00953">953</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="ade3ca658013190b71f624bf09fe2db51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade3ca658013190b71f624bf09fe2db51">&#9670;&nbsp;</a></span>mutex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__mutex__t.html">ompt_record_mutex_t</a> ompt_record_ompt_t::mutex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00956">956</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="abc9b3dd31b7f686bf621e6d1dfd067e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc9b3dd31b7f686bf621e6d1dfd067e8">&#9670;&nbsp;</a></span>mutex_acquire</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__mutex__acquire__t.html">ompt_record_mutex_acquire_t</a> ompt_record_ompt_t::mutex_acquire</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00955">955</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a50a7058ece36808417afd50a7baba98d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50a7058ece36808417afd50a7baba98d">&#9670;&nbsp;</a></span>nest_lock</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__nest__lock__t.html">ompt_record_nest_lock_t</a> ompt_record_ompt_t::nest_lock</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00957">957</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="aa19afecc1572e3693ebf6797b7041f7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa19afecc1572e3693ebf6797b7041f7b">&#9670;&nbsp;</a></span>parallel_begin</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__parallel__begin__t.html">ompt_record_parallel_begin_t</a> ompt_record_ompt_t::parallel_begin</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00944">944</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="ae86546002debbf806c834cf09d374b29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae86546002debbf806c834cf09d374b29">&#9670;&nbsp;</a></span>parallel_end</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__parallel__end__t.html">ompt_record_parallel_end_t</a> ompt_record_ompt_t::parallel_end</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00945">945</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a1ed30e01311d8163f225f9d79066b2b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ed30e01311d8163f225f9d79066b2b0">&#9670;&nbsp;</a></span>record</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">union { ... }   ompt_record_ompt_t::record</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0f6e39a5bb910c067a3fe2a77d1b78a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f6e39a5bb910c067a3fe2a77d1b78a6">&#9670;&nbsp;</a></span>sync_region</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__sync__region__t.html">ompt_record_sync_region_t</a> ompt_record_ompt_t::sync_region</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00954">954</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a54b854180e728c88fa7d568edc4cb30f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54b854180e728c88fa7d568edc4cb30f">&#9670;&nbsp;</a></span>target</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__target__t.html">ompt_record_target_t</a> ompt_record_ompt_t::target</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00960">960</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="abd74e6217c936401ea9a429ff84a6fff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd74e6217c936401ea9a429ff84a6fff">&#9670;&nbsp;</a></span>target_data_op</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__target__data__op__t.html">ompt_record_target_data_op_t</a> ompt_record_ompt_t::target_data_op</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00961">961</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a888a2d7818405f7b356a96a789313d9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a888a2d7818405f7b356a96a789313d9d">&#9670;&nbsp;</a></span>target_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="omp-tools_8h.html#a866c621745e7b719540caff151c76b4e">ompt_id_t</a> ompt_record_ompt_t::target_id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00941">941</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a7c7b2c485577d98e1528540e6b058111"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c7b2c485577d98e1528540e6b058111">&#9670;&nbsp;</a></span>target_kernel</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__target__kernel__t.html">ompt_record_target_kernel_t</a> ompt_record_ompt_t::target_kernel</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00963">963</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="ac11ec269d1fdfda9bda82a57880febac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac11ec269d1fdfda9bda82a57880febac">&#9670;&nbsp;</a></span>target_map</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__target__map__t.html">ompt_record_target_map_t</a> ompt_record_ompt_t::target_map</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00962">962</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a01a35d6bd081ec1c25aa5e15b51759b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01a35d6bd081ec1c25aa5e15b51759b0">&#9670;&nbsp;</a></span>task_create</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__task__create__t.html">ompt_record_task_create_t</a> ompt_record_ompt_t::task_create</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00948">948</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a617b8526abcebf486fe4540a561d7024"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a617b8526abcebf486fe4540a561d7024">&#9670;&nbsp;</a></span>task_dependence</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__task__dependence__t.html">ompt_record_task_dependence_t</a> ompt_record_ompt_t::task_dependence</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00950">950</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="aaa32569593dcba10e664dd756f13d701"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa32569593dcba10e664dd756f13d701">&#9670;&nbsp;</a></span>task_schedule</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__task__schedule__t.html">ompt_record_task_schedule_t</a> ompt_record_ompt_t::task_schedule</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00951">951</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="ac5c99ecce6ad3173c55369de8c13f731"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5c99ecce6ad3173c55369de8c13f731">&#9670;&nbsp;</a></span>thread_begin</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__thread__begin__t.html">ompt_record_thread_begin_t</a> ompt_record_ompt_t::thread_begin</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00943">943</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="a559207a2809b82ff6cf7cdf40de09216"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a559207a2809b82ff6cf7cdf40de09216">&#9670;&nbsp;</a></span>thread_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="omp-tools_8h.html#a866c621745e7b719540caff151c76b4e">ompt_id_t</a> ompt_record_ompt_t::thread_id</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00940">940</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="aa844697af4cfdce09898b406f0100c79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa844697af4cfdce09898b406f0100c79">&#9670;&nbsp;</a></span>time</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="omp-tools_8h.html#a4555dbb337292e8aaae24b71ecde90e0">ompt_device_time_t</a> ompt_record_ompt_t::time</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00939">939</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="ae44301ac52d8e5e1377017f530449765"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae44301ac52d8e5e1377017f530449765">&#9670;&nbsp;</a></span>type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="omp-tools_8h.html#a9e0fc401bcad1ace04456bf938aeb46e">ompt_callbacks_t</a> ompt_record_ompt_t::type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00938">938</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<a id="acddc477f49b7321d4fcc4f392d53dc47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acddc477f49b7321d4fcc4f392d53dc47">&#9670;&nbsp;</a></span>work</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structompt__record__work__t.html">ompt_record_work_t</a> ompt_record_ompt_t::work</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definido na linha <a class="el" href="omp-tools_8h_source.html#l00946">946</a> do ficheiro <a class="el" href="omp-tools_8h_source.html">omp-tools.h</a>.</p>
+
+</div>
+</div>
+<hr/>A documentação para esta estrutura foi gerada a partir do seguinte ficheiro:<ul>
+<li>include/<a class="el" href="omp-tools_8h_source.html">omp-tools.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Gerado por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>
