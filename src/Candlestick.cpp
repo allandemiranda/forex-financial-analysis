@@ -102,7 +102,7 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
     { tm.tm_isdst = -1; }
 #pragma omp section
     {
-      time_t set_new_time = std::stol(stick->at(9));
+      time_t set_new_time = std::stol(stick->back());
       setTime(&set_new_time);
     }
   }

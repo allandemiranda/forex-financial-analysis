@@ -176,6 +176,9 @@ void Chart::openFile(std::string* name_file) {
         primeira_linha = false;
       } else {
         fileVector.push_back(explode(&line, &divisor));
+        for (auto i(0u); i < 3; ++i) {
+          fileVector.back().pop_back();
+        }
         fileVector.back().shrink_to_fit();
         fileVector.shrink_to_fit();
       }

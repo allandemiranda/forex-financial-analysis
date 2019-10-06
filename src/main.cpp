@@ -13,7 +13,8 @@ int main(int argc, char const* argv[]) {
     // std::cout << i << std::endl;
     Chart grafico(&a, &c, &b);
     std::cout << grafico.chart.size() << std::endl;
-    Dashboard(&grafico.chart, "out/teste.html", c);
+    std::string localSalvar = "out/teste.html";
+    Dashboard(&c, &localSalvar, &grafico.chart);
     // }
 
   } catch (const char* msg) {
