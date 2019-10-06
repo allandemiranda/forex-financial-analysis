@@ -6,14 +6,15 @@
 int main(int argc, char const* argv[]) {
   try {
     std::string a = argv[1];
-    ReadingFolderFiles lista_arquivos(a);
+    // ReadingFolderFiles lista_arquivos(a);
     std::string b = argv[2];
     std::string c = "TESTE";
-    for (auto i : lista_arquivos.list_path) {
-      std::cout << i << std::endl;
-      Chart grafico(&i, &c, &b);
-      Dashboard(&grafico.chart,"out/teste.html",c);
-    }
+    // for (auto i : lista_arquivos.list_path) {
+    // std::cout << i << std::endl;
+    Chart grafico(&a, &c, &b);
+    std::cout << grafico.chart.size() << std::endl;
+    Dashboard(&grafico.chart, "out/teste.html", c);
+    // }
 
   } catch (const char* msg) {
     std::cerr << msg << std::endl;
