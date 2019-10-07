@@ -28,10 +28,55 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
              std::string* chart_time) {
   setTimeChart(chart_time);
   setNameChart(chart_name);
+  /****/
+  std::string tZ = "TZ=America/Recife";
+  putenv(tZ.data());
+  std::time_t t = std::time(nullptr);
+  std::cout << "Iniciando Gráfico: " << std::endl;
+  std::cout << "  "
+            << "Arquivo: " << *file_name << std::endl;
+  std::cout << "  "
+            << "Início às " << std::put_time(std::localtime(&t), "%T %D %Z")
+            << std::endl;
+  std::cout << "  "
+            << "Lendo arquivo..." << std::endl;
+  /****/
   openFile(file_name);
+  /****/
+  t = std::time(nullptr);
+  std::cout << "  "
+            << "Lido " << fileVector.size() << " linhas do arquivo às "
+            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
+  std::cout << "  "
+            << "Limpando linhas desnecessárias..." << std::endl;
+  /****/
   cleanOutTime();
+  /****/
+  t = std::time(nullptr);
+  std::cout << "  "
+            << "Pós limpesa restaram " << fileVector.size()
+            << " linhas do arquivo às "
+            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
+  std::cout << "  "
+            << "Convertendo linhas para Velas..." << std::endl;
+  /****/
   convertingToCandlestick();
+  /****/
+  t = std::time(nullptr);
+  std::cout << "  "
+            << "Linhas convertidas em Velas às "
+            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
+  std::cout << "  "
+            << "Convertendo Velas para o tempo do gráfico..." << std::endl;
+  /****/
   convertingToTime();
+  /****/
+  putenv(tZ.data());
+  t = std::time(nullptr);
+  std::cout << "  "
+            << "Gráfico pronto às "
+            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
+  /****/
 }
 
 /**
@@ -171,6 +216,7 @@ void Chart::openFile(std::string* name_file) {
     std::string line;
     bool primeira_linha = true;
     char divisor = static_cast<char>(std::bitset<8>("00001001").to_ulong());
+    unsigned long cont = 0;
     while (std::getline(file, line)) {
       if (primeira_linha) {
         primeira_linha = false;
@@ -180,7 +226,9 @@ void Chart::openFile(std::string* name_file) {
           fileVector.back().pop_back();
         }
         fileVector.back().shrink_to_fit();
-        fileVector.shrink_to_fit();
+        if ((++cont % 100000) == 0) {
+          fileVector.shrink_to_fit();
+        }
       }
     }
   } catch (const std::ios_base::failure& e) {
@@ -189,6 +237,7 @@ void Chart::openFile(std::string* name_file) {
   if (fileVector.size() == 0) {
     throw "ERRO! Não foi obtido nenhuma vela do arquivo.";
   }
+  fileVector.shrink_to_fit();
 }
 /**
  * @brief Limpe do velor de arquivo as velas fora do tempo se necessário
@@ -241,7 +290,9 @@ void Chart::convertingToTime(void) {
   time_t uma_semana = 604800;  // segundos
   time_t um_mes = 2592000;     // segundos (30 dias)
   time_t um_ano = 31536000;    // segundos (365 dias)
+  bool flag = true;
   if (*getTimeChart() < uma_hora) {
+    flag = false;
     time_t data_inicial = *chart.front().getDate();
     time_t data_final = *chart.back().getDate();
     char mbstr_inicial[5];
@@ -274,6 +325,7 @@ void Chart::convertingToTime(void) {
     convertingToTimeVector(&data_inicial, &data_final);
   }
   if ((*getTimeChart() >= uma_hora) and (*getTimeChart() <= um_dia)) {
+    flag = false;
     time_t data_inicial = *chart.front().getDate();
     time_t data_final = *chart.back().getDate();
     char mbstr_inicial[5];
@@ -330,6 +382,7 @@ void Chart::convertingToTime(void) {
     convertingToTimeVector(&data_inicial, &data_final);
   }
   if (*getTimeChart() == uma_semana) {
+    flag = false;
     time_t data_inicial = *chart.front().getDate();
     time_t data_final = *chart.back().getDate();
     char mbstr_inicial[5];
@@ -408,6 +461,7 @@ void Chart::convertingToTime(void) {
     convertingToTimeVector(&data_inicial, &data_final);
   }
   if (*getTimeChart() == um_mes) {
+    flag = false;
     time_t data_inicial = *chart.front().getDate();
     time_t data_final = *chart.back().getDate();
     char mbstr_inicial[5];
@@ -488,6 +542,7 @@ void Chart::convertingToTime(void) {
     convertingToTimeVector(&data_inicial, &data_final);
   }
   if (*getTimeChart() == um_ano) {
+    flag = false;
     time_t data_inicial = *chart.front().getDate();
     time_t data_final = *chart.back().getDate();
     char mbstr_inicial[5];
@@ -569,6 +624,9 @@ void Chart::convertingToTime(void) {
     }
     convertingToTimeVector(&data_inicial, &data_final);
   }
+  if (flag) {
+    throw "ERRO! Impossivel converter para o tempo necessário";
+  }
 }
 
 /**
@@ -583,14 +641,20 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
     time_t final;
   };
   std::vector<date_time> lista_de_intervalos;
-  while (*data_inicial < *data_final) {
-    date_time nova_date_time;
-    nova_date_time.inicial = *data_inicial;
-    *data_inicial += *getTimeChart();
-    nova_date_time.final = *data_inicial;
-    lista_de_intervalos.push_back(nova_date_time);
-    lista_de_intervalos.shrink_to_fit();
+  time_t tempoTotal = *data_final - *data_inicial;
+  unsigned long numeroInteracoes = tempoTotal / *getTimeChart();
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned long i = 0; i < numeroInteracoes; ++i) {
+      date_time nova_date_time;
+      nova_date_time.inicial = (i * (*getTimeChart())) + (*data_inicial);
+      nova_date_time.final = nova_date_time.inicial + (*getTimeChart()) - 1;
+#pragma omp critical
+      { lista_de_intervalos.push_back(nova_date_time); }
+    }
   }
+  lista_de_intervalos.shrink_to_fit();
   std::vector<Candlestick> novo_chart;
 #pragma omp parallel
   {

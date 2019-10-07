@@ -31,34 +31,7 @@ Dashboard::~Dashboard(void){}
 Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
                      std::vector<Candlestick>* dados) {
   setTitle(titulo);
-  try {
-    char c = '/';
-    std::string buff{""};
-    std::vector<std::string> v;
-    for (auto n : *arquivo) {
-      if (n != c) {
-        buff += n;
-      } else if (n == c && buff != "") {
-        v.push_back(buff);
-        buff = "";
-      }
-    }
-    if (buff != "") {
-      v.push_back(buff);
-    }
-    std::string new_p = "";
-    for (auto i(0u); i < (v.size() - 1); ++i) {
-      new_p += v[i];
-      new_p.push_back('/');
-    }
-    DIR* dir = 0;
-    dir = opendir(new_p.c_str());
-    if (dir == 0) {
-      std::string t = "mkdir " + new_p;
-      char a[t.size() + 1];
-      strcpy(a, t.c_str());
-      system(a);
-    }
+  try {    
     std::ofstream newFile;
     std::string fileName = *arquivo;
     newFile.open(fileName, std::ios::trunc);
