@@ -121,7 +121,7 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
     { setSize(getHigh(), getLow()); }
   }
 
-  if (*getOpen() >= *getClose()) {
+  if (*getOpen() > *getClose()) {
 #pragma omp parallel sections
     {
 #pragma omp section
@@ -214,7 +214,7 @@ Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
 
   setSize(getHigh(), getLow());
 
-  if (*getOpen() >= *getClose()) {
+  if (*getOpen() > *getClose()) {
 #pragma omp parallel sections
     {
 #pragma omp section

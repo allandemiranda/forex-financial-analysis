@@ -64,7 +64,7 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
   /****/
   t = std::time(nullptr);
   std::cout << "  "
-            << "Linhas convertidas em Velas às "
+            << "Linhas convertidas em " << chart.size() <<" Velas às "
             << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
   std::cout << "  "
             << "Convertendo Velas para o tempo do gráfico..." << std::endl;
@@ -74,7 +74,7 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
   putenv(tZ.data());
   t = std::time(nullptr);
   std::cout << "  "
-            << "Gráfico pronto às "
+            << "Gráfico pronto com " << chart.size() << " velas às "
             << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
   /****/
 }
@@ -136,12 +136,12 @@ void Chart::setTimeChart(std::string* time) {
           }
 #pragma omp cancel for
         }
-        if (time->at(0) == 'D') {
+        if (time->at(0) == 'W') {
 #pragma omp critical
           {
             time->erase(0, 1);
             time_final =
-                (unsigned long)(86400 * (unsigned long)std::stoi(*time));
+                (unsigned long)(604800 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }

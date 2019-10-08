@@ -27,16 +27,30 @@ std::vector<std::string> explode(const std::string* line, char* c) {
 int main(int argc, char const* argv[]) {
   try {
     std::string a = argv[1];
-    // ReadingFolderFiles lista_arquivos(a);
-    std::string b = argv[2];
-    std::string c = "TESTE";
-    // for (auto i : lista_arquivos.list_path) {
-    // std::cout << i << std::endl;
-    Chart grafico(&a, &c, &b);
-    std::cout << grafico.chart.size() << std::endl;
-    std::string localSalvar = "out/teste.html";
-    Dashboard(&c, &localSalvar, &grafico.chart);
-    // }
+    ReadingFolderFiles lista_arquivos(a);
+    for (auto i : lista_arquivos.list_path) {
+      std::vector<std::string> tempos_permitidos = {
+          "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
+          "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",  "J1",  "Y1"};
+      for (auto j : tempos_permitidos) {
+        std::cout << "TEMPO: " << j << std::endl;
+        std::string b = j;
+        char barra = '/';
+        char ponto = '.';
+        std::string titulo_1 = explode(&explode(&i, &barra).back(), &ponto)[0];
+        Chart grafico(&i, &titulo_1, &b);
+        std::string localSalvar = "/media/allandemiranda/ALLAN/testes-g/";
+        localSalvar += explode(&explode(&i, &barra).back(), &ponto)[0];
+        localSalvar += "-";
+        localSalvar += j;
+        localSalvar += ".html";
+        std::string titulo = *grafico.getNameChart() + " - " + j;
+        std::cout << "Elaborando gráfico..." << std::endl;
+        std::cout << localSalvar << std::endl;
+        Dashboard(&titulo, &localSalvar, &grafico.chart);
+        std::cout << "Gráfico pronto !" << std::endl;
+      }
+    }
 
   } catch (const char* msg) {
     std::cerr << msg << std::endl;
