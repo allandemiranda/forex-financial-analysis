@@ -64,7 +64,7 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
   /****/
   t = std::time(nullptr);
   std::cout << "  "
-            << "Linhas convertidas em " << chart.size() <<" Velas às "
+            << "Linhas convertidas em " << chart.size() << " Velas às "
             << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
   std::cout << "  "
             << "Convertendo Velas para o tempo do gráfico..." << std::endl;
@@ -222,9 +222,12 @@ void Chart::openFile(std::string* name_file) {
         primeira_linha = false;
       } else {
         fileVector.push_back(explode(&line, &divisor));
-        for (auto i(0u); i < 3; ++i) {
-          fileVector.back().pop_back();
-        }
+        auto apagar_inicio = fileVector.back().begin();
+        std::advance(apagar_inicio, 6);
+        fileVector.back().erase(apagar_inicio, fileVector.back().end());
+        // for (auto i(0u); i < 3; ++i) {
+        //   fileVector.back().pop_back();
+        // }
         fileVector.back().shrink_to_fit();
         if ((++cont % 100000) == 0) {
           fileVector.shrink_to_fit();
@@ -636,45 +639,29 @@ void Chart::convertingToTime(void) {
  * @param data_final Data Final da organização
  */
 void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
-  struct date_time {
-    time_t inicial;
-    time_t final;
-  };
-  std::vector<date_time> lista_de_intervalos;
-  time_t tempoTotal = *data_final - *data_inicial;
-  unsigned long numeroInteracoes = tempoTotal / *getTimeChart();
-#pragma omp parallel
-  {
-#pragma omp for
-    for (unsigned long i = 0; i < numeroInteracoes; ++i) {
-      date_time nova_date_time;
-      nova_date_time.inicial = (i * (*getTimeChart())) + (*data_inicial);
-      nova_date_time.final = nova_date_time.inicial + (*getTimeChart()) - 1;
-#pragma omp critical
-      { lista_de_intervalos.push_back(nova_date_time); }
-    }
-  }
-  lista_de_intervalos.shrink_to_fit();
+  unsigned long numeroInteracoes =
+      ((*data_final - *data_inicial) / *getTimeChart());
   std::vector<Candlestick> novo_chart;
 #pragma omp parallel
   {
 #pragma omp for
-    for (unsigned long i = 0; i < lista_de_intervalos.size(); ++i) {
-      auto novo_vt = candleSearch(&chart, lista_de_intervalos[i].inicial);
+    for (unsigned long i = 0; i < numeroInteracoes; ++i) {
+      time_t intervalo_inicial = (i * (*getTimeChart())) + (*data_inicial);
+      time_t intervalo_final = intervalo_inicial + (*getTimeChart()) - 1;
+      auto novo_vt = candleSearch(&chart, intervalo_inicial);
       if (chart.end() == novo_vt) {
         time_t minuto = 60;
-        Candlestick temporario_(&minuto, &lista_de_intervalos[i].inicial);
-        lista_de_intervalos[i].inicial += minuto;
-        auto vt = candleSearch(&chart, lista_de_intervalos[i].inicial);
-        while (lista_de_intervalos[i].inicial < lista_de_intervalos[i].final) {
+        Candlestick temporario_(&minuto, &intervalo_inicial);
+        intervalo_inicial += minuto;
+        auto vt = candleSearch(&chart, intervalo_inicial);
+        while (intervalo_inicial < intervalo_final) {
           if (chart.end() == vt) {
-            Candlestick temporario_dois(&minuto,
-                                        &lista_de_intervalos[i].inicial);
+            Candlestick temporario_dois(&minuto, &intervalo_inicial);
             temporario_ = temporario_ + temporario_dois;
-            lista_de_intervalos[i].inicial += minuto;
+            intervalo_inicial += minuto;
           } else {
             temporario_ = temporario_ + *vt;
-            lista_de_intervalos[i].inicial += *vt->getTime();
+            intervalo_inicial += *vt->getTime();
           }
           std::advance(vt, 1);
           if (vt == chart.end()) {
@@ -683,8 +670,8 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
             }
             break;
           }
-          if (*vt->getDate() != lista_de_intervalos[i].inicial) {
-            if (*vt->getDate() >= lista_de_intervalos[i].final) {
+          if (*vt->getDate() != intervalo_inicial) {
+            if (*vt->getDate() >= intervalo_final) {
               if (*temporario_.getTime() < *getTimeChart()) {
                 temporario_.addTime(*getTimeChart() - *temporario_.getTime());
               }
@@ -698,17 +685,16 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
         { novo_chart.push_back(temporario_); }
       } else {
         time_t minuto = 60;
-        lista_de_intervalos[i].inicial += minuto;
-        auto vt = candleSearch(&chart, lista_de_intervalos[i].inicial);
-        while (lista_de_intervalos[i].inicial < lista_de_intervalos[i].final) {
+        intervalo_inicial += minuto;
+        auto vt = candleSearch(&chart, intervalo_inicial);
+        while (intervalo_inicial < intervalo_final) {
           if (chart.end() == vt) {
-            Candlestick temporario_dois(&minuto,
-                                        &lista_de_intervalos[i].inicial);
+            Candlestick temporario_dois(&minuto, &intervalo_inicial);
             *novo_vt = *novo_vt + temporario_dois;
-            lista_de_intervalos[i].inicial += minuto;
+            intervalo_inicial += minuto;
           } else {
             *novo_vt = *novo_vt + *vt;
-            lista_de_intervalos[i].inicial += *vt->getTime();
+            intervalo_inicial += *vt->getTime();
           }
           std::advance(vt, 1);
           if (vt == chart.end()) {
@@ -717,8 +703,8 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
             }
             break;
           }
-          if (*vt->getDate() != lista_de_intervalos[i].inicial) {
-            if (*vt->getDate() >= lista_de_intervalos[i].final) {
+          if (*vt->getDate() != intervalo_inicial) {
+            if (*vt->getDate() >= intervalo_final) {
               if (*novo_vt->getTime() < *getTimeChart()) {
                 novo_vt->addTime(*getTimeChart() - *novo_vt->getTime());
               }
@@ -737,11 +723,6 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
   {
 #pragma omp section
     { std::sort(novo_chart.begin(), novo_chart.end()); }
-#pragma omp section
-    {
-      lista_de_intervalos.clear();
-      lista_de_intervalos.shrink_to_fit();
-    }
 #pragma omp section
     {
       chart.clear();
@@ -783,6 +764,7 @@ void Chart::convertingToCandlestick(void) {
       { chart.push_back(nova_vela); }
     }
   }
+  chart.shrink_to_fit();
 #pragma omp parallel sections
   {
 #pragma omp section

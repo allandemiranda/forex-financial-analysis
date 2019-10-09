@@ -30,8 +30,10 @@ int main(int argc, char const* argv[]) {
     ReadingFolderFiles lista_arquivos(a);
     for (auto i : lista_arquivos.list_path) {
       std::vector<std::string> tempos_permitidos = {
-          "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
-          "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",  "J1",  "Y1"};
+          "M5", "M6", "M10", "M12", "M15", "M20",
+          "M20", "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",
+          "J1",  "Y1"};
+      // std::vector<std::string> tempos_permitidos = {"H1"};
       for (auto j : tempos_permitidos) {
         std::cout << "TEMPO: " << j << std::endl;
         std::string b = j;
@@ -44,6 +46,7 @@ int main(int argc, char const* argv[]) {
         localSalvar += "-";
         localSalvar += j;
         localSalvar += ".html";
+        // std::string localSalvar = "out/teste.html";
         std::string titulo = *grafico.getNameChart() + " - " + j;
         std::cout << "Elaborando gráfico..." << std::endl;
         std::cout << localSalvar << std::endl;
