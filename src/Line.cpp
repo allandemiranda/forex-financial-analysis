@@ -14,8 +14,8 @@
 /**
  * @brief Construa um novo objeto Line:: Line
  * 
- * @param date Data do ponto
- * @param price Cotação no ponto
+ * @param date Ponteiro da Data do ponto
+ * @param price Ponteiro da Cotação no ponto
  */
 Line::Line(time_t* date, pip_t* price) {
   setDate(date);
