@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include "Candlestick.hpp"
+#include "Line.hpp"
 
 class Dashboard {
  private:
@@ -38,7 +39,7 @@ class Dashboard {
     "legend: {\nreversed: true,\ncursor: 'pointer',\nitemclick: toggleDataSeries\n},\n";
   void setTitle(std::string*);
   std::string scriptFooter =
-    "});\n"
+    "]});\n"
     "chart.render();\n"
     "\n"
     "function toggleDataSeries(e) {\n"
@@ -72,15 +73,26 @@ class Dashboard {
   "xValueFormatString: 'DD.MM.YYYY HH:mm',\n"
   "dataPoints: [\n";
   std::string dataCandleFooter = 
-  "]}]\n"
+  "]},\n"
   "\n"
   ;
   std::string TimeZone = "TZ=America/Recife";
+  std::string dataLineHeader = 
+  "{\n"
+  "type: 'line',\n"
+  "showInLegend: true,\n"
+  "name: 'Line',\n"
+  "yValueFormatString: '#########.#########',\n"
+  "xValueFormatString: 'DD.MM.YYYY HH:mm',\n"
+  "dataPoints: [\n";
+  std::string dataLineFooter =
+  "]\n"
+  "},\n";
 
  public:
   Dashboard(std::string*, std::string*, std::vector<Candlestick>*);
-  //Dashboard(std::string*, std::string*, std::vector<long double>*);
-  //Dashboard(std::string*, std::string*, std::vector<Candlestick>, std::string*, std::vector<long double>*);
+  //Dashboard(std::string*, std::string*, std::vector<pip_t>*);
+  Dashboard(std::string*, std::string*, std::vector<Candlestick>*, std::vector<Line>*);
   ~Dashboard(void);
 };
 

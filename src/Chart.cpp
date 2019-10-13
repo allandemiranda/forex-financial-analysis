@@ -28,55 +28,10 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
              std::string* chart_time) {
   setTimeChart(chart_time);
   setNameChart(chart_name);
-  /****/
-  std::string tZ = "TZ=America/Recife";
-  putenv(tZ.data());
-  std::time_t t = std::time(nullptr);
-  std::cout << "Iniciando Gráfico: " << std::endl;
-  std::cout << "  "
-            << "Arquivo: " << *file_name << std::endl;
-  std::cout << "  "
-            << "Início às " << std::put_time(std::localtime(&t), "%T %D %Z")
-            << std::endl;
-  std::cout << "  "
-            << "Lendo arquivo..." << std::endl;
-  /****/
   openFile(file_name);
-  /****/
-  t = std::time(nullptr);
-  std::cout << "  "
-            << "Lido " << fileVector.size() << " linhas do arquivo às "
-            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
-  std::cout << "  "
-            << "Limpando linhas desnecessárias..." << std::endl;
-  /****/
   cleanOutTime();
-  /****/
-  t = std::time(nullptr);
-  std::cout << "  "
-            << "Pós limpesa restaram " << fileVector.size()
-            << " linhas do arquivo às "
-            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
-  std::cout << "  "
-            << "Convertendo linhas para Velas..." << std::endl;
-  /****/
   convertingToCandlestick();
-  /****/
-  t = std::time(nullptr);
-  std::cout << "  "
-            << "Linhas convertidas em " << chart.size() << " Velas às "
-            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
-  std::cout << "  "
-            << "Convertendo Velas para o tempo do gráfico..." << std::endl;
-  /****/
-  convertingToTime();
-  /****/
-  putenv(tZ.data());
-  t = std::time(nullptr);
-  std::cout << "  "
-            << "Gráfico pronto com " << chart.size() << " velas às "
-            << std::put_time(std::localtime(&t), "%T %D %Z") << std::endl;
-  /****/
+  convertingToTime();  
 }
 
 /**
@@ -225,9 +180,6 @@ void Chart::openFile(std::string* name_file) {
         auto apagar_inicio = fileVector.back().begin();
         std::advance(apagar_inicio, 6);
         fileVector.back().erase(apagar_inicio, fileVector.back().end());
-        // for (auto i(0u); i < 3; ++i) {
-        //   fileVector.back().pop_back();
-        // }
         fileVector.back().shrink_to_fit();
         if ((++cont % 100000) == 0) {
           fileVector.shrink_to_fit();
