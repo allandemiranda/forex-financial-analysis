@@ -28,10 +28,11 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
              std::string* chart_time) {
   setTimeChart(chart_time);
   setNameChart(chart_name);
+  putenv(timeZoneChart.data());  // setart time zone
   openFile(file_name);
   cleanOutTime();
   convertingToCandlestick();
-  convertingToTime();  
+  convertingToTime();
 }
 
 /**
@@ -238,7 +239,6 @@ void Chart::cleanOutTime(void) {
  *
  */
 void Chart::convertingToTime(void) {
-  putenv(timeZoneChart.data());
   time_t um_minuto = 60;       // segundos
   time_t uma_hora = 3600;      // segundos
   time_t um_dia = 86400;       // segundos

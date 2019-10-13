@@ -19,7 +19,6 @@
  * @param date Data da abertura da vela em Epoch
  */
 Candlestick::Candlestick(time_t* time, time_t* date) {
-  putenv(getTZ().data());
 #pragma omp parallel sections
   {
 #pragma omp section
@@ -40,7 +39,6 @@ Candlestick::Candlestick(time_t* time, time_t* date) {
  * @param stick Vela com os dados
  */
 Candlestick::Candlestick(std::vector<std::string>* stick) {
-  putenv(getTZ().data());
   struct std::tm tm;
   std::vector<std::string> date_v;
   std::vector<std::string> time_v;
@@ -190,7 +188,6 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
  */
 Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
                          pip_t* new_high, pip_t* new_low, time_t* new_time) {
-  putenv(getTZ().data());
 #pragma omp parallel sections
   {
 #pragma omp section
