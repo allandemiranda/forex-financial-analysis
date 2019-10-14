@@ -611,25 +611,26 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
             Candlestick temporario_dois(&minuto, &intervalo_inicial);
             temporario_ = temporario_ + temporario_dois;
             intervalo_inicial += minuto;
+            vt = candleSearch(&chart, intervalo_inicial);
           } else {
             temporario_ = temporario_ + *vt;
             intervalo_inicial += *vt->getTime();
-          }
-          std::advance(vt, 1);
-          if (vt == chart.end()) {
-            if (*temporario_.getTime() < *getTimeChart()) {
-              temporario_.addTime(*getTimeChart() - *temporario_.getTime());
-            }
-            break;
-          }
-          if (*vt->getDate() != intervalo_inicial) {
-            if (*vt->getDate() >= intervalo_final) {
+            std::advance(vt, 1);
+            if (vt == chart.end()) {
               if (*temporario_.getTime() < *getTimeChart()) {
                 temporario_.addTime(*getTimeChart() - *temporario_.getTime());
               }
               break;
-            } else {
-              vt = chart.end();
+            }
+            if (*vt->getDate() != intervalo_inicial) {
+              if (*vt->getDate() >= intervalo_final) {
+                if (*temporario_.getTime() < *getTimeChart()) {
+                  temporario_.addTime(*getTimeChart() - *temporario_.getTime());
+                }
+                break;
+              } else {
+                vt = chart.end();
+              }
             }
           }
         }
@@ -644,25 +645,26 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
             Candlestick temporario_dois(&minuto, &intervalo_inicial);
             *novo_vt = *novo_vt + temporario_dois;
             intervalo_inicial += minuto;
+            vt = candleSearch(&chart, intervalo_inicial);
           } else {
             *novo_vt = *novo_vt + *vt;
             intervalo_inicial += *vt->getTime();
-          }
-          std::advance(vt, 1);
-          if (vt == chart.end()) {
-            if (*novo_vt->getTime() < *getTimeChart()) {
-              novo_vt->addTime(*getTimeChart() - *novo_vt->getTime());
-            }
-            break;
-          }
-          if (*vt->getDate() != intervalo_inicial) {
-            if (*vt->getDate() >= intervalo_final) {
+            std::advance(vt, 1);
+            if (vt == chart.end()) {
               if (*novo_vt->getTime() < *getTimeChart()) {
                 novo_vt->addTime(*getTimeChart() - *novo_vt->getTime());
               }
               break;
-            } else {
-              vt = chart.end();
+            }
+            if (*vt->getDate() != intervalo_inicial) {
+              if (*vt->getDate() >= intervalo_final) {
+                if (*novo_vt->getTime() < *getTimeChart()) {
+                  novo_vt->addTime(*getTimeChart() - *novo_vt->getTime());
+                }
+                break;
+              } else {
+                vt = chart.end();
+              }
             }
           }
         }
