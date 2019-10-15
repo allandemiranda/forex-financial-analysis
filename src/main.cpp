@@ -13,7 +13,8 @@ int main(int argc, char const* argv[]) {
     std::string nome = "TESTE";
     Chart grafico(&arquivo, &nome, &tempo);
     std::string arquivoFinal = "out/teste.html";
-    Dashboard desenhar(grafico.getNameChart(),&arquivoFinal,&grafico.chart);
+    LinePrice linha(&grafico.chart,15);
+    Dashboard desenhar(grafico.getNameChart(),&arquivoFinal,&grafico.chart,&linha.line);
 
     std::cout << grafico.chart.size() << " VELAS" << std::endl;
     std::cout

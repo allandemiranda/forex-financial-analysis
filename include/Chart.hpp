@@ -35,7 +35,8 @@ class Chart {
   std::string timeZoneChart = "TZ=EET";  // Time Zone do banco de dados
   std::vector<Candlestick>::iterator candleSearch(std::vector<Candlestick>*,
                                                   time_t);
-  void convertingToTimeVectorDIAS(time_t*,time_t*);
+  void convertingToTimeVectorSecond(time_t*,time_t*);
+  void convertingToTimeVectorSEMANAS(time_t*,time_t*);
 
  public:
   std::vector<Candlestick> chart;

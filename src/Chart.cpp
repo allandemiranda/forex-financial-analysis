@@ -377,7 +377,7 @@ void Chart::convertingToTime(void) {
       }
     }
     if (*getTimeChart() == um_dia) {
-      convertingToTimeVectorDIAS(&data_inicial, &data_final);
+      convertingToTimeVectorSecond(&data_inicial, &data_final);
     } else {
       convertingToTimeVector(&data_inicial, &data_final);
     }
@@ -459,7 +459,7 @@ void Chart::convertingToTime(void) {
         data_final += (um_dia);  // Aumente uma hora
       }
     }
-    convertingToTimeVector(&data_inicial, &data_final);
+    convertingToTimeVectorSecond(&data_inicial, &data_final);
   }
   if (*getTimeChart() == um_mes) {
     flag = false;
@@ -632,12 +632,24 @@ void Chart::convertingToTime(void) {
 
 /**
  * @brief Obtenha tempo inicial e final, organize o vetor do gráfico, para tempo
+ * de uma semana
+ *
+ * @param data_inicial Data de início da organização
+ * @param data_final Data Final da organização
+ */
+void Chart::convertingToTimeVectorSEMANAS(time_t* data_inicial,
+                                          time_t* data_final) {
+  //
+}
+
+/**
+ * @brief Obtenha tempo inicial e final, organize o vetor do gráfico, para tempo
  * de um dia
  *
  * @param data_inicial Data de início da organização
  * @param data_final Data Final da organização
  */
-void Chart::convertingToTimeVectorDIAS(time_t* data_inicial,
+void Chart::convertingToTimeVectorSecond(time_t* data_inicial,
                                        time_t* data_final) {
   unsigned long numeroInteracoes =
       ((*data_final - *data_inicial) / *getTimeChart());
