@@ -22,7 +22,6 @@
 LinePrice::LinePrice(std::vector<Candlestick>* chart,
                      unsigned int normalisation) {
   setFirstTrend(chart, &normalisation);
-  std::cout << "---" << std::endl;
   setFinal();
 }
 
