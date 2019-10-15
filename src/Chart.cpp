@@ -230,6 +230,48 @@ void Chart::cleanOutTime(void) {
         fileVector[i].shrink_to_fit();
       }
     }
+  } else {
+    int final(-1);
+    for (auto i(0u); i < fileVector.size(); ++i) {
+      if (fileVector[i][1] == "00:00:00") {
+        if (fileVector[i + 1][1] == "00:00:00") {
+          final = i;
+        } else {
+          if (fileVector[i][0] == fileVector[i + 1][0]) {
+            break;
+          } else {
+            final = i;
+            break;
+          }
+        }
+      }
+    }
+    if (final != -1) {
+      ++final;
+#pragma omp parallel
+      {
+#pragma omp for
+        for (int i = 0; i < final; ++i) {
+          fileVector[i].push_back("86400");
+          fileVector[i].shrink_to_fit();
+        }
+#pragma omp for
+        for (unsigned long i = final; i < fileVector.size(); ++i) {
+          fileVector[i].push_back("60");
+          fileVector[i].shrink_to_fit();
+        }
+      }
+    } else {
+#pragma omp parallel
+      {
+#pragma omp for
+        for (unsigned long i = 0; i < fileVector.size(); ++i) {
+          fileVector[i].push_back("60");
+          fileVector[i].shrink_to_fit();
+        }
+      }
+    }
+    fileVector.shrink_to_fit();
   }
 }
 
@@ -334,7 +376,11 @@ void Chart::convertingToTime(void) {
         data_final += (uma_hora);  // Aumente uma hora
       }
     }
-    convertingToTimeVector(&data_inicial, &data_final);
+    if (*getTimeChart() == um_dia) {
+      convertingToTimeVectorDIAS(&data_inicial, &data_final);
+    } else {
+      convertingToTimeVector(&data_inicial, &data_final);
+    }
   }
   if (*getTimeChart() == uma_semana) {
     flag = false;
@@ -585,12 +631,14 @@ void Chart::convertingToTime(void) {
 }
 
 /**
- * @brief Obtenha tempo inicial e final, organize o vetor do gráfico
+ * @brief Obtenha tempo inicial e final, organize o vetor do gráfico, para tempo
+ * de um dia
  *
  * @param data_inicial Data de início da organização
  * @param data_final Data Final da organização
  */
-void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
+void Chart::convertingToTimeVectorDIAS(time_t* data_inicial,
+                                       time_t* data_final) {
   unsigned long numeroInteracoes =
       ((*data_final - *data_inicial) / *getTimeChart());
   std::vector<Candlestick> novo_chart;
@@ -599,22 +647,40 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
 #pragma omp for
     for (unsigned long i = 0; i < numeroInteracoes; ++i) {
       time_t intervalo_inicial = (i * (*getTimeChart())) + (*data_inicial);
-      time_t intervalo_final = intervalo_inicial + (*getTimeChart()) - 1;
+      time_t intervalo_inicial_extra = intervalo_inicial;
+      time_t intervalo_final = intervalo_inicial + (*getTimeChart());
+      char mbstr[10];
+      std::strftime(mbstr, sizeof(mbstr), "%Z",
+                    std::localtime(&intervalo_inicial));
+      if (mbstr[2] == 'S') {
+        intervalo_final -= 3600;
+        intervalo_inicial -= 3600;
+        intervalo_inicial_extra -= 3600;
+      } else {
+        std::strftime(mbstr, sizeof(mbstr), "%Z",
+                      std::localtime(&intervalo_final));
+        if (mbstr[2] == 'S') {
+          intervalo_final -= 3600;
+        }
+      }
+
       auto novo_vt = candleSearch(&chart, intervalo_inicial);
       if (chart.end() == novo_vt) {
         time_t minuto = 60;
         Candlestick temporario_(&minuto, &intervalo_inicial);
-        intervalo_inicial += minuto;
+        intervalo_inicial = intervalo_inicial_extra + *temporario_.getTime();
         auto vt = candleSearch(&chart, intervalo_inicial);
         while (intervalo_inicial < intervalo_final) {
           if (chart.end() == vt) {
             Candlestick temporario_dois(&minuto, &intervalo_inicial);
             temporario_ = temporario_ + temporario_dois;
-            intervalo_inicial += minuto;
+            intervalo_inicial =
+                intervalo_inicial_extra + *temporario_.getTime();
             vt = candleSearch(&chart, intervalo_inicial);
           } else {
             temporario_ = temporario_ + *vt;
-            intervalo_inicial += *vt->getTime();
+            intervalo_inicial =
+                intervalo_inicial_extra + *temporario_.getTime();
             std::advance(vt, 1);
             if (vt == chart.end()) {
               if (*temporario_.getTime() < *getTimeChart()) {
@@ -638,17 +704,17 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
         { novo_chart.push_back(temporario_); }
       } else {
         time_t minuto = 60;
-        intervalo_inicial += minuto;
+        intervalo_inicial = intervalo_inicial_extra + *novo_vt->getTime();
         auto vt = candleSearch(&chart, intervalo_inicial);
         while (intervalo_inicial < intervalo_final) {
           if (chart.end() == vt) {
             Candlestick temporario_dois(&minuto, &intervalo_inicial);
             *novo_vt = *novo_vt + temporario_dois;
-            intervalo_inicial += minuto;
+            intervalo_inicial = intervalo_inicial_extra + *novo_vt->getTime();
             vt = candleSearch(&chart, intervalo_inicial);
           } else {
             *novo_vt = *novo_vt + *vt;
-            intervalo_inicial += *vt->getTime();
+            intervalo_inicial = intervalo_inicial_extra + *novo_vt->getTime();
             std::advance(vt, 1);
             if (vt == chart.end()) {
               if (*novo_vt->getTime() < *getTimeChart()) {
@@ -683,6 +749,113 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
       chart.shrink_to_fit();
     }
   }
+  novo_chart.pop_back();
+  chart = novo_chart;
+}
+
+/**
+ * @brief Obtenha tempo inicial e final, organize o vetor do gráfico
+ *
+ * @param data_inicial Data de início da organização
+ * @param data_final Data Final da organização
+ */
+void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
+  unsigned long numeroInteracoes =
+      ((*data_final - *data_inicial) / *getTimeChart());
+  std::vector<Candlestick> novo_chart;
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned long i = 0; i < numeroInteracoes; ++i) {
+      time_t intervalo_inicial = (i * (*getTimeChart())) + (*data_inicial);
+      time_t intervalo_inicial_extra = intervalo_inicial;
+      time_t intervalo_final = intervalo_inicial + (*getTimeChart());
+      auto novo_vt = candleSearch(&chart, intervalo_inicial);
+      if (chart.end() == novo_vt) {
+        time_t minuto = 60;
+        Candlestick temporario_(&minuto, &intervalo_inicial);
+        intervalo_inicial = intervalo_inicial_extra + *temporario_.getTime();
+        auto vt = candleSearch(&chart, intervalo_inicial);
+        while (intervalo_inicial < intervalo_final) {
+          if (chart.end() == vt) {
+            Candlestick temporario_dois(&minuto, &intervalo_inicial);
+            temporario_ = temporario_ + temporario_dois;
+            intervalo_inicial =
+                intervalo_inicial_extra + *temporario_.getTime();
+            vt = candleSearch(&chart, intervalo_inicial);
+          } else {
+            temporario_ = temporario_ + *vt;
+            intervalo_inicial =
+                intervalo_inicial_extra + *temporario_.getTime();
+            std::advance(vt, 1);
+            if (vt == chart.end()) {
+              if (*temporario_.getTime() < *getTimeChart()) {
+                temporario_.addTime(*getTimeChart() - *temporario_.getTime());
+              }
+              break;
+            }
+            if (*vt->getDate() != intervalo_inicial) {
+              if (*vt->getDate() >= intervalo_final) {
+                if (*temporario_.getTime() < *getTimeChart()) {
+                  temporario_.addTime(*getTimeChart() - *temporario_.getTime());
+                }
+                break;
+              } else {
+                vt = chart.end();
+              }
+            }
+          }
+        }
+#pragma omp critical
+        { novo_chart.push_back(temporario_); }
+      } else {
+        time_t minuto = 60;
+        intervalo_inicial = intervalo_inicial_extra + *novo_vt->getTime();
+        auto vt = candleSearch(&chart, intervalo_inicial);
+        while (intervalo_inicial < intervalo_final) {
+          if (chart.end() == vt) {
+            Candlestick temporario_dois(&minuto, &intervalo_inicial);
+            *novo_vt = *novo_vt + temporario_dois;
+            intervalo_inicial = intervalo_inicial_extra + *novo_vt->getTime();
+            vt = candleSearch(&chart, intervalo_inicial);
+          } else {
+            *novo_vt = *novo_vt + *vt;
+            intervalo_inicial = intervalo_inicial_extra + *novo_vt->getTime();
+            std::advance(vt, 1);
+            if (vt == chart.end()) {
+              if (*novo_vt->getTime() < *getTimeChart()) {
+                novo_vt->addTime(*getTimeChart() - *novo_vt->getTime());
+              }
+              break;
+            }
+            if (*vt->getDate() != intervalo_inicial) {
+              if (*vt->getDate() >= intervalo_final) {
+                if (*novo_vt->getTime() < *getTimeChart()) {
+                  novo_vt->addTime(*getTimeChart() - *novo_vt->getTime());
+                }
+                break;
+              } else {
+                vt = chart.end();
+              }
+            }
+          }
+        }
+#pragma omp critical
+        { novo_chart.push_back(*novo_vt); }
+      }
+    }
+  }
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { std::sort(novo_chart.begin(), novo_chart.end()); }
+#pragma omp section
+    {
+      chart.clear();
+      chart.shrink_to_fit();
+    }
+  }
+  novo_chart.pop_back();
   chart = novo_chart;
 }
 
