@@ -623,7 +623,7 @@ void Chart::convertingToTime(void) {
         data_final += (um_dia);  // Aumente uma hora
       }
     }
-    convertingToTimeVector(&data_inicial, &data_final);
+    convertingToTimeVectorANO(&data_inicial, &data_final);
   }
   if (flag) {
     throw "ERRO! Impossivel converter para o tempo necessário";
@@ -644,7 +644,7 @@ void Chart::convertingToTimeVectorANO(time_t* data_inicial,
   time_t data_inicial_sec = *data_inicial;
   time_t data_final_sec = *data_final;
   convertingToTimeVectorSecond(&data_inicial_sec, &data_final_sec);
-  modificartempo_S = "J1";
+  modificartempo_S = "Y1";
   setTimeChart(&modificartempo_S);
   std::vector<Candlestick> novo_grafico;
   time_t data_inicial_a = *data_inicial;
@@ -665,23 +665,10 @@ void Chart::convertingToTimeVectorANO(time_t* data_inicial,
       { a.tm_mday = 1; }
 #pragma omp section
       { a.tm_isdst = -1; }
-    }
-    if (std::localtime(&new_tempo_final)->tm_mon == 11) {
-#pragma omp parallel sections
-      {
 #pragma omp section
-        { a.tm_mon = 0; }
+      { a.tm_mon = 0; }
 #pragma omp section
-        { a.tm_year = std::localtime(&new_tempo_final)->tm_year + 1; }
-      }
-    } else {
-#pragma omp parallel sections
-      {
-#pragma omp section
-        { a.tm_mon = std::localtime(&new_tempo_final)->tm_mon + 1; }
-#pragma omp section
-        { a.tm_year = std::localtime(&new_tempo_final)->tm_year; }
-      }
+      { a.tm_year = std::localtime(&new_tempo_final)->tm_year + 1; }
     }
     new_tempo_final = std::mktime(&a);
     std::tm b;
@@ -698,11 +685,11 @@ void Chart::convertingToTimeVectorANO(time_t* data_inicial,
 #pragma omp section
       { b.tm_year = std::localtime(&new_tempo_inicial)->tm_year; }
 #pragma omp section
-      { b.tm_mon = std::localtime(&new_tempo_inicial)->tm_mon; }
+      { b.tm_mon = 0; }
 #pragma omp section
       { b.tm_isdst = -1; }
     }
-    new_tempo_inicial = std::mktime(&b);
+    new_tempo_inicial = std::mktime(&b);    
     time_t zero = 0;
     Candlestick vela(&zero, &new_tempo_inicial);
     bool achou = false;
@@ -721,6 +708,7 @@ void Chart::convertingToTimeVectorANO(time_t* data_inicial,
     novo_grafico.shrink_to_fit();
     data_inicial_a = new_tempo_final;
   }
+  novo_grafico.pop_back();
   chart.clear();
   chart.shrink_to_fit();
   chart = novo_grafico;
