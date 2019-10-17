@@ -93,6 +93,7 @@ class Dashboard {
   Dashboard(std::string*, std::string*, std::vector<Candlestick>*);
   //Dashboard(std::string*, std::string*, std::vector<pip_t>*);
   Dashboard(std::string*, std::string*, std::vector<Candlestick>*, std::vector<Line>*);
+  Dashboard(std::string*, std::string*, std::vector<Candlestick>*, std::vector<std::vector<Line>>*);
   ~Dashboard(void);
 };
 

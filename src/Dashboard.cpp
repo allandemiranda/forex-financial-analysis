@@ -118,9 +118,6 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
         newFile << " },\n";
       }
     }
-    for(unsigned long i =0; i< dados_l->size(); ++i){
-
-    }
     newFile << dataCandleFooter;
     newFile << dataLineHeader;
     for (long unsigned int i(0); i < dados_l->size(); ++i) {
@@ -131,6 +128,68 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
       newFile << " },\n";
     }
     newFile << dataLineFooter;
+    newFile << scriptFooter;
+    newFile << footer;
+    newFile.close();
+  } catch (const std::ios_base::failure& e) {
+    std::cerr << e.what() << '\n';
+  }
+}
+
+Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
+                     std::vector<Candlestick>* dados_c,
+                     std::vector<std::vector<Line>>* dados_l) {
+  setTitle(titulo);
+  try {
+    std::ofstream newFile;
+    std::string fileName = *arquivo;
+    newFile.open(fileName, std::ios::trunc);
+    newFile << header;
+    newFile << scriptHeader;
+    newFile << scriptOpitons << std::endl;
+    newFile << dataCandleHeader;
+    for (long unsigned int i(0); i < dados_c->size(); ++i) {
+      if (*dados_c->at(i).getStatus()) {
+        newFile << "{ x: new Date(";
+        newFile << std::to_string(*dados_c->at(i).getDate() * 1000);
+        newFile << "), y: [";
+        newFile << std::to_string(*dados_c->at(i).getOpen());
+        newFile << ", ";
+        newFile << std::to_string(*dados_c->at(i).getHigh());
+        newFile << ", ";
+        newFile << std::to_string(*dados_c->at(i).getLow());
+        newFile << ", ";
+        newFile << std::to_string(*dados_c->at(i).getClose());
+        newFile << "], ";
+        if (*dados_c->at(i).getType() == 0) {
+          newFile << "color: 'green'";
+        } else {
+          if (*dados_c->at(i).getType() == 1) {
+            newFile << "color: 'red'";
+          } else {
+            if (*dados_c->at(i).getType() == 2) {
+              newFile << "color: 'black'";
+            } else {
+              throw "ERRO! ao criar gráfico tipo de vela inválido";
+            }
+          }
+        }
+        newFile << " },\n";
+      }
+    }
+    newFile << dataCandleFooter;
+
+    for (auto j = 0; j < dados_l->size(); ++j) {
+      newFile << dataLineHeader;
+      for (long unsigned int i(0); i < dados_l->at(j).size(); ++i) {
+        newFile << "{ x: new Date(";
+        newFile << std::to_string(*dados_l->at(j).at(i).getDate() * 1000);
+        newFile << "), y: ";
+        newFile << std::to_string(*dados_l->at(j).at(i).getPrice());
+        newFile << " },\n";
+      }
+      newFile << dataLineFooter;
+    }
     newFile << scriptFooter;
     newFile << footer;
     newFile.close();
