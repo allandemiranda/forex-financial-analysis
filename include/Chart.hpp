@@ -36,7 +36,8 @@ class Chart {
   std::vector<Candlestick>::iterator candleSearch(std::vector<Candlestick>*,
                                                   time_t);
   void convertingToTimeVectorSecond(time_t*,time_t*);
-  void convertingToTimeVectorSEMANAS(time_t*,time_t*);
+  void convertingToTimeVectorMES(time_t*,time_t*);
+  void convertingToTimeVectorANO(time_t*,time_t*);
 
  public:
   std::vector<Candlestick> chart;

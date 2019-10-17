@@ -540,7 +540,7 @@ void Chart::convertingToTime(void) {
         data_final += (um_dia);  // Aumente uma hora
       }
     }
-    convertingToTimeVector(&data_inicial, &data_final);
+    convertingToTimeVectorMES(&data_inicial, &data_final);
   }
   if (*getTimeChart() == um_ano) {
     flag = false;
@@ -637,20 +637,203 @@ void Chart::convertingToTime(void) {
  * @param data_inicial Data de início da organização
  * @param data_final Data Final da organização
  */
-void Chart::convertingToTimeVectorSEMANAS(time_t* data_inicial,
-                                          time_t* data_final) {
-  //
+void Chart::convertingToTimeVectorANO(time_t* data_inicial,
+                                      time_t* data_final) {
+  std::string modificartempo_S = "D1";
+  setTimeChart(&modificartempo_S);
+  time_t data_inicial_sec = *data_inicial;
+  time_t data_final_sec = *data_final;
+  convertingToTimeVectorSecond(&data_inicial_sec, &data_final_sec);
+  modificartempo_S = "J1";
+  setTimeChart(&modificartempo_S);
+  std::vector<Candlestick> novo_grafico;
+  time_t data_inicial_a = *data_inicial;
+  time_t data_final_a = *data_final;
+  while (data_inicial_a < data_final_a) {
+    time_t new_tempo_final = data_inicial_a;
+    time_t new_tempo_inicial = data_inicial_a;
+    std::tm a;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { a.tm_hour = 0; }
+#pragma omp section
+      { a.tm_min = 0; }
+#pragma omp section
+      { a.tm_sec = 0; }
+#pragma omp section
+      { a.tm_mday = 1; }
+#pragma omp section
+      { a.tm_isdst = -1; }
+    }
+    if (std::localtime(&new_tempo_final)->tm_mon == 11) {
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { a.tm_mon = 0; }
+#pragma omp section
+        { a.tm_year = std::localtime(&new_tempo_final)->tm_year + 1; }
+      }
+    } else {
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { a.tm_mon = std::localtime(&new_tempo_final)->tm_mon + 1; }
+#pragma omp section
+        { a.tm_year = std::localtime(&new_tempo_final)->tm_year; }
+      }
+    }
+    new_tempo_final = std::mktime(&a);
+    std::tm b;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { b.tm_hour = 0; }
+#pragma omp section
+      { b.tm_min = 0; }
+#pragma omp section
+      { b.tm_sec = 0; }
+#pragma omp section
+      { b.tm_mday = 1; }
+#pragma omp section
+      { b.tm_year = std::localtime(&new_tempo_inicial)->tm_year; }
+#pragma omp section
+      { b.tm_mon = std::localtime(&new_tempo_inicial)->tm_mon; }
+#pragma omp section
+      { b.tm_isdst = -1; }
+    }
+    new_tempo_inicial = std::mktime(&b);
+    time_t zero = 0;
+    Candlestick vela(&zero, &new_tempo_inicial);
+    bool achou = false;
+    for (auto i(0u); i < chart.size(); ++i) {
+      if ((*chart.at(i).getDate() < new_tempo_final) and
+          (*chart.at(i).getDate() >= new_tempo_inicial)) {
+        vela = vela + chart.at(i);
+        achou = true;
+      } else {
+        if (achou) {
+          break;
+        }
+      }
+    }
+    novo_grafico.push_back(vela);
+    novo_grafico.shrink_to_fit();
+    data_inicial_a = new_tempo_final;
+  }
+  chart.clear();
+  chart.shrink_to_fit();
+  chart = novo_grafico;
+  novo_grafico.clear();
+  novo_grafico.shrink_to_fit();
 }
 
 /**
  * @brief Obtenha tempo inicial e final, organize o vetor do gráfico, para tempo
- * de um dia
+ * de uma semana
+ *
+ * @param data_inicial Data de início da organização
+ * @param data_final Data Final da organização
+ */
+void Chart::convertingToTimeVectorMES(time_t* data_inicial,
+                                      time_t* data_final) {
+  std::string modificartempo_S = "D1";
+  setTimeChart(&modificartempo_S);
+  time_t data_inicial_sec = *data_inicial;
+  time_t data_final_sec = *data_final;
+  convertingToTimeVectorSecond(&data_inicial_sec, &data_final_sec);
+  modificartempo_S = "J1";
+  setTimeChart(&modificartempo_S);
+  std::vector<Candlestick> novo_grafico;
+  time_t data_inicial_a = *data_inicial;
+  time_t data_final_a = *data_final;
+  while (data_inicial_a < data_final_a) {
+    time_t new_tempo_final = data_inicial_a;
+    time_t new_tempo_inicial = data_inicial_a;
+    std::tm a;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { a.tm_hour = 0; }
+#pragma omp section
+      { a.tm_min = 0; }
+#pragma omp section
+      { a.tm_sec = 0; }
+#pragma omp section
+      { a.tm_mday = 1; }
+#pragma omp section
+      { a.tm_isdst = -1; }
+    }
+    if (std::localtime(&new_tempo_final)->tm_mon == 11) {
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { a.tm_mon = 0; }
+#pragma omp section
+        { a.tm_year = std::localtime(&new_tempo_final)->tm_year + 1; }
+      }
+    } else {
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { a.tm_mon = std::localtime(&new_tempo_final)->tm_mon + 1; }
+#pragma omp section
+        { a.tm_year = std::localtime(&new_tempo_final)->tm_year; }
+      }
+    }
+    new_tempo_final = std::mktime(&a);
+    std::tm b;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { b.tm_hour = 0; }
+#pragma omp section
+      { b.tm_min = 0; }
+#pragma omp section
+      { b.tm_sec = 0; }
+#pragma omp section
+      { b.tm_mday = 1; }
+#pragma omp section
+      { b.tm_year = std::localtime(&new_tempo_inicial)->tm_year; }
+#pragma omp section
+      { b.tm_mon = std::localtime(&new_tempo_inicial)->tm_mon; }
+#pragma omp section
+      { b.tm_isdst = -1; }
+    }
+    new_tempo_inicial = std::mktime(&b);
+    time_t zero = 0;
+    Candlestick vela(&zero, &new_tempo_inicial);
+    bool achou = false;
+    for (auto i(0u); i < chart.size(); ++i) {
+      if ((*chart.at(i).getDate() < new_tempo_final) and
+          (*chart.at(i).getDate() >= new_tempo_inicial)) {
+        vela = vela + chart.at(i);
+        achou = true;
+      } else {
+        if (achou) {
+          break;
+        }
+      }
+    }
+    novo_grafico.push_back(vela);
+    novo_grafico.shrink_to_fit();
+    data_inicial_a = new_tempo_final;
+  }
+  chart.clear();
+  chart.shrink_to_fit();
+  chart = novo_grafico;
+  novo_grafico.clear();
+  novo_grafico.shrink_to_fit();
+}
+/**
+ * @brief Obtenha tempo inicial e final, organize o vetor do gráfico, para
+ * tempo de um dia
  *
  * @param data_inicial Data de início da organização
  * @param data_final Data Final da organização
  */
 void Chart::convertingToTimeVectorSecond(time_t* data_inicial,
-                                       time_t* data_final) {
+                                         time_t* data_final) {
   unsigned long numeroInteracoes =
       ((*data_final - *data_inicial) / *getTimeChart());
   std::vector<Candlestick> novo_chart;
