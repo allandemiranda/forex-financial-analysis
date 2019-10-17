@@ -45,7 +45,7 @@ Chart::~Chart(void) {}
  * @brief Defina o objeto Time Chart
  *
  * Tempos permitidos: "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15",
- * "M20", "M20","H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",  "J1",
+ * "M20", "M20","H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "J1",
  * "Y1"
  *
  * @param time Tempo do gráfico
@@ -53,11 +53,10 @@ Chart::~Chart(void) {}
 void Chart::setTimeChart(std::string* time) {
   std::vector<std::string> tempos_permitidos = {
       "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
-      "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "W1",  "J1",  "Y1"};
+      "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1", "J1",  "Y1"};
   // OBS: J1 = Mês 1
   // 1 hora = 3600 segundos
   // 1 dia = 86400 segundos
-  // 1 semana = 604800 segundos
   // 1 mês (30dias) = 2592000 segundos
   // 1 ano (365dias) = 31536000 segundos
   unsigned long time_final = 0;
@@ -89,15 +88,6 @@ void Chart::setTimeChart(std::string* time) {
             time->erase(0, 1);
             time_final =
                 (unsigned long)(86400 * (unsigned long)std::stoi(*time));
-          }
-#pragma omp cancel for
-        }
-        if (time->at(0) == 'W') {
-#pragma omp critical
-          {
-            time->erase(0, 1);
-            time_final =
-                (unsigned long)(604800 * (unsigned long)std::stoi(*time));
           }
 #pragma omp cancel for
         }
@@ -284,7 +274,6 @@ void Chart::convertingToTime(void) {
   time_t um_minuto = 60;       // segundos
   time_t uma_hora = 3600;      // segundos
   time_t um_dia = 86400;       // segundos
-  time_t uma_semana = 604800;  // segundos
   time_t um_mes = 2592000;     // segundos (30 dias)
   time_t um_ano = 31536000;    // segundos (365 dias)
   bool flag = true;
@@ -381,85 +370,6 @@ void Chart::convertingToTime(void) {
     } else {
       convertingToTimeVector(&data_inicial, &data_final);
     }
-  }
-  if (*getTimeChart() == uma_semana) {
-    flag = false;
-    time_t data_inicial = *chart.front().getDate();
-    time_t data_final = *chart.back().getDate();
-    char mbstr_inicial[5];
-    while (std::strftime(mbstr_inicial, sizeof(mbstr_inicial), "%M",
-                         std::localtime(&data_inicial))) {
-      // Voltar para minuto 00
-      std::string time_a;
-      time_a.push_back(mbstr_inicial[0]);
-      time_a.push_back(mbstr_inicial[1]);
-      if (time_a == "00") {
-        break;
-      } else {
-        data_inicial -= (um_minuto);  // Diminua um minuto
-      }
-    }
-    while (std::strftime(mbstr_inicial, sizeof(mbstr_inicial), "%H",
-                         std::localtime(&data_inicial))) {
-      // Voltar para horas 00
-      std::string time_a;
-      time_a.push_back(mbstr_inicial[0]);
-      time_a.push_back(mbstr_inicial[1]);
-      if (time_a == "00") {
-        break;
-      } else {
-        data_inicial -= (uma_hora);  // Diminua uma hora
-      }
-    }
-    while (std::strftime(mbstr_inicial, sizeof(mbstr_inicial), "%w",
-                         std::localtime(&data_inicial))) {
-      // Voltar para semana 0 -> domingo
-      std::string time_a;
-      time_a.push_back(mbstr_inicial[0]);
-      if (time_a == "0") {
-        break;
-      } else {
-        data_inicial -= (um_dia);  // Diminua um dia
-      }
-    }
-    data_final += (um_minuto);  // Aumente um minuto
-    // Avançar até o próximo 0 minutos
-    char mbstr_final[5];
-    while (std::strftime(mbstr_final, sizeof(mbstr_final), "%M",
-                         std::localtime(&data_final))) {
-      std::string time_a;
-      time_a.push_back(mbstr_final[0]);
-      time_a.push_back(mbstr_final[1]);
-      if (time_a == "00") {
-        break;
-      } else {
-        data_final += (um_minuto);  // Aumente um minuto
-      }
-    }
-    // Avançar até o próximo 00 horas
-    while (std::strftime(mbstr_final, sizeof(mbstr_final), "%H",
-                         std::localtime(&data_final))) {
-      std::string time_a;
-      time_a.push_back(mbstr_final[0]);
-      time_a.push_back(mbstr_final[1]);
-      if (time_a == "00") {
-        break;
-      } else {
-        data_final += (uma_hora);  // Aumente uma hora
-      }
-    }
-    // Avançar até o próximo semana 0
-    while (std::strftime(mbstr_final, sizeof(mbstr_final), "%w",
-                         std::localtime(&data_final))) {
-      std::string time_a;
-      time_a.push_back(mbstr_final[0]);
-      if (time_a == "0") {
-        break;
-      } else {
-        data_final += (um_dia);  // Aumente uma hora
-      }
-    }
-    convertingToTimeVectorSecond(&data_inicial, &data_final);
   }
   if (*getTimeChart() == um_mes) {
     flag = false;
