@@ -49,13 +49,24 @@ void LinePrice::setFinal(void) {
       {
         if ((firstTrend.at(i).trend >= 2) and
             (firstTrend.at(i).trend == last->trend)) {
-          last = &firstTrend.at(i);
+          if (trend) {
+            if (*firstTrend.at(i).candle->getClose() >=
+                *last->candle->getClose()) {
+              last = &firstTrend.at(i);
+            }
+          } else {
+            if (*firstTrend.at(i).candle->getClose() <=
+                *last->candle->getClose()) {
+              last = &firstTrend.at(i);
+            }
+          }
         }
       }
 #pragma omp section
       {
         if ((firstTrend.at(i).trend >= 2) and
             (firstTrend.at(i).trend != last->trend)) {
+          trend = !trend;
           Line nova_linha(last->candle->getDate(), last->candle->getClose());
           line.push_back(nova_linha);
           last = &firstTrend.at(i);
