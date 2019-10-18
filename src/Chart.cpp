@@ -26,8 +26,13 @@
  */
 Chart::Chart(std::string* file_name, std::string* chart_name,
              std::string* chart_time) {
-  setTimeChart(chart_time);
-  setNameChart(chart_name);
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { setTimeChart(chart_time); }
+#pragma omp section
+    { setNameChart(chart_name); }
+  }
   putenv(timeZoneChart.data());  // setart time zone
   openFile(file_name);
   cleanOutTime();
@@ -53,7 +58,7 @@ Chart::~Chart(void) {}
 void Chart::setTimeChart(std::string* time) {
   std::vector<std::string> tempos_permitidos = {
       "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
-      "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1", "J1",  "Y1"};
+      "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "J1",  "Y1"};
   // OBS: J1 = Mês 1
   // 1 hora = 3600 segundos
   // 1 dia = 86400 segundos
@@ -271,11 +276,11 @@ void Chart::cleanOutTime(void) {
  *
  */
 void Chart::convertingToTime(void) {
-  time_t um_minuto = 60;       // segundos
-  time_t uma_hora = 3600;      // segundos
-  time_t um_dia = 86400;       // segundos
-  time_t um_mes = 2592000;     // segundos (30 dias)
-  time_t um_ano = 31536000;    // segundos (365 dias)
+  time_t um_minuto = 60;     // segundos
+  time_t uma_hora = 3600;    // segundos
+  time_t um_dia = 86400;     // segundos
+  time_t um_mes = 2592000;   // segundos (30 dias)
+  time_t um_ano = 31536000;  // segundos (365 dias)
   bool flag = true;
   if (*getTimeChart() < uma_hora) {
     flag = false;
@@ -599,7 +604,7 @@ void Chart::convertingToTimeVectorANO(time_t* data_inicial,
 #pragma omp section
       { b.tm_isdst = -1; }
     }
-    new_tempo_inicial = std::mktime(&b);    
+    new_tempo_inicial = std::mktime(&b);
     time_t zero = 0;
     Candlestick vela(&zero, &new_tempo_inicial);
     bool achou = false;

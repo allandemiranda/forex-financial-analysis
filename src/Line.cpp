@@ -18,8 +18,13 @@
  * @param price Ponteiro da Cotação no ponto
  */
 Line::Line(time_t* date, pip_t* price) {
-  setDate(date);
-  setPrice(price);
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { setDate(date); }
+#pragma omp section
+    { setPrice(price); }
+  }
 }
 
 /**
