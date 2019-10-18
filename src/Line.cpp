@@ -14,17 +14,11 @@
 /**
  * @brief Construa um novo objeto Line:: Line
  *
- * @param date Ponteiro da Data do ponto
- * @param price Ponteiro da Cotação no ponto
+ * @param novo_nome Nome da linha
  */
-Line::Line(time_t* date, pip_t* price) {
-#pragma omp parallel sections
-  {
-#pragma omp section
-    { setDate(date); }
-#pragma omp section
-    { setPrice(price); }
-  }
+Line::Line(std::string novo_nome) {
+  nome = novo_nome;
+  nome.shrink_to_fit();
 }
 
 /**
@@ -34,29 +28,20 @@ Line::Line(time_t* date, pip_t* price) {
 Line::~Line(void) {}
 
 /**
- * @brief Obter o objeto Date
- *
- * @return time_t* Data do ponto
+ * @brief Construa um novo objeto Line:: Line
+ * 
  */
-time_t* Line::getDate(void) { return &date; }
+Line::Line(void) {
+  nome = "SEM NOME";
+  nome.shrink_to_fit();
+}
 
 /**
- * @brief Obter o objeto Price
- *
- * @return pip_t* Cotação do ponto
+ * @brief Defina o objeto Nome
+ * 
+ * @param novo_nome Nome da linha
  */
-pip_t* Line::getPrice(void) { return &price; }
-
-/**
- * @brief Defina o objeto Date
- *
- * @param new_date Data do ponto
- */
-void Line::setDate(time_t* new_date) { date = *new_date; }
-
-/**
- * @brief Defina o objeto Price
- *
- * @param new_price Cotação do ponto
- */
-void Line::setPrice(pip_t* new_price) { price = *new_price; }
+void Line::setNome(std::string novo_nome){
+  nome = novo_nome;
+  nome.shrink_to_fit();
+}

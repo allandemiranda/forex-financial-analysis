@@ -12,28 +12,32 @@
 #ifndef ZONE_HPP_
 #define ZONE_HPP_
 
-#include "Candlestick.hpp"
+#include "Pip.hpp"
+#include "Line.hpp"
 
 class Zone {
  private:
-  pip_t upLine = 0.0;
-  void setUpLine(pip_t*);
-  pip_t downLine = 0.0;
-  void setDownLine(pip_t*);
-  pip_t size = 0.0;
-  void setSize(pip_t*,pip_t*);
+  price_t upLine = 0.0;
+  void setUpLine(price_t*);
+  price_t downLine = 0.0;
+  void setDownLine(price_t*);
+  price_t size = 0.0;
+  void setSize(price_t*, price_t*);
   void setSize(void);
   unsigned long power = 0;
   void setPower(unsigned long*);
+  Line linhas[2];
 
  public:
-  Zone(pip_t*, pip_t*, unsigned long*);
+  Zone(price_t*, price_t*, unsigned long*, time_t*, time_t*);
   ~Zone(void);
-  pip_t* getUpLine(void);
-  pip_t* getDownLine(void);
-  pip_t* getSize(void);
+  price_t* getUpLine(void);
+  price_t* getDownLine(void);
+  price_t* getSize(void);
   unsigned long* getPower(void);
   bool operator<(Zone&);
+  Line getLinhaSuperior(void);
+  Line getLinhaInferior(void);
 };
 
 #endif

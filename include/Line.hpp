@@ -12,20 +12,19 @@
 #ifndef LINE_HPP_
 #define LINE_HPP_
 
-#include <ctime>
-#include "Candlestick.hpp"
+#include <string>
+#include <vector>
+#include "PointLine.hpp"
 
 class Line {
  private:
-  time_t date;
-  void setDate(time_t*);
-  pip_t price;
-  void setPrice(pip_t*);
+  std::string nome;
 
  public:
-  time_t* getDate(void);
-  pip_t* getPrice(void);
-  Line(time_t*, pip_t*);
+  void setNome(std::string);
+  std::vector<PointLine> linha;
+  Line(std::string);
+  Line(void);
   ~Line(void);
 };
 

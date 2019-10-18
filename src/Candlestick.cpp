@@ -66,22 +66,22 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
     }
 #pragma omp section
     {
-      pip_t open_new = std::stold(stick->at(2));
+      price_t open_new = std::stold(stick->at(2));
       setOpen(&open_new);
     }
 #pragma omp section
     {
-      pip_t close_new = std::stold(stick->at(5));
+      price_t close_new = std::stold(stick->at(5));
       setClose(&close_new);
     }
 #pragma omp section
     {
-      pip_t high_new = std::stold(stick->at(3));
+      price_t high_new = std::stold(stick->at(3));
       setHigh(&high_new);
     }
 #pragma omp section
     {
-      pip_t low_new = std::stold(stick->at(4));
+      price_t low_new = std::stold(stick->at(4));
       setLow(&low_new);
     }
 #pragma omp section
@@ -165,7 +165,7 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
           { setLowerShandowSize(getClose(), getLow()); }
 #pragma omp section
           {
-            pip_t num = 0.0;
+            price_t num = 0.0;
             setBodySize(&num, &num);
           }
         }
@@ -186,8 +186,9 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
  * @param new_low Valor mais baixo da vela
  * @param new_time Tempo da vela (em segundos)
  */
-Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
-                         pip_t* new_high, pip_t* new_low, time_t* new_time) {
+Candlestick::Candlestick(time_t* new_date, price_t* new_open,
+                         price_t* new_close, price_t* new_high,
+                         price_t* new_low, time_t* new_time) {
 #pragma omp parallel sections
   {
 #pragma omp section
@@ -257,7 +258,7 @@ Candlestick::Candlestick(time_t* new_date, pip_t* new_open, pip_t* new_close,
           { setLowerShandowSize(getClose(), getLow()); }
 #pragma omp section
           {
-            pip_t num = 0.0;
+            price_t num = 0.0;
             setBodySize(&num, &num);
           }
         }
@@ -302,9 +303,9 @@ std::vector<std::string> Candlestick::explode(const std::string* line,
 /**
  * @brief Obter o objeto Open
  *
- * @return pip_t* Valor de abertura
+ * @return price_t* Valor de abertura
  */
-pip_t* Candlestick::getOpen(void) {
+price_t* Candlestick::getOpen(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getOpen.";
   }
@@ -314,9 +315,9 @@ pip_t* Candlestick::getOpen(void) {
 /**
  * @brief Obter o objeto Close
  *
- * @return pip_t* Valor de fechamento
+ * @return price_t* Valor de fechamento
  */
-pip_t* Candlestick::getClose(void) {
+price_t* Candlestick::getClose(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getClose.";
   }
@@ -340,9 +341,9 @@ unsigned int* Candlestick::getType(void) {
 /**
  * @brief Obter o objeto High
  *
- * @return pip_t* Valor mais alto da vela
+ * @return price_t* Valor mais alto da vela
  */
-pip_t* Candlestick::getHigh(void) {
+price_t* Candlestick::getHigh(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getHigh.";
   }
@@ -352,9 +353,9 @@ pip_t* Candlestick::getHigh(void) {
 /**
  * @brief Obter o objeto Low
  *
- * @return pip_t* Valor mais baixo da vela
+ * @return price_t* Valor mais baixo da vela
  */
-pip_t* Candlestick::getLow(void) {
+price_t* Candlestick::getLow(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getLow.";
   }
@@ -364,9 +365,9 @@ pip_t* Candlestick::getLow(void) {
 /**
  * @brief Obter o objeto Upper Shandow Size
  *
- * @return pip_t* Tamanho da calda superior
+ * @return price_t* Tamanho da calda superior
  */
-pip_t* Candlestick::getUpperShandowSize(void) {
+price_t* Candlestick::getUpperShandowSize(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getUpperShandowSize.";
   }
@@ -376,9 +377,9 @@ pip_t* Candlestick::getUpperShandowSize(void) {
 /**
  * @brief Obter o objeto Lower Shandow Size
  *
- * @return pip_t* Tamanho da calda inferior
+ * @return price_t* Tamanho da calda inferior
  */
-pip_t* Candlestick::getLowerShandowSize(void) {
+price_t* Candlestick::getLowerShandowSize(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getLowerShandowSize.";
   }
@@ -388,9 +389,9 @@ pip_t* Candlestick::getLowerShandowSize(void) {
 /**
  * @brief Obter o objeto Body Size
  *
- * @return pip_t* Tamanho do corpo
+ * @return price_t* Tamanho do corpo
  */
-pip_t* Candlestick::getBodySize(void) {
+price_t* Candlestick::getBodySize(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getBodySize.";
   }
@@ -400,9 +401,9 @@ pip_t* Candlestick::getBodySize(void) {
 /**
  * @brief Obter o objeto Size
  *
- * @return pip_t* Tamanho total da vela
+ * @return price_t* Tamanho total da vela
  */
-pip_t* Candlestick::getSize(void) {
+price_t* Candlestick::getSize(void) {
   if (!*getStatus()) {
     throw "ERRO! Vela do tipo VOID, impossivel de obter getSize.";
   }
@@ -436,14 +437,14 @@ bool* Candlestick::getStatus(void) { return &status; }
  *
  * @param new_pip Novo valor de abertura
  */
-void Candlestick::setOpen(pip_t* new_pip) { open = *new_pip; }
+void Candlestick::setOpen(price_t* new_pip) { open = *new_pip; }
 
 /**
  * @brief Defina o objeto Close
  *
  * @param new_pip Novo valor de fechamento
  */
-void Candlestick::setClose(pip_t* new_pip) { close = *new_pip; }
+void Candlestick::setClose(price_t* new_pip) { close = *new_pip; }
 
 /**
  * @brief Defina o objeto Type
@@ -465,14 +466,14 @@ void Candlestick::setType(unsigned int* new_type) {
  *
  * @param new_pip Novo valor mais alto
  */
-void Candlestick::setHigh(pip_t* new_pip) { high = *new_pip; }
+void Candlestick::setHigh(price_t* new_pip) { high = *new_pip; }
 
 /**
  * @brief Defina o objeto Low
  *
  * @param new_pip Novo valor mais baixo
  */
-void Candlestick::setLow(pip_t* new_pip) { low = *new_pip; }
+void Candlestick::setLow(price_t* new_pip) { low = *new_pip; }
 
 /**
  * @brief Defina o objeto Upper Shandow Size
@@ -480,7 +481,7 @@ void Candlestick::setLow(pip_t* new_pip) { low = *new_pip; }
  * @param pip_high Valor mais alto a vela
  * @param number Valor inferior da calda alta
  */
-void Candlestick::setUpperShandowSize(pip_t* pip_high, pip_t* number) {
+void Candlestick::setUpperShandowSize(price_t* pip_high, price_t* number) {
   upperShandowSize = *pip_high - *number;
 }
 
@@ -490,7 +491,7 @@ void Candlestick::setUpperShandowSize(pip_t* pip_high, pip_t* number) {
  * @param number Valor superior da calda baixa
  * @param pip_low Valor mais baixo da vela
  */
-void Candlestick::setLowerShandowSize(pip_t* number, pip_t* pip_low) {
+void Candlestick::setLowerShandowSize(price_t* number, price_t* pip_low) {
   lowerShandowSize = *number - *pip_low;
 }
 
@@ -500,7 +501,7 @@ void Candlestick::setLowerShandowSize(pip_t* number, pip_t* pip_low) {
  * @param number_high Valor mais alto do corpo
  * @param number_low Valor mais baixo do corpo
  */
-void Candlestick::setBodySize(pip_t* number_high, pip_t* number_low) {
+void Candlestick::setBodySize(price_t* number_high, price_t* number_low) {
   bodySize = *number_high - *number_low;
 }
 
@@ -510,7 +511,7 @@ void Candlestick::setBodySize(pip_t* number_high, pip_t* number_low) {
  * @param pip_high Valor mais alto da vela
  * @param pip_low Valor mais baixo da vela
  */
-void Candlestick::setSize(pip_t* pip_high, pip_t* pip_low) {
+void Candlestick::setSize(price_t* pip_high, price_t* pip_low) {
   size = *pip_high - *pip_low;
 }
 
@@ -611,8 +612,8 @@ bool Candlestick::operator==(Candlestick& a) { return date == a.date; }
 Candlestick Candlestick::operator+(Candlestick& a) {
   if (status) {
     if (a.status) {
-      pip_t high_p;
-      pip_t low_p;
+      price_t high_p;
+      price_t low_p;
       time_t time_p;
 #pragma omp parallel sections
       {
@@ -669,3 +670,43 @@ Candlestick Candlestick::operator+(Candlestick& a) {
  * @param plus_time Tempo a ser adicionado
  */
 void Candlestick::addTime(time_t plus_time) { time = time + plus_time; }
+
+/**
+ * @brief Converta de Preço para Pip
+ *
+ * @param value Valor de entrada
+ * @return pip_t Valor de saída
+ */
+pip_t priceTOpip(price_t value) { return (value / 0.0001); }
+
+/**
+ * @brief Converta de Preço para Pip JPY
+ *
+ * @param value Valor de entrada
+ * @return pip_JPY_t Valor de saída
+ */
+pip_JPY_t priceTOpipJPY(price_t value) { return (value / 0.01); }
+
+/**
+ * @brief Converta de Pip para Preço
+ *
+ * @param value Valor de entrada
+ * @return price_t Valor de saída
+ */
+price_t pipToprice(pip_t value) { return (value * 0.0001); }
+
+/**
+ * @brief Converta de Pip JPY para Preço
+ *
+ * @param value Valor de entrada
+ * @return price_t Valor de saída
+ */
+price_t pipJPYTOprice(pip_JPY_t value) { return (value * 0.01); }
+
+/**
+ * @brief Converta de Pip JPY para Pip
+ *
+ * @param value Valor de entrada
+ * @return pip_t Valor de saída
+ */
+pip_t pipJPYTOpip(pip_JPY_t value) { return priceTOpip(pipJPYTOprice(value)); }

@@ -12,11 +12,12 @@
 #ifndef LINEPRICE_HPP_
 #define LINEPRICE_HPP_
 
+#include <string>
 #include <vector>
 #include "Chart.hpp"
 #include "Line.hpp"
 
-class LinePrice {
+class LinePrice : public Line{
  private:
   struct trendFlag {
     Candlestick *candle;
@@ -29,11 +30,10 @@ class LinePrice {
   trendFlag *last;
   std::vector<trendFlag> firstTrend;
   void setFirstTrend(Chart *, unsigned int *);
-  void setFinal(void);
+  void setFinal(std::string*);
 
  public:
-  std::vector<Line> line;
-  LinePrice(Chart *, unsigned int);
+  LinePrice(Chart *, unsigned int, std::string);
   ~LinePrice(void);
 };
 

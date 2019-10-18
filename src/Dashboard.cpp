@@ -79,7 +79,7 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
 
 Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
                      std::vector<Candlestick>* dados_c,
-                     std::vector<Line>* dados_l) {
+                     Line* dados_l) {
   setTitle(titulo);
   try {
     std::ofstream newFile;
@@ -120,11 +120,11 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
     }
     newFile << dataCandleFooter;
     newFile << dataLineHeader;
-    for (long unsigned int i(0); i < dados_l->size(); ++i) {
+    for (long unsigned int i(0); i < dados_l->linha.size(); ++i) {
       newFile << "{ x: new Date(";
-      newFile << std::to_string(*dados_l->at(i).getDate() * 1000);
+      newFile << std::to_string(*dados_l->linha.at(i).getDate() * 1000);
       newFile << "), y: ";
-      newFile << std::to_string(*dados_l->at(i).getPrice());
+      newFile << std::to_string(*dados_l->linha.at(i).getPrice());
       newFile << " },\n";
     }
     newFile << dataLineFooter;
@@ -138,7 +138,7 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
 
 Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
                      std::vector<Candlestick>* dados_c,
-                     std::vector<std::vector<Line>>* dados_l) {
+                     std::vector<Line>* dados_l) {
   setTitle(titulo);
   try {
     std::ofstream newFile;
@@ -181,11 +181,11 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
 
     for (unsigned long  j = 0; j < dados_l->size(); ++j) {
       newFile << dataLineHeader;
-      for (unsigned long i=0; i < dados_l->at(j).size(); ++i) {
+      for (unsigned long i=0; i < dados_l->at(j).linha.size(); ++i) {
         newFile << "{ x: new Date(";
-        newFile << std::to_string(*dados_l->at(j).at(i).getDate() * 1000);
+        newFile << std::to_string(*dados_l->at(j).linha.at(i).getDate() * 1000);
         newFile << "), y: ";
-        newFile << std::to_string(*dados_l->at(j).at(i).getPrice());
+        newFile << std::to_string(*dados_l->at(j).linha.at(i).getPrice());
         newFile << " },\n";
       }
       newFile << dataLineFooter;

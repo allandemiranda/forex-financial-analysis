@@ -2,7 +2,7 @@ var searchData=
 [
   ['cancel',['cancel',['../structompt__record__ompt__t.html#a14185f0b82589521571774e127eb5a4d',1,'ompt_record_ompt_t']]],
   ['candlesearch',['candleSearch',['../class_chart.html#a2d1f29dad61d3cf550bdee8cc3ea66d1',1,'Chart']]],
-  ['candlestick',['Candlestick',['../class_candlestick.html',1,'Candlestick'],['../class_candlestick.html#ac12dc1b40dd7b4def8e4d856636ffb0a',1,'Candlestick::Candlestick(time_t *, time_t *)'],['../class_candlestick.html#a7e0b26f65a32585afddd35bafe70f385',1,'Candlestick::Candlestick(std::vector&lt; std::string &gt; *)'],['../class_candlestick.html#ae312051a74ff1d429cc8e49f404a8eca',1,'Candlestick::Candlestick(time_t *, pip_t *, pip_t *, pip_t *, pip_t *, time_t *)']]],
+  ['candlestick',['Candlestick',['../class_candlestick.html',1,'Candlestick'],['../class_candlestick.html#ac12dc1b40dd7b4def8e4d856636ffb0a',1,'Candlestick::Candlestick(time_t *, time_t *)'],['../class_candlestick.html#a7e0b26f65a32585afddd35bafe70f385',1,'Candlestick::Candlestick(std::vector&lt; std::string &gt; *)'],['../class_candlestick.html#ae312051a74ff1d429cc8e49f404a8eca',1,'Candlestick::Candlestick(time_t *, price_t *, price_t *, price_t *, price_t *, time_t *)']]],
   ['candlestick_2ecpp',['Candlestick.cpp',['../_candlestick_8cpp.html',1,'']]],
   ['candlestick_2ehpp',['Candlestick.hpp',['../_candlestick_8hpp.html',1,'']]],
   ['chart',['Chart',['../class_chart.html',1,'Chart'],['../class_chart.html#a637d8e7bc66a1ce312a526052ae437a1',1,'Chart::chart()'],['../class_chart.html#a6901188beedfc842235d2eb2574bd443',1,'Chart::Chart(std::string *, std::string *, std::string *)']]],

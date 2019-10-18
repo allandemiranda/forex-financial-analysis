@@ -15,8 +15,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
-
-typedef long double pip_t;  // Unidade de medida forex
+#include "Pip.hpp"
 /*
  * Vela em formato puro:
  * DATE, TIME, OPEN, HIGH, LOW, CLOSE, TICKVOL, VOL, SPREAD
@@ -24,24 +23,24 @@ typedef long double pip_t;  // Unidade de medida forex
 
 class Candlestick {
  private:
-  pip_t open;  // Valor de abertura da vela
-  void setOpen(pip_t*);
-  pip_t close;  // Valor de fechamento da vela
-  void setClose(pip_t*);
+  price_t open;  // Valor de abertura da vela
+  void setOpen(price_t*);
+  price_t close;  // Valor de fechamento da vela
+  void setClose(price_t*);
   unsigned int type;  // Tipo de vela: 0 -> UP, 1 -> DOWN, 2 -> STABLE
   void setType(unsigned int*);
-  pip_t high;  // Valor mais alto da vela
-  void setHigh(pip_t*);
-  pip_t low;  // Valor mais baixo da vela
-  void setLow(pip_t*);
-  pip_t upperShandowSize;  // Volume da calda superior da vela
-  void setUpperShandowSize(pip_t*, pip_t*);
-  pip_t lowerShandowSize;  // Volume da calda inferior da vela
-  void setLowerShandowSize(pip_t*, pip_t*);
-  pip_t bodySize;  // Volume do corpo da vela
-  void setBodySize(pip_t*, pip_t*);
-  pip_t size;  // Volume da vela
-  void setSize(pip_t*, pip_t*);
+  price_t high;  // Valor mais alto da vela
+  void setHigh(price_t*);
+  price_t low;  // Valor mais baixo da vela
+  void setLow(price_t*);
+  price_t upperShandowSize;  // Volume da calda superior da vela
+  void setUpperShandowSize(price_t*, price_t*);
+  price_t lowerShandowSize;  // Volume da calda inferior da vela
+  void setLowerShandowSize(price_t*, price_t*);
+  price_t bodySize;  // Volume do corpo da vela
+  void setBodySize(price_t*, price_t*);
+  price_t size;  // Volume da vela
+  void setSize(price_t*, price_t*);
   time_t date;  // Data da vela
   void setDate(time_t*);
   time_t time;  // Tempo da vela
@@ -54,17 +53,17 @@ class Candlestick {
  public:
   Candlestick(time_t*, time_t*);
   Candlestick(std::vector<std::string>*);
-  Candlestick(time_t*, pip_t*, pip_t*, pip_t*, pip_t*, time_t*);
+  Candlestick(time_t*, price_t*, price_t*, price_t*, price_t*, time_t*);
   ~Candlestick(void);
-  pip_t* getOpen(void);
-  pip_t* getClose(void);
+  price_t* getOpen(void);
+  price_t* getClose(void);
   unsigned int* getType(void);
-  pip_t* getHigh(void);
-  pip_t* getLow(void);
-  pip_t* getUpperShandowSize(void);
-  pip_t* getLowerShandowSize(void);
-  pip_t* getBodySize(void);
-  pip_t* getSize(void);
+  price_t* getHigh(void);
+  price_t* getLow(void);
+  price_t* getUpperShandowSize(void);
+  price_t* getLowerShandowSize(void);
+  price_t* getBodySize(void);
+  price_t* getSize(void);
   time_t* getDate(void);
   time_t* getTime(void);
   void addTime(time_t);

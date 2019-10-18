@@ -18,11 +18,12 @@
  *
  * @param chart Ponteiro para o gráfico criado
  * @param normalisation Número de velas a ser normalizadas
+ * @param nomeLinha Nome da linha
  */
-LinePrice::LinePrice(Chart* chart,
-                     unsigned int normalisation) {
+LinePrice::LinePrice(Chart* chart, unsigned int normalisation,
+                     std::string nomeLinha) {
   setFirstTrend(chart, &normalisation);
-  setFinal();
+  setFinal(&nomeLinha);
 }
 
 /**
@@ -33,9 +34,11 @@ LinePrice::~LinePrice(void) {}
 
 /**
  * @brief Defina o objeto Final
- *
+ * 
+ * @param nomeLinha nome da linha
  */
-void LinePrice::setFinal(void) {
+void LinePrice::setFinal(std::string* nomeLinha) {
+  setNome(*nomeLinha);
   last = &firstTrend.at(0);
   if (last->trend == 2) {
     trend = true;
@@ -67,17 +70,26 @@ void LinePrice::setFinal(void) {
         if ((firstTrend.at(i).trend >= 2) and
             (firstTrend.at(i).trend != last->trend)) {
           trend = !trend;
-          Line nova_linha(last->candle->getDate(), last->candle->getClose());
-          line.push_back(nova_linha);
+          PointLine novo_ponto(last->candle->getDate(),
+                               last->candle->getClose());
+          linha.push_back(novo_ponto);
           last = &firstTrend.at(i);
         }
       }
     }
   }
-  Line nova_linha(last->candle->getDate(), last->candle->getClose());
-  line.push_back(nova_linha);
-  firstTrend.clear();
-  firstTrend.shrink_to_fit();
+  PointLine novo_ponto(last->candle->getDate(), last->candle->getClose());
+  linha.push_back(novo_ponto);
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { linha.shrink_to_fit(); }
+#pragma omp section
+    {
+      firstTrend.clear();
+      firstTrend.shrink_to_fit();
+    }
+  }
 }
 
 /**
@@ -86,8 +98,7 @@ void LinePrice::setFinal(void) {
  * @param chart Ponteiro para o gráfico criado
  * @param normalisation Ponteiro para número de velas a ser normalizadas
  */
-void LinePrice::setFirstTrend(Chart* chart_a,
-                              unsigned int* normalisation) {
+void LinePrice::setFirstTrend(Chart* chart_a, unsigned int* normalisation) {
 #pragma omp parallel
   {
 #pragma omp for
@@ -100,10 +111,12 @@ void LinePrice::setFirstTrend(Chart* chart_a,
             break;
           }
           if (*chart_a->chart.at(i - j).getStatus()) {
-            if (*chart_a->chart.at(i).getClose() > *chart_a->chart.at(i - j).getClose()) {
+            if (*chart_a->chart.at(i).getClose() >
+                *chart_a->chart.at(i - j).getClose()) {
               lineCompar.push_back(true);
             } else {
-              if (*chart_a->chart.at(i).getClose() < *chart_a->chart.at(i - j).getClose()) {
+              if (*chart_a->chart.at(i).getClose() <
+                  *chart_a->chart.at(i - j).getClose()) {
                 lineCompar.push_back(false);
               } else {
                 if (lineCompar.size() != 0) {
