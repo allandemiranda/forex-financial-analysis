@@ -33,6 +33,7 @@ class Zone {
   pip_t* getDownLine(void);
   pip_t* getSize(void);
   unsigned long* getPower(void);
+  bool operator<(Zone&);
 };
 
 #endif

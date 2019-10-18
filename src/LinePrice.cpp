@@ -19,7 +19,7 @@
  * @param chart Ponteiro para o gráfico criado
  * @param normalisation Número de velas a ser normalizadas
  */
-LinePrice::LinePrice(std::vector<Candlestick>* chart,
+LinePrice::LinePrice(Chart* chart,
                      unsigned int normalisation) {
   setFirstTrend(chart, &normalisation);
   setFinal();
@@ -86,24 +86,24 @@ void LinePrice::setFinal(void) {
  * @param chart Ponteiro para o gráfico criado
  * @param normalisation Ponteiro para número de velas a ser normalizadas
  */
-void LinePrice::setFirstTrend(std::vector<Candlestick>* chart,
+void LinePrice::setFirstTrend(Chart* chart_a,
                               unsigned int* normalisation) {
 #pragma omp parallel
   {
 #pragma omp for
-    for (unsigned long i = 0; i < chart->size(); ++i) {
-      if (*chart->at(i).getStatus()) {
+    for (unsigned long i = 0; i < chart_a->chart.size(); ++i) {
+      if (*chart_a->chart.at(i).getStatus()) {
         std::vector<bool> lineCompar;
         int normalisation_a = *normalisation;
         for (int j = 1; j <= normalisation_a; ++j) {
           if (((int)i - (j)) < 0) {
             break;
           }
-          if (*chart->at(i - j).getStatus()) {
-            if (*chart->at(i).getClose() > *chart->at(i - j).getClose()) {
+          if (*chart_a->chart.at(i - j).getStatus()) {
+            if (*chart_a->chart.at(i).getClose() > *chart_a->chart.at(i - j).getClose()) {
               lineCompar.push_back(true);
             } else {
-              if (*chart->at(i).getClose() < *chart->at(i - j).getClose()) {
+              if (*chart_a->chart.at(i).getClose() < *chart_a->chart.at(i - j).getClose()) {
                 lineCompar.push_back(false);
               } else {
                 if (lineCompar.size() != 0) {
@@ -126,7 +126,7 @@ void LinePrice::setFirstTrend(std::vector<Candlestick>* chart,
             max = false;
           }
           trendFlag flagFinal;
-          flagFinal.candle = &chart->at(i);
+          flagFinal.candle = &chart_a->chart.at(i);
           if (lineCompar.front() and max) {
             flagFinal.trend = 2;
           } else {

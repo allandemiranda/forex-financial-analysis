@@ -90,13 +90,21 @@ void Zone::setDownLine(pip_t* price) { downLine = *price; }
  */
 void Zone::setSize(pip_t* priceUp, pip_t* priceDown) {
   size = *priceDown - *priceUp;
+  if ((int)size % 2 == 0) {
+    throw "ERRO! Determine um númro impar apra o tamanho da zona";
+  }
 }
 
 /**
  * @brief Defina o objeto Size
  *
  */
-void Zone::setSize(void) { size = *getDownLine() - *getUpLine(); }
+void Zone::setSize(void) {
+  size = *getDownLine() - *getUpLine();
+  if ((int)size % 2 == 0) {
+    throw "ERRO! Determine um númro impar apra o tamanho da zona";
+  }
+}
 
 /**
  * @brief Defina o objeto Power
@@ -104,3 +112,12 @@ void Zone::setSize(void) { size = *getDownLine() - *getUpLine(); }
  * @param long Quantidade de vezes que a zona está na reversão de tendência
  */
 void Zone::setPower(unsigned long* event) { power = *event; }
+
+/**
+ * @brief Operador power < power
+ *
+ * @param a Operado
+ * @return true Este < a
+ * @return false Este >= a
+ */
+bool Zone::operator<(Zone& a) { return power < a.power; }
