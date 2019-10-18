@@ -849,6 +849,8 @@ void Chart::convertingToTimeVectorSecond(time_t* data_inicial,
   }
   novo_chart.pop_back();
   chart = novo_chart;
+  novo_chart.clear();
+  novo_chart.shrink_to_fit();
 }
 
 /**
@@ -955,6 +957,8 @@ void Chart::convertingToTimeVector(time_t* data_inicial, time_t* data_final) {
   }
   novo_chart.pop_back();
   chart = novo_chart;
+  novo_chart.clear();
+  novo_chart.shrink_to_fit();
 }
 
 /**

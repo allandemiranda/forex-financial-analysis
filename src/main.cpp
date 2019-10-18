@@ -21,11 +21,20 @@ int main(int argc, char const* argv[]) {
 
     LinePrice linha(&grafico, std::stoi(delta), "Tendência");
 
-    ZoneReversal zonas(&grafico, std::stoi(zonaTamanho), std::stoi(delta));
+    ZoneReversal zonas(&grafico, std::stoi(zonaTamanho), std::stoi(delta), 1546441200, 1567177200);
 
-    std::vector<Line> final = {linha,
-                               zonas.zones.at(1).getLinhaSuperior(),
-                               zonas.zones.at(1).getLinhaInferior()};
+    std::vector<Line> final = {linha};
+    for(auto i=0; i<5; ++i){
+      final.push_back(zonas.zones.at(i).getLinhaSuperior());
+      final.push_back(zonas.zones.at(i).getLinhaInferior());
+      std::cout << i+1 << " - ";
+      std::cout << *zonas.zones.at(i).getLinhaSuperior().linha.front().getPrice();
+      std::cout << "  ";
+      std::cout << *zonas.zones.at(i).getLinhaInferior().linha.front().getPrice();
+      std::cout << "  ";
+      std::cout << *zonas.zones.at(i).getPower();
+      std::cout << std::endl;
+    }
 
     Dashboard desenhar(grafico.getNameChart(), &arquivoFinal, &grafico.chart,
                        &final);

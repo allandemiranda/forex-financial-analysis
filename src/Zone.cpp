@@ -132,7 +132,7 @@ void Zone::setPower(unsigned long* event) { power = *event; }
  * @return true Este < a
  * @return false Este >= a
  */
-bool Zone::operator<(Zone& a) { return power < a.power; }
+bool Zone::operator<(Zone& a) { return power > a.power; }
 
 /**
  * @brief Obter o objeto Linha Superior

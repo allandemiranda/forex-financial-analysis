@@ -13,6 +13,8 @@
 #include <algorithm>
 #include "Candlestick.hpp"
 
+#include <iostream>  // deletar
+
 /**
  * @brief Construa um novo objeto Zone Reversal:: Zone Reversal
  *
@@ -36,7 +38,7 @@ ZoneReversal::ZoneReversal(Chart* chart_a, pip_t zoneSize,
   valores_unicos.erase(last, valores_unicos.end());
   valores_unicos.shrink_to_fit();
 
-  price_t half_zoneSize_price = *Pip(*getSizeOfZones() / 2).getPrice();
+  price_t half_zoneSize_price = *Pip((*getSizeOfZones() / 2), true).getPrice();
 
 #pragma omp parallel
   {
@@ -62,6 +64,7 @@ ZoneReversal::ZoneReversal(Chart* chart_a, pip_t zoneSize,
   }
 
   std::sort(zones.begin(), zones.end());
+  zones.shrink_to_fit();
 }
 
 ZoneReversal::ZoneReversal(Chart* chart_a, pip_t zoneSize,
@@ -81,7 +84,7 @@ ZoneReversal::ZoneReversal(Chart* chart_a, pip_t zoneSize,
   valores_unicos.erase(last, valores_unicos.end());
   valores_unicos.shrink_to_fit();
 
-  price_t half_zoneSize_price = *Pip(*getSizeOfZones() / 2).getPrice();
+  price_t half_zoneSize_price = *Pip((*getSizeOfZones() / 2), true).getPrice();
 
 #pragma omp parallel
   {
@@ -100,7 +103,9 @@ ZoneReversal::ZoneReversal(Chart* chart_a, pip_t zoneSize,
         }
       }
       if (poder > 1) {
-        Zone temporaria(&maior, &menor, &poder, &dataInicial, &dataFinal);
+        Zone temporaria(&maior, &menor, &poder,
+                        chart_a->chart.front().getDate(),
+                        chart_a->chart.back().getDate());
 #pragma omp critical
         { zones.push_back(temporaria); }
       }
@@ -108,6 +113,7 @@ ZoneReversal::ZoneReversal(Chart* chart_a, pip_t zoneSize,
   }
 
   std::sort(zones.begin(), zones.end());
+  zones.shrink_to_fit();
 }
 
 /**
