@@ -21,7 +21,7 @@ int main(int argc, char const* argv[]) {
 
     LinePrice linha(&grafico, std::stoi(delta), "Tendência");
 
-    ZoneReversal zonas(&grafico, std::stoi(zonaTamanho), std::stoi(delta), 1546441200, 1567177200);
+    ZoneReversal zonas(&grafico, std::stoi(zonaTamanho), std::stoi(delta), *grafico.chart.front().getDate(), 1546441200);
 
     std::vector<Line> final = {linha};
     for(auto i=0; i<5; ++i){
