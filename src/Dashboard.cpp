@@ -179,9 +179,9 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
     }
     newFile << dataCandleFooter;
 
-    for (auto j = 0; j < dados_l->size(); ++j) {
+    for (unsigned long  j = 0; j < dados_l->size(); ++j) {
       newFile << dataLineHeader;
-      for (long unsigned int i(0); i < dados_l->at(j).size(); ++i) {
+      for (unsigned long i=0; i < dados_l->at(j).size(); ++i) {
         newFile << "{ x: new Date(";
         newFile << std::to_string(*dados_l->at(j).at(i).getDate() * 1000);
         newFile << "), y: ";
