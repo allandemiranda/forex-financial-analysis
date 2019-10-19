@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Chart.hpp"
 #include "Dashboard.hpp"
+#include "Line.hpp"
 #include "LinePrice.hpp"
 #include "ReadingFolderFiles.hpp"
 #include "ZoneReversal.hpp"
@@ -13,31 +14,15 @@ int main(int argc, char const* argv[]) {
     std::string arquivo = argv[1];
     std::string tempo = argv[2];
     std::string delta = argv[3];
-    std::string zonaTamanho = argv[4];
     std::string nome = "TESTE";
     Chart grafico(&arquivo, &nome, &tempo);
     std::string arquivoFinal = "out/";
-    arquivoFinal += argv[5];
+    arquivoFinal += argv[4];
 
-    LinePrice linha(&grafico, std::stoi(delta), "Tendência");
-
-    ZoneReversal zonas(&grafico, std::stoi(zonaTamanho), std::stoi(delta), *grafico.chart.front().getDate(), 1546441200);
-
-    std::vector<Line> final = {linha};
-    for(auto i=0; i<5; ++i){
-      final.push_back(zonas.zones.at(i).getLinhaSuperior());
-      final.push_back(zonas.zones.at(i).getLinhaInferior());
-      std::cout << i+1 << " - ";
-      std::cout << *zonas.zones.at(i).getLinhaSuperior().linha.front().getPrice();
-      std::cout << "  ";
-      std::cout << *zonas.zones.at(i).getLinhaInferior().linha.front().getPrice();
-      std::cout << "  ";
-      std::cout << *zonas.zones.at(i).getPower();
-      std::cout << std::endl;
-    }
+    LinePrice linha(&grafico, std::stoi(delta), "Tendência");  
 
     Dashboard desenhar(grafico.getNameChart(), &arquivoFinal, &grafico.chart,
-                       &final);
+                       &linha);
 
     std::cout << grafico.chart.size() << " VELAS" << std::endl;
 

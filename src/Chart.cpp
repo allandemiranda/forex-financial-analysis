@@ -177,11 +177,9 @@ void Chart::openFile(std::string* name_file) {
         std::advance(apagar_inicio, 6);
         fileVector.back().erase(apagar_inicio, fileVector.back().end());
         fileVector.back().shrink_to_fit();
-        if ((++cont % 100000) == 0) {
-          fileVector.shrink_to_fit();
-        }
       }
     }
+    fileVector.shrink_to_fit();
   } catch (const std::ios_base::failure& e) {
     std::cerr << e.what() << '\n';
   }
