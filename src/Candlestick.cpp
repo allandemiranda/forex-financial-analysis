@@ -670,3 +670,20 @@ Candlestick Candlestick::operator+(Candlestick& a) {
  * @param plus_time Tempo a ser adicionado
  */
 void Candlestick::addTime(time_t plus_time) { time = time + plus_time; }
+
+/**
+ * @brief Defina o objeto Name
+ *
+ * @param new_name Novo nome para vela
+ */
+void Candlestick::setName(std::string new_name) {
+  name = new_name;
+  name.shrink_to_fit();
+}
+
+/**
+ * @brief Obter o objeto Name
+ *
+ * @return std::string* Ponteiro para o nome da Vela
+ */
+std::string* Candlestick::getName(void) { return &name; }

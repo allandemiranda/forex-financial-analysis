@@ -48,7 +48,8 @@ class Candlestick {
   bool status;  // Status da vela: true -> OK, false -> VOID
   void setStatus(bool*);
   std::vector<std::string> explode(const std::string*, char*);
-  std::string tz = "TZ=EET";  // Time Zone do banco de dados
+  std::string tz = "TZ=EET";   // Time Zone do banco de dados
+  std::string name;            // Nome da vela  
 
  public:
   Candlestick(time_t*, time_t*);
@@ -76,6 +77,8 @@ class Candlestick {
   bool operator>=(Candlestick&);
   bool operator==(Candlestick&);
   Candlestick operator+(Candlestick&);
+  std::string* getName(void);
+  void setName(std::string);
 };
 
 #endif

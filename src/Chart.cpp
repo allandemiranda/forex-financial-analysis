@@ -38,6 +38,7 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
   cleanOutTime();
   convertingToCandlestick();
   convertingToTime();
+  makeAverageCandleBody(&chart);
 }
 
 /**
@@ -1018,3 +1019,47 @@ time_t* Chart::getTimeChart(void) { return &timeChart; }
  * @return std::string* Aponta para o nome do gráfico
  */
 std::string* Chart::getNameChart(void) { return &nameChart; }
+
+/**
+ * @brief Crie o valor médio do corpo principal das velas do gráfico
+ *
+ * @param vector Vetor de velas
+ */
+void Chart::makeAverageCandleBody(std::vector<Candlestick>* vector) {
+  averageCandleBody = 0.0;
+  for (auto i : *vector) {
+    averageCandleBody += *i.getClose();
+  }
+  averageCandleBody = averageCandleBody / vector->size();
+}
+
+/**
+ * @brief Identificador de velas
+ *
+ * @param vela Vela
+ * @param margem Margem de erro em porcentagem
+ */
+void Chart::identifier(Candlestick* vela, float* margem) {
+  if (*vela->getType == 0) {
+    if ((*vela->getLowerShandowSize() == 0) and
+        (*vela->getUpperShandowSize() == 0)) {
+      if (*vela->getBodySize() >= averageCandleBody) {
+        vela->setName("WHITE MARUBOZU");
+      } else {
+        vela->setName("NONE");
+      }
+    } else {
+      if (*vela->getLowerShandowSize() == *vela->getUpperShandowSize()) {
+        if (*vela->getLowerShandowSize() >= (averageCandleBody*0.25)) {
+          vela->setName("WHITE SPINNING");
+        } else {
+          vela->setName("NONE");
+        }
+      } else {
+        if((*vela->getUpperShandowSize() >= 0) and (*vela->getUpperShandowSize() <= (*vela->getBodySize()*0.01))){
+          if()// terminar
+        }
+      }
+    }
+  }
+}

@@ -35,9 +35,12 @@ class Chart {
   std::string timeZoneChart = "TZ=EET";  // Time Zone do banco de dados
   std::vector<Candlestick>::iterator candleSearch(std::vector<Candlestick>*,
                                                   time_t);
-  void convertingToTimeVectorSecond(time_t*,time_t*);
-  void convertingToTimeVectorMES(time_t*,time_t*);
-  void convertingToTimeVectorANO(time_t*,time_t*);
+  void convertingToTimeVectorSecond(time_t*, time_t*);
+  void convertingToTimeVectorMES(time_t*, time_t*);
+  void convertingToTimeVectorANO(time_t*, time_t*);
+  void identifier(Candlestick*, float*);
+  price_t averageCandleBody;  // Média do tamanhod o corpo das velas
+  void makeAverageCandleBody(std::vector<Candlestick>*);  // faça a média
 
  public:
   std::vector<Candlestick> chart;
