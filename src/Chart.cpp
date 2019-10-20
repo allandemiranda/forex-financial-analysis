@@ -39,6 +39,15 @@ Chart::Chart(std::string* file_name, std::string* chart_name,
   convertingToCandlestick();
   convertingToTime();
   makeAverageCandleBody(&chart);
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned long i = 0; i < chart.size(); ++i) {
+      if (*chart.at(i).getStatus()) {
+        chart.at(i).setName(identifier(&chart.at(i)));
+      }
+    }
+  }
 }
 
 /**
@@ -168,7 +177,6 @@ void Chart::openFile(std::string* name_file) {
     std::string line;
     bool primeira_linha = true;
     char divisor = static_cast<char>(std::bitset<8>("00001001").to_ulong());
-    unsigned long cont = 0;
     while (std::getline(file, line)) {
       if (primeira_linha) {
         primeira_linha = false;
@@ -1027,39 +1035,145 @@ std::string* Chart::getNameChart(void) { return &nameChart; }
  */
 void Chart::makeAverageCandleBody(std::vector<Candlestick>* vector) {
   averageCandleBody = 0.0;
+  unsigned long cont_velas = 0;
   for (auto i : *vector) {
-    averageCandleBody += *i.getClose();
+    if (*i.getStatus()) {
+      averageCandleBody += *i.getBodySize();
+      ++cont_velas;
+    }
   }
-  averageCandleBody = averageCandleBody / vector->size();
+  averageCandleBody = averageCandleBody / cont_velas;
 }
 
 /**
  * @brief Identificador de velas
- *
+ * FOUR PRICE DOJI
+ * DRAGONFLY DOJI
+ * GRAVESTONE DOJI
+ * LONG-LEGGED DOJI
+ * WHITE MARUBOZU
+ * BLACK MARUBOZU
+ * WHITE SPINNING
+ * BLACK SPINNING
+ * WHITE HAMMER
+ * BLACK HAMMER
+ * WHITE INVERTED HAMMER
+ * BLACK INVERTED HAMMER
  * @param vela Vela
- * @param margem Margem de erro em porcentagem
+ * @return std::string Nome da vela
  */
-void Chart::identifier(Candlestick* vela, float* margem) {
-  if (*vela->getType == 0) {
-    if ((*vela->getLowerShandowSize() == 0) and
-        (*vela->getUpperShandowSize() == 0)) {
-      if (*vela->getBodySize() >= averageCandleBody) {
-        vela->setName("WHITE MARUBOZU");
-      } else {
-        vela->setName("NONE");
-      }
-    } else {
-      if (*vela->getLowerShandowSize() == *vela->getUpperShandowSize()) {
-        if (*vela->getLowerShandowSize() >= (averageCandleBody*0.25)) {
-          vela->setName("WHITE SPINNING");
+std::string Chart::identifier(Candlestick* vela) {
+  std::string nome_final;
+#pragma omp parallel sections
+  {
+#pragma omp section
+    {
+      if (*vela->getType() == 2) {
+        if (*vela->getUpperShandowSize() == 0) {
+          if (*vela->getLowerShandowSize() == 0) {
+            nome_final = "FOUR PRICE DOJI";
+          } else {
+            nome_final = "DRAGONFLY DOJI";
+          }
         } else {
-          vela->setName("NONE");
-        }
-      } else {
-        if((*vela->getUpperShandowSize() >= 0) and (*vela->getUpperShandowSize() <= (*vela->getBodySize()*0.01))){
-          if()// terminar
+          if (*vela->getLowerShandowSize() == 0) {
+            nome_final = "GRAVESTONE DOJI";
+          } else {
+            nome_final = "LONG-LEGGED DOJI";
+          }
         }
       }
     }
+#pragma omp section
+    {
+      if (*vela->getType() == 0) {
+        if (*vela->getUpperShandowSize() <= 0.0001) {
+          if (*vela->getLowerShandowSize() <= 0.0001) {
+            if (*vela->getBodySize() >= averageCandleBody) {
+              nome_final = "WHITE MARUBOZU";
+            }
+          }
+        }
+      }
+      if (*vela->getType() == 1) {
+        if (*vela->getUpperShandowSize() <= 0.0001) {
+          if (*vela->getLowerShandowSize() <= 0.0001) {
+            if (*vela->getBodySize() >= averageCandleBody) {
+              nome_final = "BLACK MARUBOZU";
+            }
+          }
+        }
+      }
+    }
+#pragma omp section
+    {
+      if (*vela->getType() == 0) {
+        if (*vela->getUpperShandowSize() >= averageCandleBody) {
+          if (*vela->getLowerShandowSize() >= averageCandleBody) {
+            if (*vela->getBodySize() <= averageCandleBody) {
+              nome_final = "WHITE SPINNING";
+            }
+          }
+        }
+      }
+      if (*vela->getType() == 1) {
+        if (*vela->getUpperShandowSize() >= averageCandleBody) {
+          if (*vela->getLowerShandowSize() >= averageCandleBody) {
+            if (*vela->getBodySize() <= averageCandleBody) {
+              nome_final = "BLACK SPINNING";
+            }
+          }
+        }
+      }
+    }
+#pragma omp section
+    {
+      if (*vela->getType() == 0) {
+        if (*vela->getUpperShandowSize() <= (averageCandleBody * 0.3)) {
+          if (*vela->getLowerShandowSize() >= (*vela->getBodySize() * 3)) {
+            if (*vela->getBodySize() <= averageCandleBody) {
+              nome_final = "WHITE HAMMER";
+            }
+          }
+        }
+      }
+      if (*vela->getType() == 1) {
+        if (*vela->getUpperShandowSize() <= (averageCandleBody * 0.3)) {
+          if (*vela->getLowerShandowSize() >= (*vela->getBodySize() * 3)) {
+            if (*vela->getBodySize() <= averageCandleBody) {
+              nome_final = "BLACK HAMMER";
+            }
+          }
+        }
+      }
+    }
+#pragma omp section
+    {
+      if (*vela->getType() == 0) {
+        if (*vela->getLowerShandowSize() <= (averageCandleBody * 0.3)) {
+          if (*vela->getUpperShandowSize() >= (*vela->getBodySize() * 3)) {
+            if (*vela->getBodySize() <= averageCandleBody) {
+              nome_final = "WHITE INVERTED HAMMER";
+            }
+          }
+        }
+      }
+      if (*vela->getType() == 1) {
+        if (*vela->getLowerShandowSize() <= (averageCandleBody * 0.3)) {
+          if (*vela->getUpperShandowSize() >= (*vela->getBodySize() * 3)) {
+            if (*vela->getBodySize() <= averageCandleBody) {
+              nome_final = "BLACK INVERTED HAMMER";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (nome_final.size() != 0) {
+    nome_final.shrink_to_fit();
+    return nome_final;
+  } else {
+    return "NONE";
   }
 }

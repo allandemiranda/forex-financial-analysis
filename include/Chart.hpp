@@ -38,7 +38,7 @@ class Chart {
   void convertingToTimeVectorSecond(time_t*, time_t*);
   void convertingToTimeVectorMES(time_t*, time_t*);
   void convertingToTimeVectorANO(time_t*, time_t*);
-  void identifier(Candlestick*, float*);
+  std::string identifier(Candlestick*);
   price_t averageCandleBody;  // Média do tamanhod o corpo das velas
   void makeAverageCandleBody(std::vector<Candlestick>*);  // faça a média
 

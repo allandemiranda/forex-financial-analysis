@@ -53,18 +53,21 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
         newFile << std::to_string(*dados->at(i).getClose());
         newFile << "], ";
         if (*dados->at(i).getType() == 0) {
-          newFile << "color: 'green'";
+          newFile << "color: 'green',";
         } else {
           if (*dados->at(i).getType() == 1) {
-            newFile << "color: 'red'";
+            newFile << "color: 'red',";
           } else {
             if (*dados->at(i).getType() == 2) {
-              newFile << "color: 'black'";
+              newFile << "color: 'black',";
             } else {
               throw "ERRO! ao criar gráfico tipo de vela inválido";
             }
           }
         }
+        newFile << "name: '";
+        newFile << *dados->at(i).getName();
+        newFile << "',";
         newFile << " },\n";
       }
     }
@@ -103,18 +106,21 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
         newFile << std::to_string(*dados_c->at(i).getClose());
         newFile << "], ";
         if (*dados_c->at(i).getType() == 0) {
-          newFile << "color: 'green'";
+          newFile << "color: 'green',";
         } else {
           if (*dados_c->at(i).getType() == 1) {
-            newFile << "color: 'red'";
+            newFile << "color: 'red',";
           } else {
             if (*dados_c->at(i).getType() == 2) {
-              newFile << "color: 'black'";
+              newFile << "color: 'black',";
             } else {
               throw "ERRO! ao criar gráfico tipo de vela inválido";
             }
           }
         }
+        newFile << "name: '";
+        newFile << *dados_c->at(i).getName();
+        newFile << "',";
         newFile << " },\n";
       }
     }
@@ -162,18 +168,21 @@ Dashboard::Dashboard(std::string* titulo, std::string* arquivo,
         newFile << std::to_string(*dados_c->at(i).getClose());
         newFile << "], ";
         if (*dados_c->at(i).getType() == 0) {
-          newFile << "color: 'green'";
+          newFile << "color: 'green',";
         } else {
           if (*dados_c->at(i).getType() == 1) {
-            newFile << "color: 'red'";
+            newFile << "color: 'red',";
           } else {
             if (*dados_c->at(i).getType() == 2) {
-              newFile << "color: 'black'";
+              newFile << "color: 'black',";
             } else {
               throw "ERRO! ao criar gráfico tipo de vela inválido";
             }
           }
         }
+        newFile << "name: '";
+        newFile << *dados_c->at(i).getName();
+        newFile << "',";
         newFile << " },\n";
       }
     }
