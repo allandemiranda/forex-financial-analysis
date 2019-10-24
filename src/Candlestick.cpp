@@ -604,6 +604,15 @@ bool Candlestick::operator>=(Candlestick& a) { return date >= a.date; }
 bool Candlestick::operator==(Candlestick& a) { return date == a.date; }
 
 /**
+ * @brief sobrecarga de operador ==
+ * 
+ * @param a Tempo para comparar com tempo de uma vela
+ * @return true São iguais
+ * @return false São diferentes
+ */
+bool Candlestick::operator==(time_t a) { return date == a; }
+
+/**
  * @brief sobrecarga de operador +
  *
  * @param a Vela a somar

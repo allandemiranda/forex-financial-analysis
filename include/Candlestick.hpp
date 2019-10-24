@@ -76,6 +76,7 @@ class Candlestick {
   bool operator>(Candlestick&);
   bool operator>=(Candlestick&);
   bool operator==(Candlestick&);
+  bool operator==(time_t);
   Candlestick operator+(Candlestick&);
   std::string* getName(void);
   void setName(std::string);
