@@ -163,7 +163,7 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
             << std::endl;
   std::cout << std::endl;
 
-  if (diferencaPositiva.size() > 0) { 
+  if (diferencaPositiva.size() > 0) {
     std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
               << ((float)diferencaPositiva.size() * (float)100) /
                      (float)(diferencaPositiva.size() +
@@ -234,27 +234,29 @@ void ShotHammer(std::string arquivo, std::string tempo) {
       continue;
     }
     if (*grafico.chart.at(i).getName() == "WHITE HAMMER") {
-      if (*grafico.chart.at(i - 1).getClose() <
-          *grafico.chart.at(i - 5).getClose()) {
-        if (*grafico.chart.at(i - 1).getClose() >=
-            *grafico.chart.at(i).getClose()) {
-          if ((*grafico.chart.at(i + 1).getType() == 0) and
-              (*grafico.chart.at(i + 2).getType() == 0)) {
-            if (*grafico.chart.at(i + 1).getOpen() >=
-                *grafico.chart.at(i).getClose()) {
-              if (*grafico.chart.at(i + 2).getClose() >
-                  *grafico.chart.at(i + 1).getClose()) {
-                relato finala;
-                finala.data = grafico.chart.at(i).getDate();
-                finala.ganho = *grafico.chart.at(i + 2).getClose() -
-                               *grafico.chart.at(i + 1).getClose();
-                diferencaPositiva.push_back(finala);
-              } else {
-                relato finala;
-                finala.data = grafico.chart.at(i).getDate();
-                finala.ganho = *grafico.chart.at(i + 1).getClose() -
-                               *grafico.chart.at(i + 2).getClose();
-                diferencaNegativa.push_back(finala);
+      if (*grafico.chart.at(i - 1).getType() == 1) {
+        if (*grafico.chart.at(i - 1).getClose() <
+            *grafico.chart.at(i - 5).getClose()) {
+          if (*grafico.chart.at(i - 1).getClose() >=
+              *grafico.chart.at(i).getClose()) {
+            if (*grafico.chart.at(i + 1).getType() == 0) {
+              if (*grafico.chart.at(i + 1).getOpen() >=
+                  *grafico.chart.at(i).getClose()) {
+                if (*grafico.chart.at(i + 2).getType() == 0) {
+                  relato finala;
+                  finala.data = grafico.chart.at(i).getDate();
+                  finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                  diferencaPositiva.push_back(finala);
+                } else {
+                  relato finala;
+                  finala.data = grafico.chart.at(i).getDate();
+                  if (*grafico.chart.at(i + 2).getType() == 2) {
+                    finala.ganho = 0;
+                  } else {
+                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                  }
+                  diferencaNegativa.push_back(finala);
+                }
               }
             }
           }
@@ -264,22 +266,22 @@ void ShotHammer(std::string arquivo, std::string tempo) {
             *grafico.chart.at(i - 5).getClose()) {
           if (*grafico.chart.at(i - 1).getClose() <=
               *grafico.chart.at(i).getOpen()) {
-            if ((*grafico.chart.at(i + 1).getType() == 1) and
-                (*grafico.chart.at(i + 2).getType() == 1)) {
+            if (*grafico.chart.at(i + 1).getType() == 1) {
               if (*grafico.chart.at(i + 1).getOpen() <=
                   *grafico.chart.at(i).getOpen()) {
-                if (*grafico.chart.at(i + 2).getClose() <
-                    *grafico.chart.at(i + 1).getClose()) {
+                if (*grafico.chart.at(i + 2).getType() == 1) {
                   relato finala;
                   finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 2).getClose() -
-                                 *grafico.chart.at(i + 1).getClose();
+                  finala.ganho = *grafico.chart.at(i + 2).getBodySize();
                   diferencaPositiva.push_back(finala);
                 } else {
                   relato finala;
                   finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 1).getClose() -
-                                 *grafico.chart.at(i + 2).getClose();
+                  if (*grafico.chart.at(i + 2).getType() == 2) {
+                    finala.ganho = 0.0;
+                  } else {
+                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                  }
                   diferencaNegativa.push_back(finala);
                 }
               }
@@ -289,54 +291,56 @@ void ShotHammer(std::string arquivo, std::string tempo) {
       }
     } else {
       if (*grafico.chart.at(i).getName() == "BLACK HAMMER") {
-        if (*grafico.chart.at(i - 1).getClose() <
-            *grafico.chart.at(i - 5).getClose()) {
-          if (*grafico.chart.at(i - 1).getClose() >=
-              *grafico.chart.at(i).getOpen()) {
-            if ((*grafico.chart.at(i + 1).getType() == 0) and
-                (*grafico.chart.at(i + 2).getType() == 0)) {
-              if (*grafico.chart.at(i + 1).getOpen() >=
-                  *grafico.chart.at(i).getOpen()) {
-                if (*grafico.chart.at(i + 2).getClose() >
-                    *grafico.chart.at(i + 1).getClose()) {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 2).getClose() -
-                                 *grafico.chart.at(i + 1).getClose();
-                  diferencaPositiva.push_back(finala);
-                } else {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 1).getClose() -
-                                 *grafico.chart.at(i + 2).getClose();
-                  diferencaNegativa.push_back(finala);
+        if (*grafico.chart.at(i - 1).getType() == 1) {
+          if (*grafico.chart.at(i - 1).getClose() <
+              *grafico.chart.at(i - 5).getClose()) {
+            if (*grafico.chart.at(i - 1).getClose() >=
+                *grafico.chart.at(i).getOpen()) {
+              if (*grafico.chart.at(i + 1).getType() == 0) {
+                if (*grafico.chart.at(i + 1).getOpen() >=
+                    *grafico.chart.at(i).getOpen()) {
+                  if (*grafico.chart.at(i + 2).getType() == 0) {
+                    relato finala;
+                    finala.data = grafico.chart.at(i).getDate();
+                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                    diferencaPositiva.push_back(finala);
+                  } else {
+                    relato finala;
+                    finala.data = grafico.chart.at(i).getDate();
+                    if (*grafico.chart.at(i + 2).getType() == 2) {
+                      finala.ganho = 0.0;
+                    } else {
+                      finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                    }
+                    diferencaNegativa.push_back(finala);
+                  }
                 }
               }
             }
           }
-        }
-      } else {
-        if (*grafico.chart.at(i - 1).getClose() >
-            *grafico.chart.at(i - 5).getClose()) {
-          if (*grafico.chart.at(i - 1).getClose() <=
-              *grafico.chart.at(i).getClose()) {
-            if ((*grafico.chart.at(i + 1).getType() == 1) and
-                (*grafico.chart.at(i + 2).getType() == 1)) {
-              if (*grafico.chart.at(i + 1).getOpen() <=
-                  *grafico.chart.at(i).getClose()) {
-                if (*grafico.chart.at(i + 2).getClose() <
-                    *grafico.chart.at(i + 1).getClose()) {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 2).getClose() -
-                                 *grafico.chart.at(i + 1).getClose();
-                  diferencaPositiva.push_back(finala);
-                } else {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 1).getClose() -
-                                 *grafico.chart.at(i + 2).getClose();
-                  diferencaNegativa.push_back(finala);
+        } else {
+          if (*grafico.chart.at(i - 1).getClose() >
+              *grafico.chart.at(i - 5).getClose()) {
+            if (*grafico.chart.at(i - 1).getClose() <=
+                *grafico.chart.at(i).getClose()) {
+              if (*grafico.chart.at(i + 1).getType() == 1) {
+                if (*grafico.chart.at(i + 1).getOpen() <=
+                    *grafico.chart.at(i).getClose()) {
+                  if (*grafico.chart.at(i + 2).getType() == 1) {
+                    relato finala;
+                    finala.data = grafico.chart.at(i).getDate();
+                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                    diferencaPositiva.push_back(finala);
+                  } else {
+                    relato finala;
+                    finala.data = grafico.chart.at(i).getDate();
+                    if (*grafico.chart.at(i + 2).getType() == 2) {
+                      finala.ganho = 0.0;
+                    } else {
+                      finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                    }
+                    diferencaNegativa.push_back(finala);
+                  }
                 }
               }
             }
@@ -351,7 +355,7 @@ void ShotHammer(std::string arquivo, std::string tempo) {
 
   std::string tz = "TZ=America/Recife";
   putenv(tz.data());
-  std::cout << "    Análise Long Candle Plus Doji   " << std::endl;
+  std::cout << "    Análise Shot Hammer   " << std::endl;
   std::cout << std::endl;
   std::cout << "Arquivo:  " << arquivo << std::endl;
   std::cout << std::endl;
