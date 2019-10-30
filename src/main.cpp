@@ -32,7 +32,7 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
         !*grafico.chart.at(i + 3).getStatus()) {
       continue;
     }
-    if (*grafico.chart.at(i).getName() == "WHITE MARUBOZU") {
+    if (*grafico.chart.at(i).getName() == "WHITE MARUBOZU") { 
       if ((*grafico.chart.at(i + 1).getName() == "FOUR PRICE DOJI") or
           (*grafico.chart.at(i + 1).getName() == "DRAGONFLY DOJI") or
           (*grafico.chart.at(i + 1).getName() == "GRAVESTONE DOJI") or
