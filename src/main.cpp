@@ -228,7 +228,7 @@ void ShotHammer(std::string arquivo, std::string tempo) {
   for (unsigned long i = 6; i < grafico.chart.size() - 3; ++i) {
     if (!*grafico.chart.at(i).getStatus() or
         !*grafico.chart.at(i - 1).getStatus() or
-        !*grafico.chart.at(i - 2).getStatus() or
+        !*grafico.chart.at(i - 5).getStatus() or
         !*grafico.chart.at(i + 1).getStatus() or
         !*grafico.chart.at(i + 2).getStatus()) {
       continue;
@@ -236,8 +236,7 @@ void ShotHammer(std::string arquivo, std::string tempo) {
     if (*grafico.chart.at(i).getName() == "WHITE HAMMER") {
       if (*grafico.chart.at(i - 1).getType() == 1) {
         if (*grafico.chart.at(i - 1).getClose() <
-            *grafico.chart.at(i - 2).getClose()) {
-              //
+            *grafico.chart.at(i - 5).getClose()) {
           if (*grafico.chart.at(i - 1).getClose() >=
               *grafico.chart.at(i).getClose()) {
             if (*grafico.chart.at(i + 1).getType() == 0) {
@@ -264,8 +263,7 @@ void ShotHammer(std::string arquivo, std::string tempo) {
         }
       } else {
         if (*grafico.chart.at(i - 1).getClose() >
-            *grafico.chart.at(i - 2).getClose()) {
-          //
+            *grafico.chart.at(i - 5).getClose()) {
           if (*grafico.chart.at(i - 1).getClose() <=
               *grafico.chart.at(i).getOpen()) {
             if (*grafico.chart.at(i + 1).getType() == 1) {
@@ -295,8 +293,7 @@ void ShotHammer(std::string arquivo, std::string tempo) {
       if (*grafico.chart.at(i).getName() == "BLACK HAMMER") {
         if (*grafico.chart.at(i - 1).getType() == 1) {
           if (*grafico.chart.at(i - 1).getClose() <
-              *grafico.chart.at(i - 2).getClose()) {
-                //
+              *grafico.chart.at(i - 5).getClose()) {
             if (*grafico.chart.at(i - 1).getClose() >=
                 *grafico.chart.at(i).getOpen()) {
               if (*grafico.chart.at(i + 1).getType() == 0) {
@@ -323,8 +320,7 @@ void ShotHammer(std::string arquivo, std::string tempo) {
           }
         } else {
           if (*grafico.chart.at(i - 1).getClose() >
-              *grafico.chart.at(i - 2).getClose()) {
-                //
+              *grafico.chart.at(i - 5).getClose()) {
             if (*grafico.chart.at(i - 1).getClose() <=
                 *grafico.chart.at(i).getClose()) {
               if (*grafico.chart.at(i + 1).getType() == 1) {
