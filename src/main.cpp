@@ -148,6 +148,10 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
   std::cout << std::endl;
   std::cout << "  ----------  " << std::endl;
   std::cout << std::endl;
+  std::cout << "  Total de casos: "
+            << (diferencaPositiva.size() + diferencaNegativa.size())
+            << std::endl;
+  std::cout << std::endl;
 
   std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
             << ((float)diferencaPositiva.size() * (float)100) /
@@ -394,6 +398,10 @@ void ShotHammer(std::string arquivo, std::string tempo) {
 
   std::cout << std::endl;
   std::cout << "  ----------  " << std::endl;
+  std::cout << std::endl;
+  std::cout << "  Total de casos: "
+            << (diferencaPositiva.size() + diferencaNegativa.size())
+            << std::endl;
   std::cout << std::endl;
 
   std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
