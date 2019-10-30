@@ -1,0 +1,10 @@
+    Análise Long Candle Plus Doji   
+
+Arquivo:  ../EURUSD.csv
+
+Tempo Gráfico: H8
+
+  ----------  
+
+    Padrões Positivos   
+
