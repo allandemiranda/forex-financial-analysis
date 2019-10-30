@@ -60,14 +60,14 @@ Chart::~Chart(void) {}
  * @brief Defina o objeto Time Chart
  *
  * Tempos permitidos: "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15",
- * "M20", "M20","H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "J1",
+ * "M20", "M30","H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "J1",
  * "Y1"
  *
  * @param time Tempo do gráfico
  */
 void Chart::setTimeChart(std::string* time) {
   std::vector<std::string> tempos_permitidos = {
-      "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M20",
+      "M1", "M2", "M3", "M4", "M5", "M6", "M10", "M12", "M15", "M20", "M30",
       "H1", "H2", "H3", "H4", "H6", "H8", "H12", "D1",  "J1",  "Y1"};
   // OBS: J1 = Mês 1
   // 1 hora = 3600 segundos
