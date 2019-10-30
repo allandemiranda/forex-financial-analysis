@@ -12,7 +12,7 @@
 
 /**
  * @brief Função Relatório método Long Candle Plus Doji
- * Verifica se o padãao é positivo ao ser identificado, com tempo de vida de
+ * Verifica se o padão é positivo ao ser identificado, com tempo de vida de
  * mais duas velas
  * @param arquivo Arquivo de velas
  * @param tempo Tempo gráfico
@@ -185,6 +185,13 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
             << " velas" << std::endl;
 }
 
+/**
+ * @brief Função Relatório método Shot Hammer
+ * Verifica seo padão é posiitivo ao ser identificado, com tempo de vida da vela
+ * sequinte, levando em conta que existe uma tendência de 4 velas anteriores
+ * @param arquivo Arquivo de velas
+ * @param tempo Tempo Gráfico
+ */
 void ShotHammer(std::string arquivo, std::string tempo) {
   std::string nome = "Shot Hammer";
   std::string TimeFinalSalvar = tempo;
