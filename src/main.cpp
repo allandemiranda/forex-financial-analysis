@@ -104,11 +104,11 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
                                "%d/%m/%Y %H:%M")
               << " " << *Pip(diferencaPositiva.at(i).ganho).getPip() << " pip"
               << std::endl;
-    if (maiorPositivo.ganho < diferencaPositiva.at(i).ganho) {
+    if (maiorPositivo.ganho <= diferencaPositiva.at(i).ganho) {
       maiorPositivo.ganho = diferencaPositiva.at(i).ganho;
       maiorPositivo.data = diferencaPositiva.at(i).data;
     }
-    if (menorPositivo.ganho > diferencaPositiva.at(i).ganho) {
+    if (menorPositivo.ganho >= diferencaPositiva.at(i).ganho) {
       menorPositivo.ganho = diferencaPositiva.at(i).ganho;
       menorPositivo.data = diferencaPositiva.at(i).data;
     }
@@ -133,11 +133,11 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
                                "%d/%m/%Y %H:%M")
               << " " << *Pip(diferencaNegativa.at(i).ganho).getPip() << " pip"
               << std::endl;
-    if (maiorNegativa.ganho < diferencaNegativa.at(i).ganho) {
+    if (maiorNegativa.ganho <= diferencaNegativa.at(i).ganho) {
       maiorNegativa.ganho = diferencaNegativa.at(i).ganho;
       maiorNegativa.data = diferencaNegativa.at(i).data;
     }
-    if (menorNegativa.ganho > diferencaNegativa.at(i).ganho) {
+    if (menorNegativa.ganho >= diferencaNegativa.at(i).ganho) {
       menorNegativa.ganho = diferencaNegativa.at(i).ganho;
       menorNegativa.data = diferencaNegativa.at(i).data;
     }
@@ -351,11 +351,11 @@ void ShotHammer(std::string arquivo, std::string tempo) {
                                "%d/%m/%Y %H:%M")
               << " " << *Pip(diferencaPositiva.at(i).ganho).getPip() << " pip"
               << std::endl;
-    if (maiorPositivo.ganho < diferencaPositiva.at(i).ganho) {
+    if (maiorPositivo.ganho <= diferencaPositiva.at(i).ganho) {
       maiorPositivo.ganho = diferencaPositiva.at(i).ganho;
       maiorPositivo.data = diferencaPositiva.at(i).data;
     }
-    if (menorPositivo.ganho > diferencaPositiva.at(i).ganho) {
+    if (menorPositivo.ganho >= diferencaPositiva.at(i).ganho) {
       menorPositivo.ganho = diferencaPositiva.at(i).ganho;
       menorPositivo.data = diferencaPositiva.at(i).data;
     }
@@ -380,11 +380,11 @@ void ShotHammer(std::string arquivo, std::string tempo) {
                                "%d/%m/%Y %H:%M")
               << " " << *Pip(diferencaNegativa.at(i).ganho).getPip() << " pip"
               << std::endl;
-    if (maiorNegativa.ganho < diferencaNegativa.at(i).ganho) {
+    if (maiorNegativa.ganho <= diferencaNegativa.at(i).ganho) {
       maiorNegativa.ganho = diferencaNegativa.at(i).ganho;
       maiorNegativa.data = diferencaNegativa.at(i).data;
     }
-    if (menorNegativa.ganho > diferencaNegativa.at(i).ganho) {
+    if (menorNegativa.ganho >= diferencaNegativa.at(i).ganho) {
       menorNegativa.ganho = diferencaNegativa.at(i).ganho;
       menorNegativa.data = diferencaNegativa.at(i).data;
     }
