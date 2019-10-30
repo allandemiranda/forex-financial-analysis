@@ -163,11 +163,12 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
             << std::endl;
   std::cout << std::endl;
 
-  std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
-            << ((float)diferencaPositiva.size() * (float)100) /
-                   (float)(diferencaPositiva.size() + diferencaNegativa.size())
-            << "%" << std::endl;
   if (diferencaPositiva.size() > 0) {
+    std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
+              << ((float)diferencaPositiva.size() * (float)100) /
+                     (float)(diferencaPositiva.size() +
+                             diferencaNegativa.size())
+              << "%" << std::endl;
     std::cout << "Maior Positivo: "
               << std::put_time(std::localtime(maiorPositivo.data),
                                "%d/%m/%Y %H:%M")
@@ -430,12 +431,12 @@ void ShotHammer(std::string arquivo, std::string tempo) {
             << (diferencaPositiva.size() + diferencaNegativa.size())
             << std::endl;
   std::cout << std::endl;
-
-  std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
-            << ((float)diferencaPositiva.size() * (float)100) /
-                   (float)(diferencaPositiva.size() + diferencaNegativa.size())
-            << "%" << std::endl;
   if (diferencaPositiva.size() > 0) {
+    std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
+              << ((float)diferencaPositiva.size() * (float)100) /
+                     (float)(diferencaPositiva.size() +
+                             diferencaNegativa.size())
+              << "%" << std::endl;
     std::cout << "Maior Positivo: "
               << std::put_time(std::localtime(maiorPositivo.data),
                                "%d/%m/%Y %H:%M")
