@@ -163,7 +163,7 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
             << std::endl;
   std::cout << std::endl;
 
-  if (diferencaPositiva.size() > 0) {
+  if (diferencaPositiva.size() > 0) { 
     std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
               << ((float)diferencaPositiva.size() * (float)100) /
                      (float)(diferencaPositiva.size() +
