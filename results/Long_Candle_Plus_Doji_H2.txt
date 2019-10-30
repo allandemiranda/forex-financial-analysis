@@ -8,3 +8,19 @@ Tempo Gráfico: H2
 
     Padrões Positivos   
 
+ZERO
+
+  ----------  
+
+    Padrões Negativos   
+
+ZERO
+
+  ----------  
+
+  Total de casos: 0
+
+Quantidade Positivo:  0  - -nan%
+
+
+Quantidade de velas analisadas: 90862 velas
