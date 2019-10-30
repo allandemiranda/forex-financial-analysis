@@ -484,7 +484,8 @@ int main(int argc, char const* argv[]) {
     std::string arquivoFinal = "out/";
     arquivoFinal += argv[4];
 
-    LongCandlePlusDoji(arquivo, tempo);
+    // LongCandlePlusDoji(arquivo, tempo);
+    ShotHammer(arquivo, tempo);
 
   } catch (const char* msg) {
     std::cerr << msg << std::endl;
