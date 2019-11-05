@@ -24,65 +24,86 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
   struct relato {
     time_t* data;
     price_t ganho;
+    bool operator<(relato& a) { return *data < *a.data; }
   };
   std::vector<relato> diferencaPositiva;
   std::vector<relato> diferencaNegativa;
-  for (unsigned long i = 0; i < grafico.chart.size() - 4; ++i) {
-    if (!*grafico.chart.at(i).getStatus() or
-        !*grafico.chart.at(i + 1).getStatus() or
-        !*grafico.chart.at(i + 3).getStatus()) {
-      continue;
-    }
-    if (*grafico.chart.at(i).getName() == "WHITE MARUBOZU") {
-      if ((*grafico.chart.at(i + 1).getName() == "FOUR PRICE DOJI") or
-          (*grafico.chart.at(i + 1).getName() == "DRAGONFLY DOJI") or
-          (*grafico.chart.at(i + 1).getName() == "GRAVESTONE DOJI") or
-          (*grafico.chart.at(i + 1).getName() == "LONG-LEGGED DOJI")) {
-        if (*grafico.chart.at(i).getClose() >
-            *grafico.chart.at(i + 3).getClose()) {
-          relato finala;
-          finala.data = grafico.chart.at(i).getDate();
-          finala.ganho = *grafico.chart.at(i).getClose() -
-                         *grafico.chart.at(i + 3).getClose();
-          diferencaPositiva.push_back(finala);
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned long i = 0; i < grafico.chart.size() - 4; ++i) {
+      if (*grafico.chart.at(i).getStatus() and
+          *grafico.chart.at(i + 1).getStatus() and
+          *grafico.chart.at(i + 3).getStatus()) {
+        if (*grafico.chart.at(i).getName() == "WHITE MARUBOZU") {
+          if ((*grafico.chart.at(i + 1).getName() == "FOUR PRICE DOJI") or
+              (*grafico.chart.at(i + 1).getName() == "DRAGONFLY DOJI") or
+              (*grafico.chart.at(i + 1).getName() == "GRAVESTONE DOJI") or
+              (*grafico.chart.at(i + 1).getName() == "LONG-LEGGED DOJI")) {
+            if (*grafico.chart.at(i).getClose() >
+                *grafico.chart.at(i + 3).getClose()) {
+              relato finala;
+              finala.data = grafico.chart.at(i).getDate();
+              finala.ganho = *grafico.chart.at(i).getClose() -
+                             *grafico.chart.at(i + 3).getClose();
+#pragma omp critical
+              { diferencaPositiva.push_back(finala); }
+            } else {
+              relato finala;
+              finala.data = grafico.chart.at(i).getDate();
+              finala.ganho = *grafico.chart.at(i + 3).getClose() -
+                             *grafico.chart.at(i).getClose();
+#pragma omp critical
+              { diferencaNegativa.push_back(finala); }
+            }
+          }
         } else {
-          relato finala;
-          finala.data = grafico.chart.at(i).getDate();
-          finala.ganho = *grafico.chart.at(i + 3).getClose() -
-                         *grafico.chart.at(i).getClose();
-          diferencaNegativa.push_back(finala);
-        }
-      }
-    } else {
-      if (*grafico.chart.at(i).getName() == "BLACK MARUBOZU") {
-        if ((*grafico.chart.at(i + 1).getName() == "FOUR PRICE DOJI") or
-            (*grafico.chart.at(i + 1).getName() == "DRAGONFLY DOJI") or
-            (*grafico.chart.at(i + 1).getName() == "GRAVESTONE DOJI") or
-            (*grafico.chart.at(i + 1).getName() == "LONG-LEGGED DOJI")) {
-          if (*grafico.chart.at(i).getClose() <
-              *grafico.chart.at(i + 3).getClose()) {
-            relato finala;
-            finala.data = grafico.chart.at(i).getDate();
-            finala.ganho = *grafico.chart.at(i + 3).getClose() -
-                           *grafico.chart.at(i).getClose();
-            diferencaPositiva.push_back(finala);
-          } else {
-            relato finala;
-            finala.data = grafico.chart.at(i).getDate();
-            finala.ganho = *grafico.chart.at(i).getClose() -
-                           *grafico.chart.at(i + 3).getClose();
-            diferencaNegativa.push_back(finala);
+          if (*grafico.chart.at(i).getName() == "BLACK MARUBOZU") {
+            if ((*grafico.chart.at(i + 1).getName() == "FOUR PRICE DOJI") or
+                (*grafico.chart.at(i + 1).getName() == "DRAGONFLY DOJI") or
+                (*grafico.chart.at(i + 1).getName() == "GRAVESTONE DOJI") or
+                (*grafico.chart.at(i + 1).getName() == "LONG-LEGGED DOJI")) {
+              if (*grafico.chart.at(i).getClose() <
+                  *grafico.chart.at(i + 3).getClose()) {
+                relato finala;
+                finala.data = grafico.chart.at(i).getDate();
+                finala.ganho = *grafico.chart.at(i + 3).getClose() -
+                               *grafico.chart.at(i).getClose();
+#pragma omp critical
+                { diferencaPositiva.push_back(finala); }
+              } else {
+                relato finala;
+                finala.data = grafico.chart.at(i).getDate();
+                finala.ganho = *grafico.chart.at(i).getClose() -
+                               *grafico.chart.at(i + 3).getClose();
+#pragma omp critical
+                { diferencaNegativa.push_back(finala); }
+              }
+            }
           }
         }
       }
     }
   }
-  diferencaPositiva.shrink_to_fit();
-  diferencaNegativa.shrink_to_fit();
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { diferencaPositiva.shrink_to_fit(); }
+#pragma omp section
+    { diferencaNegativa.shrink_to_fit(); }
+  }
+
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { std::sort(diferencaPositiva.begin(), diferencaPositiva.end()); }
+#pragma omp section
+    { std::sort(diferencaNegativa.begin(), diferencaNegativa.end()); }
+  }
 
   std::string tz = "TZ=America/Recife";
   putenv(tz.data());
-  std::cout << "    Análise Long Candle Plus Doji   " << std::endl;
+  std::cout << "    Análise " << nome << "  " << std::endl;
   std::cout << std::endl;
   std::cout << "Arquivo:  " << arquivo << std::endl;
   std::cout << std::endl;
@@ -97,24 +118,52 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
   relato maiorPositivo;
   relato menorPositivo;
   if (diferencaPositiva.size() == 0) {
-    std::cout << "ZERO" << std::endl;
-    somadiferencaPositiva = 0;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { std::cout << "ZERO" << std::endl; }
+#pragma omp section
+      { somadiferencaPositiva = 0; }
+    }
   } else {
-    maiorPositivo.ganho = diferencaPositiva.at(0).ganho;
-    menorPositivo.ganho = diferencaPositiva.at(0).ganho;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { maiorPositivo.ganho = diferencaPositiva.at(0).ganho; }
+#pragma omp section
+      { menorPositivo.ganho = diferencaPositiva.at(0).ganho; }
+    }
     for (unsigned long i = 0; i < diferencaPositiva.size(); ++i) {
-      somadiferencaPositiva += diferencaPositiva.at(i).ganho;
-      std::cout << std::put_time(std::localtime(diferencaPositiva.at(i).data),
-                                 "%d/%m/%Y %H:%M")
-                << " " << *Pip(diferencaPositiva.at(i).ganho).getPip() << " pip"
-                << std::endl;
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { somadiferencaPositiva += diferencaPositiva.at(i).ganho; }
+#pragma omp section
+        {
+          std::cout << std::put_time(
+                           std::localtime(diferencaPositiva.at(i).data),
+                           "%d/%m/%Y %H:%M")
+                    << " " << *Pip(diferencaPositiva.at(i).ganho).getPip()
+                    << " pip" << std::endl;
+        }
+      }
       if (maiorPositivo.ganho <= diferencaPositiva.at(i).ganho) {
-        maiorPositivo.ganho = diferencaPositiva.at(i).ganho;
-        maiorPositivo.data = diferencaPositiva.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { maiorPositivo.ganho = diferencaPositiva.at(i).ganho; }
+#pragma omp section
+          { maiorPositivo.data = diferencaPositiva.at(i).data; }
+        }
       }
       if (menorPositivo.ganho >= diferencaPositiva.at(i).ganho) {
-        menorPositivo.ganho = diferencaPositiva.at(i).ganho;
-        menorPositivo.data = diferencaPositiva.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { menorPositivo.ganho = diferencaPositiva.at(i).ganho; }
+#pragma omp section
+          { menorPositivo.data = diferencaPositiva.at(i).data; }
+        }
       }
     }
     somadiferencaPositiva =
@@ -131,24 +180,52 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
   relato maiorNegativa;
   relato menorNegativa;
   if (diferencaNegativa.size() == 0) {
-    std::cout << "ZERO" << std::endl;
-    somadiferencaNegativa = 0;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { std::cout << "ZERO" << std::endl; }
+#pragma omp section
+      { somadiferencaNegativa = 0; }
+    }
   } else {
-    maiorNegativa.ganho = diferencaNegativa.at(0).ganho;
-    menorNegativa.ganho = diferencaNegativa.at(0).ganho;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { maiorNegativa.ganho = diferencaNegativa.at(0).ganho; }
+#pragma omp section
+      { menorNegativa.ganho = diferencaNegativa.at(0).ganho; }
+    }
     for (unsigned long i = 0; i < diferencaNegativa.size(); ++i) {
-      somadiferencaNegativa += diferencaNegativa.at(i).ganho;
-      std::cout << std::put_time(std::localtime(diferencaNegativa.at(i).data),
-                                 "%d/%m/%Y %H:%M")
-                << " " << *Pip(diferencaNegativa.at(i).ganho).getPip() << " pip"
-                << std::endl;
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { somadiferencaNegativa += diferencaNegativa.at(i).ganho; }
+#pragma omp section
+        {
+          std::cout << std::put_time(
+                           std::localtime(diferencaNegativa.at(i).data),
+                           "%d/%m/%Y %H:%M")
+                    << " " << *Pip(diferencaNegativa.at(i).ganho).getPip()
+                    << " pip" << std::endl;
+        }
+      }
       if (maiorNegativa.ganho <= diferencaNegativa.at(i).ganho) {
-        maiorNegativa.ganho = diferencaNegativa.at(i).ganho;
-        maiorNegativa.data = diferencaNegativa.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { maiorNegativa.ganho = diferencaNegativa.at(i).ganho; }
+#pragma omp section
+          { maiorNegativa.data = diferencaNegativa.at(i).data; }
+        }
       }
       if (menorNegativa.ganho >= diferencaNegativa.at(i).ganho) {
-        menorNegativa.ganho = diferencaNegativa.at(i).ganho;
-        menorNegativa.data = diferencaNegativa.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { menorNegativa.ganho = diferencaNegativa.at(i).ganho; }
+#pragma omp section
+          { menorNegativa.data = diferencaNegativa.at(i).data; }
+        }
       }
     }
     somadiferencaNegativa =
@@ -162,7 +239,6 @@ void LongCandlePlusDoji(std::string arquivo, std::string tempo) {
             << (diferencaPositiva.size() + diferencaNegativa.size())
             << std::endl;
   std::cout << std::endl;
-
   if (diferencaPositiva.size() > 0) {
     std::cout << "Quantidade Positivo:  " << diferencaPositiva.size() << "  - "
               << ((float)diferencaPositiva.size() * (float)100) /
@@ -221,89 +297,57 @@ void ShotHammer(std::string arquivo, std::string tempo) {
   struct relato {
     time_t* data;
     price_t ganho;
+    bool operator<(relato& a) { return *data < *a.data; }
   };
   std::vector<relato> diferencaPositiva;
   std::vector<relato> diferencaNegativa;
-
-  for (unsigned long i = 6; i < grafico.chart.size() - 3; ++i) {
-    if (!*grafico.chart.at(i).getStatus() or
-        !*grafico.chart.at(i - 1).getStatus() or
-        !*grafico.chart.at(i - 5).getStatus() or
-        !*grafico.chart.at(i + 1).getStatus() or
-        !*grafico.chart.at(i + 2).getStatus()) {
-      continue;
-    }
-    if (*grafico.chart.at(i).getName() == "WHITE HAMMER") {
-      if (*grafico.chart.at(i - 1).getType() == 1) {
-        if (*grafico.chart.at(i - 1).getClose() <
-            *grafico.chart.at(i - 5).getClose()) {
-          if (*grafico.chart.at(i - 1).getClose() >=
-              *grafico.chart.at(i).getClose()) {
-            if (*grafico.chart.at(i + 1).getType() == 0) {
-              if (*grafico.chart.at(i + 1).getOpen() >=
-                  *grafico.chart.at(i).getClose()) {
-                if (*grafico.chart.at(i + 2).getType() == 0) {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 2).getBodySize();
-                  diferencaPositiva.push_back(finala);
-                } else {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  if (*grafico.chart.at(i + 2).getType() == 2) {
-                    finala.ganho = 0;
-                  } else {
-                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
-                  }
-                  diferencaNegativa.push_back(finala);
-                }
-              }
-            }
-          }
-        }
-      } else {
-        if (*grafico.chart.at(i - 1).getClose() >
-            *grafico.chart.at(i - 5).getClose()) {
-          if (*grafico.chart.at(i - 1).getClose() <=
-              *grafico.chart.at(i).getOpen()) {
-            if (*grafico.chart.at(i + 1).getType() == 1) {
-              if (*grafico.chart.at(i + 1).getOpen() <=
-                  *grafico.chart.at(i).getOpen()) {
-                if (*grafico.chart.at(i + 2).getType() == 1) {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  finala.ganho = *grafico.chart.at(i + 2).getBodySize();
-                  diferencaPositiva.push_back(finala);
-                } else {
-                  relato finala;
-                  finala.data = grafico.chart.at(i).getDate();
-                  if (*grafico.chart.at(i + 2).getType() == 2) {
-                    finala.ganho = 0.0;
-                  } else {
-                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
-                  }
-                  diferencaNegativa.push_back(finala);
-                }
-              }
-            }
-          }
-        }
-      }
-    } else {
-      if (*grafico.chart.at(i).getName() == "BLACK HAMMER") {
-        if (*grafico.chart.at(i - 1).getType() == 1) {
-          if (*grafico.chart.at(i - 1).getClose() <
-              *grafico.chart.at(i - 5).getClose()) {
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned long i = 2; i < grafico.chart.size() - 3; ++i) {
+      if (*grafico.chart.at(i).getStatus() and
+          *grafico.chart.at(i - 1).getStatus() and
+          *grafico.chart.at(i + 1).getStatus() and
+          *grafico.chart.at(i + 2).getStatus()) {
+        if (*grafico.chart.at(i).getName() == "WHITE HAMMER") {
+          if (*grafico.chart.at(i - 1).getType() == 1) {
             if (*grafico.chart.at(i - 1).getClose() >=
-                *grafico.chart.at(i).getOpen()) {
+                *grafico.chart.at(i).getClose()) {
               if (*grafico.chart.at(i + 1).getType() == 0) {
                 if (*grafico.chart.at(i + 1).getOpen() >=
-                    *grafico.chart.at(i).getOpen()) {
+                    *grafico.chart.at(i).getClose()) {
                   if (*grafico.chart.at(i + 2).getType() == 0) {
                     relato finala;
                     finala.data = grafico.chart.at(i).getDate();
                     finala.ganho = *grafico.chart.at(i + 2).getBodySize();
-                    diferencaPositiva.push_back(finala);
+#pragma omp critical
+                    { diferencaPositiva.push_back(finala); }
+                  } else {
+                    relato finala;
+                    finala.data = grafico.chart.at(i).getDate();
+                    if (*grafico.chart.at(i + 2).getType() == 2) {
+                      finala.ganho = 0;
+                    } else {
+                      finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                    }
+#pragma omp critical
+                    { diferencaNegativa.push_back(finala); }
+                  }
+                }
+              }
+            }
+          } else {
+            if (*grafico.chart.at(i - 1).getClose() <=
+                *grafico.chart.at(i).getOpen()) {
+              if (*grafico.chart.at(i + 1).getType() == 1) {
+                if (*grafico.chart.at(i + 1).getOpen() <=
+                    *grafico.chart.at(i).getOpen()) {
+                  if (*grafico.chart.at(i + 2).getType() == 1) {
+                    relato finala;
+                    finala.data = grafico.chart.at(i).getDate();
+                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+#pragma omp critical
+                    { diferencaPositiva.push_back(finala); }
                   } else {
                     relato finala;
                     finala.data = grafico.chart.at(i).getDate();
@@ -312,34 +356,64 @@ void ShotHammer(std::string arquivo, std::string tempo) {
                     } else {
                       finala.ganho = *grafico.chart.at(i + 2).getBodySize();
                     }
-                    diferencaNegativa.push_back(finala);
+#pragma omp critical
+                    { diferencaNegativa.push_back(finala); }
                   }
                 }
               }
             }
           }
         } else {
-          if (*grafico.chart.at(i - 1).getClose() >
-              *grafico.chart.at(i - 5).getClose()) {
-            if (*grafico.chart.at(i - 1).getClose() <=
-                *grafico.chart.at(i).getClose()) {
-              if (*grafico.chart.at(i + 1).getType() == 1) {
-                if (*grafico.chart.at(i + 1).getOpen() <=
-                    *grafico.chart.at(i).getClose()) {
-                  if (*grafico.chart.at(i + 2).getType() == 1) {
-                    relato finala;
-                    finala.data = grafico.chart.at(i).getDate();
-                    finala.ganho = *grafico.chart.at(i + 2).getBodySize();
-                    diferencaPositiva.push_back(finala);
-                  } else {
-                    relato finala;
-                    finala.data = grafico.chart.at(i).getDate();
-                    if (*grafico.chart.at(i + 2).getType() == 2) {
-                      finala.ganho = 0.0;
-                    } else {
+          if (*grafico.chart.at(i).getName() == "BLACK HAMMER") {
+            if (*grafico.chart.at(i - 1).getType() == 1) {
+              if (*grafico.chart.at(i - 1).getClose() >=
+                  *grafico.chart.at(i).getOpen()) {
+                if (*grafico.chart.at(i + 1).getType() == 0) {
+                  if (*grafico.chart.at(i + 1).getOpen() >=
+                      *grafico.chart.at(i).getOpen()) {
+                    if (*grafico.chart.at(i + 2).getType() == 0) {
+                      relato finala;
+                      finala.data = grafico.chart.at(i).getDate();
                       finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+#pragma omp critical
+                      { diferencaPositiva.push_back(finala); }
+                    } else {
+                      relato finala;
+                      finala.data = grafico.chart.at(i).getDate();
+                      if (*grafico.chart.at(i + 2).getType() == 2) {
+                        finala.ganho = 0.0;
+                      } else {
+                        finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                      }
+#pragma omp critical
+                      { diferencaNegativa.push_back(finala); }
                     }
-                    diferencaNegativa.push_back(finala);
+                  }
+                }
+              }
+            } else {
+              if (*grafico.chart.at(i - 1).getClose() <=
+                  *grafico.chart.at(i).getClose()) {
+                if (*grafico.chart.at(i + 1).getType() == 1) {
+                  if (*grafico.chart.at(i + 1).getOpen() <=
+                      *grafico.chart.at(i).getClose()) {
+                    if (*grafico.chart.at(i + 2).getType() == 1) {
+                      relato finala;
+                      finala.data = grafico.chart.at(i).getDate();
+                      finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+#pragma omp critical
+                      { diferencaPositiva.push_back(finala); }
+                    } else {
+                      relato finala;
+                      finala.data = grafico.chart.at(i).getDate();
+                      if (*grafico.chart.at(i + 2).getType() == 2) {
+                        finala.ganho = 0.0;
+                      } else {
+                        finala.ganho = *grafico.chart.at(i + 2).getBodySize();
+                      }
+#pragma omp critical
+                      { diferencaNegativa.push_back(finala); }
+                    }
                   }
                 }
               }
@@ -350,12 +424,25 @@ void ShotHammer(std::string arquivo, std::string tempo) {
     }
   }
 
-  diferencaPositiva.shrink_to_fit();
-  diferencaNegativa.shrink_to_fit();
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { diferencaPositiva.shrink_to_fit(); }
+#pragma omp section
+    { diferencaNegativa.shrink_to_fit(); }
+  }
+
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { std::sort(diferencaPositiva.begin(), diferencaPositiva.end()); }
+#pragma omp section
+    { std::sort(diferencaNegativa.begin(), diferencaNegativa.end()); }
+  }
 
   std::string tz = "TZ=America/Recife";
   putenv(tz.data());
-  std::cout << "    Análise Shot Hammer   " << std::endl;
+  std::cout << "    Análise " << nome << "  " << std::endl;
   std::cout << std::endl;
   std::cout << "Arquivo:  " << arquivo << std::endl;
   std::cout << std::endl;
@@ -370,24 +457,52 @@ void ShotHammer(std::string arquivo, std::string tempo) {
   relato maiorPositivo;
   relato menorPositivo;
   if (diferencaPositiva.size() == 0) {
-    std::cout << "ZERO" << std::endl;
-    somadiferencaPositiva = 0;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { std::cout << "ZERO" << std::endl; }
+#pragma omp section
+      { somadiferencaPositiva = 0; }
+    }
   } else {
-    maiorPositivo.ganho = diferencaPositiva.at(0).ganho;
-    menorPositivo.ganho = diferencaPositiva.at(0).ganho;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { maiorPositivo.ganho = diferencaPositiva.at(0).ganho; }
+#pragma omp section
+      { menorPositivo.ganho = diferencaPositiva.at(0).ganho; }
+    }
     for (unsigned long i = 0; i < diferencaPositiva.size(); ++i) {
-      somadiferencaPositiva += diferencaPositiva.at(i).ganho;
-      std::cout << std::put_time(std::localtime(diferencaPositiva.at(i).data),
-                                 "%d/%m/%Y %H:%M")
-                << " " << *Pip(diferencaPositiva.at(i).ganho).getPip() << " pip"
-                << std::endl;
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { somadiferencaPositiva += diferencaPositiva.at(i).ganho; }
+#pragma omp section
+        {
+          std::cout << std::put_time(
+                           std::localtime(diferencaPositiva.at(i).data),
+                           "%d/%m/%Y %H:%M")
+                    << " " << *Pip(diferencaPositiva.at(i).ganho).getPip()
+                    << " pip" << std::endl;
+        }
+      }
       if (maiorPositivo.ganho <= diferencaPositiva.at(i).ganho) {
-        maiorPositivo.ganho = diferencaPositiva.at(i).ganho;
-        maiorPositivo.data = diferencaPositiva.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { maiorPositivo.ganho = diferencaPositiva.at(i).ganho; }
+#pragma omp section
+          { maiorPositivo.data = diferencaPositiva.at(i).data; }
+        }
       }
       if (menorPositivo.ganho >= diferencaPositiva.at(i).ganho) {
-        menorPositivo.ganho = diferencaPositiva.at(i).ganho;
-        menorPositivo.data = diferencaPositiva.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { menorPositivo.ganho = diferencaPositiva.at(i).ganho; }
+#pragma omp section
+          { menorPositivo.data = diferencaPositiva.at(i).data; }
+        }
       }
     }
     somadiferencaPositiva =
@@ -404,24 +519,52 @@ void ShotHammer(std::string arquivo, std::string tempo) {
   relato maiorNegativa;
   relato menorNegativa;
   if (diferencaNegativa.size() == 0) {
-    std::cout << "ZERO" << std::endl;
-    somadiferencaNegativa = 0;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { std::cout << "ZERO" << std::endl; }
+#pragma omp section
+      { somadiferencaNegativa = 0; }
+    }
   } else {
-    maiorNegativa.ganho = diferencaNegativa.at(0).ganho;
-    menorNegativa.ganho = diferencaNegativa.at(0).ganho;
+#pragma omp parallel sections
+    {
+#pragma omp section
+      { maiorNegativa.ganho = diferencaNegativa.at(0).ganho; }
+#pragma omp section
+      { menorNegativa.ganho = diferencaNegativa.at(0).ganho; }
+    }
     for (unsigned long i = 0; i < diferencaNegativa.size(); ++i) {
-      somadiferencaNegativa += diferencaNegativa.at(i).ganho;
-      std::cout << std::put_time(std::localtime(diferencaNegativa.at(i).data),
-                                 "%d/%m/%Y %H:%M")
-                << " " << *Pip(diferencaNegativa.at(i).ganho).getPip() << " pip"
-                << std::endl;
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { somadiferencaNegativa += diferencaNegativa.at(i).ganho; }
+#pragma omp section
+        {
+          std::cout << std::put_time(
+                           std::localtime(diferencaNegativa.at(i).data),
+                           "%d/%m/%Y %H:%M")
+                    << " " << *Pip(diferencaNegativa.at(i).ganho).getPip()
+                    << " pip" << std::endl;
+        }
+      }
       if (maiorNegativa.ganho <= diferencaNegativa.at(i).ganho) {
-        maiorNegativa.ganho = diferencaNegativa.at(i).ganho;
-        maiorNegativa.data = diferencaNegativa.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { maiorNegativa.ganho = diferencaNegativa.at(i).ganho; }
+#pragma omp section
+          { maiorNegativa.data = diferencaNegativa.at(i).data; }
+        }
       }
       if (menorNegativa.ganho >= diferencaNegativa.at(i).ganho) {
-        menorNegativa.ganho = diferencaNegativa.at(i).ganho;
-        menorNegativa.data = diferencaNegativa.at(i).data;
+#pragma omp parallel sections
+        {
+#pragma omp section
+          { menorNegativa.ganho = diferencaNegativa.at(i).ganho; }
+#pragma omp section
+          { menorNegativa.data = diferencaNegativa.at(i).data; }
+        }
       }
     }
     somadiferencaNegativa =
@@ -488,8 +631,8 @@ int main(int argc, char const* argv[]) {
     std::string arquivoFinal = "out/";
     arquivoFinal += argv[4];
 
-    // LongCandlePlusDoji(arquivo, tempo);
-    ShotHammer(arquivo, tempo);
+    LongCandlePlusDoji(arquivo, tempo);
+    // ShotHammer(arquivo, tempo);
 
   } catch (const char* msg) {
     std::cerr << msg << std::endl;
