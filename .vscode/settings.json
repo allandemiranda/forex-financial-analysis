@@ -6,9 +6,6 @@
     "doxdocgen.generic.authorEmail": "allandemiranda@gmail.com",
     "doxdocgen.generic.authorName": "Allan de Miranda Silva",
     "doxdocgen.generic.dateFormat": "DD-MM-YYYY",
-    "[markdown]": {
-        "editor.defaultFormatter": "mervin.markdown-formatter"
-    },
     "makefile-creator.makefile_cxxflags": "-Wall -Werror -Wextra -pedantic -std=c++17 -g -fopenmp",
     "doxdocgen.c.factoryMethodText": "Crie um objeto {name}",
     "doxdocgen.c.getterText": "Obter o objeto {name}",
