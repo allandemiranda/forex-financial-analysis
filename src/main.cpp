@@ -17,51 +17,54 @@ int main(int argc, char const* argv[]) {
     std::string NOME = "TESTE";
     Chart grafico(&arquivo, &NOME, &tempo);
 
-    for(auto i : grafico.chart){
-      std::cout << *i.getHash() << std::endl;
+    struct padroes {
+      Candlestick* vela;
+      Candlestick* vela1;
+      unsigned int quantidade = 1;
+    };
+
+    std::vector<padroes> velasIguais;
+
+    for (unsigned long i = 0; i < grafico.chart.size(); ++i) {
+      if (*grafico.chart.at(i).getStatus()) {
+        bool flag = true;
+#pragma omp parallel
+        {
+#pragma omp for
+          for (unsigned long j = 0; j < velasIguais.size(); ++j) {
+            if (*velasIguais.at(j).vela->getHash() ==
+                *grafico.chart.at(i).getHash()) {
+              if (*velasIguais.at(j).vela1->getHash() ==
+                  *grafico.chart.at(i + 1).getHash()) {
+#pragma omp critical
+                {
+                  flag = false;
+                  velasIguais.at(j).quantidade += 1;
+                }
+#pragma omp cancel for
+              }
+            }
+          }
+        }
+        if (flag) {
+          padroes novo;
+          novo.vela = &grafico.chart.at(i);
+          novo.vela1 = &grafico.chart.at(i+1);
+          velasIguais.push_back(novo);
+        }
+      }
     }
 
-    // struct padroes {
-    //   Candlestick* vela;
-    //   unsigned int quantidade = 1;
-    // };
-
-    // std::vector<padroes> velasIguais;
-
-    // for (auto i(0u); i < grafico.chart.size(); ++i) {
-    //   if (*grafico.chart.at(i).getStatus()) {
-    //     bool flag = true;
-    //     for (auto j(0u); j < velasIguais.size(); ++j) {
-    //       if (*velasIguais.at(j).vela->getType() ==
-    //           *grafico.chart.at(i).getType()) {
-    //         if (*velasIguais.at(j).vela->getSize() ==
-    //             *grafico.chart.at(i).getSize()) {
-    //           if (*velasIguais.at(j).vela->getBodySize() ==
-    //               *grafico.chart.at(i).getBodySize()) {
-    //             if (*velasIguais.at(j).vela->getUpperShandowSize() ==
-    //                 *grafico.chart.at(i).getUpperShandowSize()) {
-    //               if (*velasIguais.at(j).vela->getLowerShandowSize() ==
-    //                   *grafico.chart.at(i).getLowerShandowSize()) {
-    //                 flag = false;
-    //                 velasIguais.at(j).quantidade += 1;
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //     if (flag) {
-    //       padroes novo;
-    //       novo.vela = &grafico.chart.at(i);
-    //       velasIguais.push_back(novo);
-    //     }
-    //   }
-    // }
-
-    // for (auto i : velasIguais) {
-    //   std::cout << "Vela: " << *i.vela->getName() << " -> " << i.quantidade
-    //             << std::endl;
-    // }
+    int a = 0;
+    for (auto i : velasIguais) {
+      if (i.quantidade >= 10) {
+        std::cout << "Vela: " << *i.vela->getName() << " -> " << i.quantidade
+                  << std::endl;
+      } else {
+        ++a;
+      }
+    }
+    std::cout << "-----> " << a << std::endl;
 
   } catch (const char* msg) {
     std::cerr << msg << std::endl;
