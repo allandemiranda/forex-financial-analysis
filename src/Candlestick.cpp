@@ -174,6 +174,15 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
       }
     }
   }
+  // Hash
+  hash += std::to_string(*getOpen());
+  hash += " ";
+  hash += std::to_string(*getHigh());
+  hash += " ";
+  hash += std::to_string(*getLow());
+  hash += " ";
+  hash += std::to_string(*getClose());
+  hash.shrink_to_fit();
 }
 
 /**
@@ -267,6 +276,15 @@ Candlestick::Candlestick(time_t* new_date, price_t* new_open,
       }
     }
   }
+  // Hash
+  hash += std::to_string(*getOpen());
+  hash += " ";
+  hash += std::to_string(*getHigh());
+  hash += " ";
+  hash += std::to_string(*getLow());
+  hash += " ";
+  hash += std::to_string(*getClose());
+  hash.shrink_to_fit();
 }
 
 /**
@@ -605,7 +623,7 @@ bool Candlestick::operator==(Candlestick& a) { return date == a.date; }
 
 /**
  * @brief sobrecarga de operador ==
- * 
+ *
  * @param a Tempo para comparar com tempo de uma vela
  * @return true São iguais
  * @return false São diferentes
@@ -696,3 +714,10 @@ void Candlestick::setName(std::string new_name) {
  * @return std::string* Ponteiro para o nome da Vela
  */
 std::string* Candlestick::getName(void) { return &name; }
+
+/**
+ * @brief Obter o objeto Hash
+ *
+ * @return std::string* Hash da vela
+ */
+std::string* Candlestick::getHash(void) { return &hash; }

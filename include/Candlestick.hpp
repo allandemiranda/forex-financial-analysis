@@ -49,7 +49,9 @@ class Candlestick {
   void setStatus(bool*);
   std::vector<std::string> explode(const std::string*, char*);
   std::string tz = "TZ=EET";   // Time Zone do banco de dados
-  std::string name;            // Nome da vela  
+  std::string name;            // Nome da vela 
+  std::string hash = "";
+  //void setHash(void); 
 
  public:
   Candlestick(time_t*, time_t*);
@@ -80,6 +82,7 @@ class Candlestick {
   Candlestick operator+(Candlestick&);
   std::string* getName(void);
   void setName(std::string);
+  std::string* getHash(void);
 };
 
 #endif
