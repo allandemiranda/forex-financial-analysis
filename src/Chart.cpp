@@ -1059,6 +1059,7 @@ void Chart::makeAverageCandleBody(std::vector<Candlestick>* vector) {
  * BLACK HAMMER
  * WHITE INVERTED HAMMER
  * BLACK INVERTED HAMMER
+ * NONE
  * @param vela Vela
  * @return std::string Nome da vela
  */

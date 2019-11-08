@@ -25,23 +25,28 @@ int main(int argc, char const* argv[]) {
 
     std::vector<padroes> velasIguais;
 
-    for (unsigned long i = 0; i < grafico.chart.size(); ++i) {
-      if (*grafico.chart.at(i).getStatus()) {
+    for (unsigned long i = 0; i < (grafico.chart.size() - 1); ++i) {
+      if (*grafico.chart.at(i).getStatus() and
+          (*grafico.chart.at(i).getName() != "NONE")) {
         bool flag = true;
 #pragma omp parallel
         {
 #pragma omp for
           for (unsigned long j = 0; j < velasIguais.size(); ++j) {
-            if (*velasIguais.at(j).vela->getHash() ==
-                *grafico.chart.at(i).getHash()) {
-              if (*velasIguais.at(j).vela1->getHash() ==
-                  *grafico.chart.at(i + 1).getHash()) {
+            if (*velasIguais.at(j).vela->getName() ==
+                *grafico.chart.at(i).getName()) {
+              if (*velasIguais.at(j).vela1->getName() != "NONE") {
+                if (*velasIguais.at(j).vela1->getName() ==
+                    *grafico.chart.at(i + 1).getName()) {
 #pragma omp critical
-                {
-                  flag = false;
-                  velasIguais.at(j).quantidade += 1;
-                }
+                  {
+                    flag = false;
+                    velasIguais.at(j).quantidade += 1;
+                  }
 #pragma omp cancel for
+                }
+              } else {
+                flag = false;
               }
             }
           }
@@ -49,7 +54,7 @@ int main(int argc, char const* argv[]) {
         if (flag) {
           padroes novo;
           novo.vela = &grafico.chart.at(i);
-          novo.vela1 = &grafico.chart.at(i+1);
+          novo.vela1 = &grafico.chart.at(i + 1);
           velasIguais.push_back(novo);
         }
       }
