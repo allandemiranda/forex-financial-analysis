@@ -60,16 +60,10 @@ int main(int argc, char const* argv[]) {
       }
     }
 
-    int a = 0;
     for (auto i : velasIguais) {
-      if (i.quantidade >= 10) {
-        std::cout << "Vela: " << *i.vela->getName() << " -> " << i.quantidade
-                  << std::endl;
-      } else {
-        ++a;
-      }
+      std::cout << "Vela: " << *i.vela->getName() << " -> "
+                << *i.vela->getName() << " -> " << i.quantidade << std::endl;
     }
-    std::cout << "-----> " << a << std::endl;
 
   } catch (const char* msg) {
     std::cerr << msg << std::endl;

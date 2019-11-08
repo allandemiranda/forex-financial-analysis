@@ -117,6 +117,17 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
     }
 #pragma omp section
     { setSize(getHigh(), getLow()); }
+#pragma omp section
+    {
+      hash += std::to_string(*getOpen());
+      hash += " ";
+      hash += std::to_string(*getHigh());
+      hash += " ";
+      hash += std::to_string(*getLow());
+      hash += " ";
+      hash += std::to_string(*getClose());
+      hash.shrink_to_fit();
+    }
   }
 
   if (*getOpen() > *getClose()) {
@@ -174,15 +185,6 @@ Candlestick::Candlestick(std::vector<std::string>* stick) {
       }
     }
   }
-  // Hash
-  hash += std::to_string(*getOpen());
-  hash += " ";
-  hash += std::to_string(*getHigh());
-  hash += " ";
-  hash += std::to_string(*getLow());
-  hash += " ";
-  hash += std::to_string(*getClose());
-  hash.shrink_to_fit();
 }
 
 /**
@@ -219,7 +221,22 @@ Candlestick::Candlestick(time_t* new_date, price_t* new_open,
     { setTime(new_time); }
   }
 
-  setSize(getHigh(), getLow());
+#pragma omp parallel sections
+  {
+#pragma omp section
+    { setSize(getHigh(), getLow()); }
+#pragma omp section
+    {
+      hash += std::to_string(*getOpen());
+      hash += " ";
+      hash += std::to_string(*getHigh());
+      hash += " ";
+      hash += std::to_string(*getLow());
+      hash += " ";
+      hash += std::to_string(*getClose());
+      hash.shrink_to_fit();
+    }
+  }
 
   if (*getOpen() > *getClose()) {
 #pragma omp parallel sections
@@ -276,15 +293,6 @@ Candlestick::Candlestick(time_t* new_date, price_t* new_open,
       }
     }
   }
-  // Hash
-  hash += std::to_string(*getOpen());
-  hash += " ";
-  hash += std::to_string(*getHigh());
-  hash += " ";
-  hash += std::to_string(*getLow());
-  hash += " ";
-  hash += std::to_string(*getClose());
-  hash.shrink_to_fit();
 }
 
 /**
