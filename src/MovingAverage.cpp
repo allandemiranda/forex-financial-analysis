@@ -18,8 +18,7 @@
  * @param NovoNumeroDePeriodo Núemro de periodos da média móvel
  * @param grafico Gráfico
  */
-MovingAverage::MovingAverage(unsigned long NovoNumeroDePeriodo,
-                             Chart* grafico) {
+MovingAverage::MovingAverage(long NovoNumeroDePeriodo, Chart* grafico) {
 #pragma omp parallel sections
   {
 #pragma omp section
@@ -40,16 +39,16 @@ MovingAverage::~MovingAverage(void) {}
  *
  * @param long Número de periodos da média móvel
  */
-void MovingAverage::setNumPeriodo(unsigned long* numeroPeriodo) {
+void MovingAverage::setNumPeriodo(long* numeroPeriodo) {
   numeroDePeriodo = *numeroPeriodo;
 }
 
 /**
  * @brief Defina o objeto Num Periodo
  *
- * @return unsigned* getNumPeriodo Número de periodos configurados
+ * @return long* getNumPeriodo Número de periodos configurados
  */
-unsigned long* MovingAverage::getNumPeriodo(void) { return &numeroDePeriodo; }
+long* MovingAverage::getNumPeriodo(void) { return &numeroDePeriodo; }
 
 /**
  * @brief Defina o objeto Grafico
@@ -74,18 +73,31 @@ Chart* MovingAverage::getGrafico(void) { return grafico; }
 PointLine MovingAverage::getSMA(Candlestick* vela) {
   price_t valor = 0.0;
   time_t tempo = *vela->getDate();
+  int validos = 0;
   for (int i = 0; i < (int)*getNumPeriodo(); ++i) {
     if (*vela->getStatus()) {
       valor += *vela->getClose();
-      std::prev(vela, 1);
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { --vela; }
+#pragma omp section
+        { ++validos; }
+      }
     } else {
-      --i;
+#pragma omp parallel sections
+      {
+#pragma omp section
+        { --vela; }
+#pragma omp section
+        { --i; }
+      }
     }
-    if(vela == &getGrafico()->chart.at(1)){
+    if (vela == &getGrafico()->chart.at(1)) {
       break;
     }
   }
-  valor = (valor / (*getNumPeriodo()));
+  valor = (valor / validos);
   return PointLine(&tempo, &valor);
 }
 
@@ -103,8 +115,10 @@ Line MovingAverage::SMA(void) {
 #pragma omp for
     for (unsigned long i = *getNumPeriodo(); i < getGrafico()->chart.size();
          ++i) {
+      if (*getGrafico()->chart.at(i).getStatus()) {
 #pragma omp critical
-      { novaLinha.linha.push_back(getSMA(&getGrafico()->chart.at(i))); }
+        { novaLinha.linha.push_back(getSMA(&getGrafico()->chart.at(i))); }
+      }
     }
   }
   std::sort(novaLinha.linha.begin(), novaLinha.linha.end());

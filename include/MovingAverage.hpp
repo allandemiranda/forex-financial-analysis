@@ -19,20 +19,20 @@
 
 class MovingAverage {
  private:
-  unsigned long numeroDePeriodo;
+  long numeroDePeriodo;
   Chart* grafico;
   void setGrafico(Chart*);
   Chart* getGrafico(void);
-  void setNumPeriodo(unsigned long*);
+  void setNumPeriodo(long*);
   PointLine getSMA(Candlestick*);
   // PointLine getEMA(Candlestick*);
   // PointLine getSMMA(Candlestick*);
   // PointLine getLWMA(Candlestick*);
 
  public:
-  MovingAverage(unsigned long, Chart*);
+  MovingAverage(long, Chart*);
   ~MovingAverage(void);
-  unsigned long* getNumPeriodo(void);
+  long* getNumPeriodo(void);
   Line SMA(void);
   // Line EMA(void);
   // Line SMMA(void);
