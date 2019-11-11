@@ -4,9 +4,9 @@
  * @brief Arquivo com os métodos da classe PointLine
  * @version 0.1
  * @date 18-10-2019
- * 
+ *
  * @copyright Copyright (c) 2019
- * 
+ *
  */
 
 #include "PointLine.hpp"
@@ -65,7 +65,7 @@ void PointLine::setPrice(price_t* new_price) { price = *new_price; }
  * @brief Operador <
  *
  * @param a
- * @return true Preço menor
- * @return false Preço maior
+ * @return true Data menor
+ * @return false Data maior
  */
-bool PointLine::operator<(PointLine& a) { return price < a.price; }
+bool PointLine::operator<(PointLine& a) { return date < a.date; }

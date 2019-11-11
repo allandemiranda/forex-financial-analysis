@@ -1,0 +1,42 @@
+/**
+ * @file MovingAverage.hpp
+ * @author Allan de Miranda Silva (allandemiranda@gmail.com)
+ * @brief Classe contendo as funções de médias móveis de um gráfico de velas
+ * @version 0.1
+ * @date 09-11-2019
+ *
+ * @copyright Copyright (c) 2019
+ *
+ */
+
+#ifndef MOVINGAVERAGE_HPP_
+#define MOVINGAVERAGE_HPP_
+
+#include "Candlestick.hpp"
+#include "Chart.hpp"
+#include "Line.hpp"
+#include "PointLine.hpp"
+
+class MovingAverage {
+ private:
+  unsigned long numeroDePeriodo;
+  Chart* grafico;
+  void setGrafico(Chart*);
+  Chart* getGrafico(void);
+  void setNumPeriodo(unsigned long*);
+  PointLine getSMA(Candlestick*);
+  // PointLine getEMA(Candlestick*);
+  // PointLine getSMMA(Candlestick*);
+  // PointLine getLWMA(Candlestick*);
+
+ public:
+  MovingAverage(unsigned long, Chart*);
+  ~MovingAverage(void);
+  unsigned long* getNumPeriodo(void);
+  Line SMA(void);
+  // Line EMA(void);
+  // Line SMMA(void);
+  // Line LWMA(void);
+};
+
+#endif
