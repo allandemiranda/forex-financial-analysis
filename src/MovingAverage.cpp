@@ -130,7 +130,6 @@ Line MovingAverage::SMA(void) {
  *
  * @return Line Linha EMA
  */
-#include <iostream>
 Line MovingAverage::EMA(void) {
   std::string nomeLinha = "EMA ";
   nomeLinha += std::to_string(*getNumPeriodo());
@@ -146,7 +145,6 @@ Line MovingAverage::EMA(void) {
             ((1 - F) * (*getSMA(&getGrafico()->chart.at(i - 1)).getPrice()));
         PointLine novoPonto(getGrafico()->chart.at(i).getDate(), &novoValor);
         novaLinha.linha.push_back(novoPonto);
-        std::cout << *novaLinha.linha.back().getPrice() << std::endl;
         corretor = i;
         ++corretor;
         break;
@@ -159,8 +157,7 @@ Line MovingAverage::EMA(void) {
       price_t novoValor = (*getGrafico()->chart.at(i).getClose() * F) +
                           ((1 - F) * (*novaLinha.linha.back().getPrice()));
       PointLine novoPonto(getGrafico()->chart.at(i).getDate(), &novoValor);
-      novaLinha.linha.push_back(novoPonto);
-      std::cout << "( " << *getGrafico()->chart.at(i).getClose() << " * " << F << " ) + (( 1 - " << F << " ) * ( " <<  *novaLinha.linha.back().getPrice() << " )) = " << novoValor << std::endl;
+      novaLinha.linha.push_back(novoPonto);  
     }
   }
   return novaLinha;

@@ -25,9 +25,6 @@ class MovingAverage {
   Chart* getGrafico(void);
   void setNumPeriodo(long*);
   PointLine getSMA(Candlestick*);
-  // PointLine getEMA(Candlestick*);
-  // PointLine getSMMA(Candlestick*);
-  // PointLine getLWMA(Candlestick*);
 
  public:
   MovingAverage(long, Chart*);
@@ -35,8 +32,6 @@ class MovingAverage {
   long* getNumPeriodo(void);
   Line SMA(void);
   Line EMA(void);
-  // Line SMMA(void);
-  // Line LWMA(void);
 };
 
 #endif
