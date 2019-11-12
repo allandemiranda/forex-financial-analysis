@@ -34,7 +34,7 @@ class MovingAverage {
   ~MovingAverage(void);
   long* getNumPeriodo(void);
   Line SMA(void);
-  // Line EMA(void);
+  Line EMA(void);
   // Line SMMA(void);
   // Line LWMA(void);
 };

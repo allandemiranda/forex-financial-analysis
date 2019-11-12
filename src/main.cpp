@@ -21,11 +21,14 @@ int main(int argc, char const* argv[]) {
     std::cout << "0" << std::endl;
     Chart grafico(&arquivo, &NOME, &tempo);
     std::cout << "1" << std::endl;
-    MovingAverage mv(std::stoi(periodos), &grafico);
+    MovingAverage mv(20, &grafico);
     std::cout << "2" << std::endl;
     Line a = mv.SMA();
+    MovingAverage mvb(30, &grafico);
+    Line b = mvb.EMA();
+    std::vector <Line> linhas = {a,b};
     std::cout << "3" << std::endl;
-    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &a);
+    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &linhas);
     std::cout << "4" << std::endl;
 
 

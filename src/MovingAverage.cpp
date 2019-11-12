@@ -124,3 +124,44 @@ Line MovingAverage::SMA(void) {
   std::sort(novaLinha.linha.begin(), novaLinha.linha.end());
   return novaLinha;
 }
+
+/**
+ * @brief EMA
+ *
+ * @return Line Linha EMA
+ */
+#include <iostream>
+Line MovingAverage::EMA(void) {
+  std::string nomeLinha = "EMA ";
+  nomeLinha += std::to_string(*getNumPeriodo());
+  Line novaLinha(nomeLinha);
+  price_t F = (2.0 / (*getNumPeriodo() + 1.0));
+  unsigned long corretor = 0;
+  for (unsigned long i = (*getNumPeriodo() + 1); i < getGrafico()->chart.size();
+       ++i) {
+    if (*getGrafico()->chart.at(i).getStatus()) {
+      if (*getGrafico()->chart.at(i - 1).getStatus()) {
+        price_t novoValor =
+            (*getGrafico()->chart.at(i).getClose() * F) +
+            ((1 - F) * (*getSMA(&getGrafico()->chart.at(i - 1)).getPrice()));
+        PointLine novoPonto(getGrafico()->chart.at(i).getDate(), &novoValor);
+        novaLinha.linha.push_back(novoPonto);
+        std::cout << *novaLinha.linha.back().getPrice() << std::endl;
+        corretor = i;
+        ++corretor;
+        break;
+      }
+    }
+  }
+
+  for (unsigned long i = corretor; i < getGrafico()->chart.size(); ++i) {
+    if (*getGrafico()->chart.at(i).getStatus()) {
+      price_t novoValor = (*getGrafico()->chart.at(i).getClose() * F) +
+                          ((1 - F) * (*novaLinha.linha.back().getPrice()));
+      PointLine novoPonto(getGrafico()->chart.at(i).getDate(), &novoValor);
+      novaLinha.linha.push_back(novoPonto);
+      std::cout << "( " << *getGrafico()->chart.at(i).getClose() << " * " << F << " ) + (( 1 - " << F << " ) * ( " <<  *novaLinha.linha.back().getPrice() << " )) = " << novoValor << std::endl;
+    }
+  }
+  return novaLinha;
+}
