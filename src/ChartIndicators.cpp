@@ -10,6 +10,7 @@
  */
 
 #include "ChartIndicators.hpp"
+#include <string>
 #include "MovingAverage.hpp"
 
 /**
@@ -28,6 +29,15 @@ ChartIndicators::ChartIndicators(Chart* novografico) {
 ChartIndicators::~ChartIndicators(void) {}
 
 /**
+ * @brief Defina o objeto Grafico
+ *
+ * @param novo_grafico Gráfico
+ */
+void ChartIndicators::setGrafico(Chart* novo_grafico) {
+  grafico = novo_grafico;
+}
+
+/**
  * @brief MACD
  *
  * @param rapido EMA Rápido
@@ -37,67 +47,81 @@ ChartIndicators::~ChartIndicators(void) {}
  */
 std::vector<Line> ChartIndicators::MACD(unsigned int rapido, unsigned int lento,
                                         unsigned int sinal) {
-  Line linhaRapida();
-  Line linhaLenta();
-  Line linhaSinal();
+  Line linhaRapida("a");
+  Line linhaLenta("b");
+  Line linhaSinal("Sinal");
 
 #pragma omp parallel sections
   {
 #pragma omp section
     {
-      linhaSinal().setNome("Sinhal");
-      linhaSinal().linha = MovingAverage(sinal, grafico).EMA().linha;
-      linhaSinal().linha.shrink_to_fit();
+      linhaRapida.linha = MovingAverage(rapido, grafico).EMA().linha;
+      linhaRapida.linha.shrink_to_fit();
     }
 #pragma omp section
     {
-      linhaRapida().linha = MovingAverage(rapido, grafico).EMA().linha;
-      linhaRapida().linha.shrink_to_fit();
-    }
-#pragma omp section
-    {
-      linhaLenta().linha = MovingAverage(lento, grafico).EMA().linha;
-      linhaLenta().linha.shrink_to_fit();
+      linhaLenta.linha = MovingAverage(lento, grafico).EMA().linha;
+      linhaLenta.linha.shrink_to_fit();
     }
   }
 
-  Line linhaFinal();
-  linhaFinal().setNome("MACD");
-  if (linhaRapida().linha.size() >= linhaLenta().linha.size()) {
-    for (unsigned int i = 0; i < linhaRapida().linha.size(); ++i) {
+  Line linhaFinal("MACD");
+  if (linhaRapida.linha.size() >= linhaLenta.linha.size()) {
+    for (unsigned int i = 0; i < linhaRapida.linha.size(); ++i) {
 #pragma omp parallel
       {
 #pragma omp for
-        for (unsigned int j = 0; j < linhaLenta().linha.size(); ++j) {
-          if (*linhaRapida().linha.at(i).getDate() ==
-              *linhaLenta().linha.at(j).getDate()) {
-            price_t valorFinal = *linhaRapida().linha.at(i).getPrice() -
-                                 *linhaLenta().linha.at(j).getPrice();
-            linhaFinal().linha.push_back(
-                PointLine(linhaRapida().linha.at(i).getDate(), &valorFinal));
+        for (unsigned int j = 0; j < linhaLenta.linha.size(); ++j) {
+          if (*linhaRapida.linha.at(i).getDate() ==
+              *linhaLenta.linha.at(j).getDate()) {
+            price_t valorFinal = *linhaRapida.linha.at(i).getPrice() -
+                                 *linhaLenta.linha.at(j).getPrice();
+            linhaFinal.linha.push_back(
+                PointLine(linhaRapida.linha.at(i).getDate(), &valorFinal));
 #pragma omp cancel for
           }
         }
       }
     }
   } else {
-    for (unsigned int i = 0; i < linhaLenta().linha.size(); ++i) {
+    for (unsigned int i = 0; i < linhaLenta.linha.size(); ++i) {
 #pragma omp parallel
       {
 #pragma omp for
-        for (unsigned int j = 0; j < linhaRapida().linha.size(); ++j) {
-          if (*linhaRapida().linha.at(j).getDate() ==
-              *linhaLenta().linha.at(i).getDate()) {
-            price_t valorFinal = *linhaRapida().linha.at(j).getPrice() -
-                                 *linhaLenta().linha.at(i).getPrice();
-            linhaFinal().linha.push_back(
-                PointLine(linhaRapida().linha.at(j).getDate(), &valorFinal));
+        for (unsigned int j = 0; j < linhaRapida.linha.size(); ++j) {
+          if (*linhaRapida.linha.at(j).getDate() ==
+              *linhaLenta.linha.at(i).getDate()) {
+            price_t valorFinal = *linhaRapida.linha.at(j).getPrice() -
+                                 *linhaLenta.linha.at(i).getPrice();
+            linhaFinal.linha.push_back(
+                PointLine(linhaRapida.linha.at(j).getDate(), &valorFinal));
 #pragma omp cancel for
           }
         }
       }
     }
   }
-  linhaFinal().linha.shrink_to_fit();
+  linhaFinal.linha.shrink_to_fit();
+
+  if (linhaFinal.linha.size() <= sinal) {
+    throw "ERRO! Impossivel de calcular indicador MACD";
+  }
+  price_t valor_um = 0.0;
+  for (unsigned int i = 0; i < sinal; ++i) {
+    valor_um += *linhaFinal.linha.at(i).getPrice();
+  }
+  valor_um = (valor_um / (float)sinal);
+  linhaSinal.linha.push_back(
+      PointLine(linhaFinal.linha.at(sinal - 1).getDate(), &valor_um));
+  linhaSinal.linha.shrink_to_fit();
+  price_t F = (2.0 / ((float)sinal + 1.0));
+  for (unsigned int i = sinal; i < linhaFinal.linha.size(); ++i) {
+    price_t valor_dois = (*linhaFinal.linha.at(i).getPrice() * F) +
+                         ((1 - F) * (*linhaSinal.linha.back().getPrice()));
+    linhaSinal.linha.push_back(
+        PointLine(linhaFinal.linha.at(i).getDate(), &valor_dois));
+  }
+  linhaSinal.linha.shrink_to_fit();
+
   return std::vector<Line>{linhaFinal, linhaSinal};
 }

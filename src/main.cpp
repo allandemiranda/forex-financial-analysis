@@ -10,6 +10,7 @@
 #include "ReadingFolderFiles.hpp"
 #include "ZoneReversal.hpp"
 #include "MovingAverage.hpp"
+#include "ChartIndicators.hpp"
 
 int main(int argc, char const* argv[]) {
   try {
@@ -21,14 +22,12 @@ int main(int argc, char const* argv[]) {
     std::cout << "0" << std::endl;
     Chart grafico(&arquivo, &NOME, &tempo);
     std::cout << "1" << std::endl;
-    MovingAverage mv(20, &grafico);
+    ChartIndicators indicador(&grafico);
     std::cout << "2" << std::endl;
-    Line a = mv.SMA();
-    MovingAverage mvb(30, &grafico);
-    Line b = mvb.EMA();
-    std::vector <Line> linhas = {a,b};
+    std::vector<Line> macd = indicador.MACD(12,26,9);
+    macd.shrink_to_fit();
     std::cout << "3" << std::endl;
-    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &linhas);
+    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &macd);
     std::cout << "4" << std::endl;
 
 
