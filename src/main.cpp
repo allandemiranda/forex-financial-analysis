@@ -24,10 +24,9 @@ int main(int argc, char const* argv[]) {
     std::cout << "1" << std::endl;
     ChartIndicators indicador(&grafico);
     std::cout << "2" << std::endl;
-    std::vector<Line> Stochastic = indicador.Stochastic(14,3);
-    Stochastic.shrink_to_fit();
+    Line RSI = indicador.RSI(14);
     std::cout << "3" << std::endl;
-    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &Stochastic);
+    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &RSI);
     std::cout << "4" << std::endl;
 
 
