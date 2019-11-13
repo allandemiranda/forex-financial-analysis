@@ -11,23 +11,20 @@
 #include "ZoneReversal.hpp"
 #include "MovingAverage.hpp"
 #include "ChartIndicators.hpp"
+#include "Intermarket.hpp"
 
 int main(int argc, char const* argv[]) {
   try {
     std::string arquivo = argv[1];
     std::string tempo = argv[2];
-    std::string periodos = argv[3];
-    std::string NOME = "TESTE";
-    std::string ARQUIVO = "out/teste.html";
-    std::cout << "0" << std::endl;
+    std::string tempo1 = argv[2];
+    std::string caminho = argv[3];
+    std::string NOME = "EUR/USD";
     Chart grafico(&arquivo, &NOME, &tempo);
-    std::cout << "1" << std::endl;
-    ChartIndicators indicador(&grafico);
-    std::cout << "2" << std::endl;
-    Line RSI = indicador.RSI(14);
-    std::cout << "3" << std::endl;
-    Dashboard desenho(&NOME, &ARQUIVO, &grafico.chart, &RSI);
-    std::cout << "4" << std::endl;
+    ReadingFolderFiles lista(caminho);
+    Intermarket teste(&grafico,&lista,tempo1);
+  teste.getResults();
+    
 
 
     
