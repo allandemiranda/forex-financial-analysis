@@ -122,6 +122,7 @@ Line MovingAverage::SMA(void) {
     }
   }
   std::sort(novaLinha.linha.begin(), novaLinha.linha.end());
+  novaLinha.linha.shrink_to_fit();
   return novaLinha;
 }
 
@@ -151,6 +152,7 @@ Line MovingAverage::EMA(void) {
       }
     }
   }
+  novaLinha.linha.shrink_to_fit();
 
   for (unsigned long i = corretor; i < getGrafico()->chart.size(); ++i) {
     if (*getGrafico()->chart.at(i).getStatus()) {
@@ -160,5 +162,6 @@ Line MovingAverage::EMA(void) {
       novaLinha.linha.push_back(novoPonto);  
     }
   }
+  novaLinha.linha.shrink_to_fit();
   return novaLinha;
 }

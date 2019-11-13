@@ -24,7 +24,7 @@ public:
   ChartIndicators(Chart*);
   ~ChartIndicators(void);
   std::vector<Line> MACD(unsigned int, unsigned int, unsigned int);
-  // Stochastic
+  std::vector<Line> Stochastic(unsigned int, unsigned int);
   // RSI
 
 };

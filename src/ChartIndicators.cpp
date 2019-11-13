@@ -125,3 +125,56 @@ std::vector<Line> ChartIndicators::MACD(unsigned int rapido, unsigned int lento,
 
   return std::vector<Line>{linhaFinal, linhaSinal};
 }
+
+/**
+ * @brief Stochastic
+ *
+ * @param K Indicador Stochastic
+ * @param D MMS de %K
+ * @return std::vector<Line> Linhas de resultado
+ */
+std::vector<Line> ChartIndicators::Stochastic(unsigned int K, unsigned int D) {
+  Line linhaFinal("Stochastic");
+  for (unsigned int i = K; i < grafico->chart.size(); ++i) {
+    price_t menor_valor = *grafico->chart.at(i).getClose();
+    for (unsigned int j = (i - K); j < i; ++i) {
+      if (*grafico->chart.at(j).getClose() < menor_valor) {
+        menor_valor = *grafico->chart.at(j).getClose();
+      }
+    }
+    price_t maior_valor = *grafico->chart.at(i).getClose();
+    for (unsigned int j = (i - K); j < i; ++i) {
+      if (*grafico->chart.at(j).getClose() > maior_valor) {
+        maior_valor = *grafico->chart.at(j).getClose();
+      }
+    }
+    price_t valorFinal =
+        (int)((*grafico->chart.at(i).getClose() - menor_valor) /
+              (maior_valor - menor_valor)) *
+        100;
+    linhaFinal.linha.push_back(
+        PointLine(grafico->chart.at(i).getDate(), &valorFinal));
+  }
+  linhaFinal.linha.shrink_to_fit();
+
+  Line linhaSinal("MMS[%K]");
+#pragma omp parallel
+  {
+#pragma omp for
+    for (unsigned int i = D; i < linhaFinal.linha.size(); ++i) {
+      price_t valorFinal = 0.0;
+      for (unsigned int j = (i - D); j < i; ++i) {
+        valorFinal += *linhaFinal.linha.at(j).getPrice();
+      }
+      price_t valorFinal = (int)(valorFinal / D);
+#pragma omp critical
+      {
+        linhaSinal.linha.push_back(
+            PointLine(linhaFinal.linha.at(i).getDate(), &valorFinal));
+      }
+    }
+  }
+  linhaSinal.linha.shrink_to_fit();
+
+  return std::vector<Line>{linhaFinal, linhaSinal};
+}
