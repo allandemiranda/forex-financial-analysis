@@ -10,7 +10,7 @@
  */
 
 #include "ChartIndicators.hpp"
-#include <string>
+#include <algorithm>
 #include "MovingAverage.hpp"
 
 /**
@@ -136,24 +136,36 @@ std::vector<Line> ChartIndicators::MACD(unsigned int rapido, unsigned int lento,
 std::vector<Line> ChartIndicators::Stochastic(unsigned int K, unsigned int D) {
   Line linhaFinal("Stochastic");
   for (unsigned int i = K; i < grafico->chart.size(); ++i) {
-    price_t menor_valor = *grafico->chart.at(i).getClose();
-    for (unsigned int j = (i - K); j < i; ++i) {
-      if (*grafico->chart.at(j).getClose() < menor_valor) {
-        menor_valor = *grafico->chart.at(j).getClose();
+    if (*grafico->chart.at(i).getStatus()) {
+      price_t menor_valor = *grafico->chart.at(i).getClose();
+      int tmp_i = i;
+      for (int j = 0; (i-j) > (tmp_i-K); ++j) {
+        if (*grafico->chart.at(i-j).getStatus()) {
+          if (*grafico->chart.at(i-j).getClose() < menor_valor) {
+            menor_valor = *grafico->chart.at(i-j).getClose();
+          }
+        } else {
+          --tmp_i;
+        }
       }
-    }
-    price_t maior_valor = *grafico->chart.at(i).getClose();
-    for (unsigned int j = (i - K); j < i; ++i) {
-      if (*grafico->chart.at(j).getClose() > maior_valor) {
-        maior_valor = *grafico->chart.at(j).getClose();
+      price_t maior_valor = *grafico->chart.at(i).getClose();
+      tmp_i = i;
+      for (int j = 0; (i-j) > (tmp_i-K); ++j) {
+        if (*grafico->chart.at(i-j).getStatus()) {
+          if (*grafico->chart.at(i-j).getClose() > maior_valor) {
+            maior_valor = *grafico->chart.at(i-j).getClose();
+          }
+        } else {
+          --tmp_i;
+        }
       }
+      price_t valorFinal =
+          ((*grafico->chart.at(i).getClose() - menor_valor) /
+                (maior_valor - menor_valor)) *
+          100;
+      linhaFinal.linha.push_back(
+          PointLine(grafico->chart.at(i).getDate(), &valorFinal));
     }
-    price_t valorFinal =
-        (int)((*grafico->chart.at(i).getClose() - menor_valor) /
-              (maior_valor - menor_valor)) *
-        100;
-    linhaFinal.linha.push_back(
-        PointLine(grafico->chart.at(i).getDate(), &valorFinal));
   }
   linhaFinal.linha.shrink_to_fit();
 
@@ -163,10 +175,10 @@ std::vector<Line> ChartIndicators::Stochastic(unsigned int K, unsigned int D) {
 #pragma omp for
     for (unsigned int i = D; i < linhaFinal.linha.size(); ++i) {
       price_t valorFinal = 0.0;
-      for (unsigned int j = (i - D); j < i; ++i) {
+      for (unsigned int j = (i - D); j < i; ++j) {
         valorFinal += *linhaFinal.linha.at(j).getPrice();
       }
-      price_t valorFinal = (int)(valorFinal / D);
+      valorFinal = (valorFinal / D);
 #pragma omp critical
       {
         linhaSinal.linha.push_back(
@@ -174,6 +186,7 @@ std::vector<Line> ChartIndicators::Stochastic(unsigned int K, unsigned int D) {
       }
     }
   }
+  std::sort(linhaSinal.linha.begin(), linhaSinal.linha.end());
   linhaSinal.linha.shrink_to_fit();
 
   return std::vector<Line>{linhaFinal, linhaSinal};
