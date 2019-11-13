@@ -51,15 +51,15 @@ void Intermarket::getResults(void) {
           (*graficoPrincipal->chart.at(j).getType() != 2)) {
         for (unsigned int k = 0; k < grafico.chart.size(); ++k) {
           if (*grafico.chart.at(k).getStatus() and
-              (*grafico.chart.at(k).getType != 2)) {
+              (*grafico.chart.at(k).getType() != 2)) {
             if (*graficoPrincipal->chart.at(j).getType() == 0) {
-              if (*grafico.chart.at(k).getType == 0) {
+              if (*grafico.chart.at(k).getType() == 0) {
                 ++up_up;
               } else {
                 ++up_down;
               }
             } else {
-              if (*grafico.chart.at(k).getType == 0) {
+              if (*grafico.chart.at(k).getType() == 0) {
                 ++down_up;
               } else {
                 ++down_down;
