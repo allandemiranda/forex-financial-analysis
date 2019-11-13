@@ -49,7 +49,14 @@ std::vector<Line> ChartIndicators::MACD(unsigned int rapido, unsigned int lento,
                                         unsigned int sinal) {
   Line linhaRapida("a");
   Line linhaLenta("b");
-  Line linhaSinal("Sinal");
+  std::string nomeLinhaSinal = "Sinal(";
+  nomeLinhaSinal += std::to_string(sinal);
+  nomeLinhaSinal += ") MACD(";
+  nomeLinhaSinal += std::to_string(rapido);
+  nomeLinhaSinal += ", ";
+  nomeLinhaSinal += std::to_string(lento);
+  nomeLinhaSinal += ")";
+  Line linhaSinal(nomeLinhaSinal);
 
 #pragma omp parallel sections
   {
@@ -65,7 +72,13 @@ std::vector<Line> ChartIndicators::MACD(unsigned int rapido, unsigned int lento,
     }
   }
 
-  Line linhaFinal("MACD");
+  std::string nomeLinhaFinal = "MACD ";
+  nomeLinhaFinal += "(";
+  nomeLinhaFinal += std::to_string(rapido);
+  nomeLinhaFinal += ", ";
+  nomeLinhaFinal += std::to_string(lento);
+  nomeLinhaFinal += ")";
+  Line linhaFinal(nomeLinhaFinal);
   if (linhaRapida.linha.size() >= linhaLenta.linha.size()) {
     for (unsigned int i = 0; i < linhaRapida.linha.size(); ++i) {
 #pragma omp parallel
@@ -134,42 +147,64 @@ std::vector<Line> ChartIndicators::MACD(unsigned int rapido, unsigned int lento,
  * @return std::vector<Line> Linhas de resultado
  */
 std::vector<Line> ChartIndicators::Stochastic(unsigned int K, unsigned int D) {
-  Line linhaFinal("Stochastic");
+  std::string nomeLinhaFinal = "Stochastic(";
+  nomeLinhaFinal += K;
+  nomeLinhaFinal += ")";
+  Line linhaFinal(nomeLinhaFinal);
   for (unsigned int i = K; i < grafico->chart.size(); ++i) {
     if (*grafico->chart.at(i).getStatus()) {
       price_t menor_valor = *grafico->chart.at(i).getClose();
       int tmp_i = i;
-      for (int j = 0; (i-j) > (tmp_i-K); ++j) {
-        if (*grafico->chart.at(i-j).getStatus()) {
-          if (*grafico->chart.at(i-j).getClose() < menor_valor) {
-            menor_valor = *grafico->chart.at(i-j).getClose();
+      bool flag = false;
+      for (int j = 0; (i - j) > (tmp_i - K); ++j) {
+        if(((int)i-j) < 0){
+          flag = true;
+          break;
+        }
+        if (*grafico->chart.at(i - j).getStatus()) {
+          if (*grafico->chart.at(i - j).getClose() < menor_valor) {
+            menor_valor = *grafico->chart.at(i - j).getClose();
           }
         } else {
           --tmp_i;
         }
+      }
+      if(flag){
+        continue;
       }
       price_t maior_valor = *grafico->chart.at(i).getClose();
       tmp_i = i;
-      for (int j = 0; (i-j) > (tmp_i-K); ++j) {
-        if (*grafico->chart.at(i-j).getStatus()) {
-          if (*grafico->chart.at(i-j).getClose() > maior_valor) {
-            maior_valor = *grafico->chart.at(i-j).getClose();
+      for (int j = 0; (i - j) > (tmp_i - K); ++j) {
+        if(((int)i-j) < 0){
+          flag = true;
+          break;
+        }
+        if (*grafico->chart.at(i - j).getStatus()) {
+          if (*grafico->chart.at(i - j).getClose() > maior_valor) {
+            maior_valor = *grafico->chart.at(i - j).getClose();
           }
         } else {
           --tmp_i;
         }
       }
-      price_t valorFinal =
-          ((*grafico->chart.at(i).getClose() - menor_valor) /
-                (maior_valor - menor_valor)) *
-          100;
+      if(flag){
+        continue;
+      }
+      price_t valorFinal = ((*grafico->chart.at(i).getClose() - menor_valor) /
+                            (maior_valor - menor_valor)) *
+                           100;
       linhaFinal.linha.push_back(
           PointLine(grafico->chart.at(i).getDate(), &valorFinal));
     }
   }
   linhaFinal.linha.shrink_to_fit();
 
-  Line linhaSinal("MMS[%K]");
+  std::string nomeLinhaSinal = "D(";
+  nomeLinhaSinal += std::to_string(D);
+  nomeLinhaSinal += " Stochastic(";
+  nomeLinhaSinal += std::to_string(K);
+  nomeLinhaSinal += ")";
+  Line linhaSinal(nomeLinhaSinal);
 #pragma omp parallel
   {
 #pragma omp for
@@ -190,4 +225,70 @@ std::vector<Line> ChartIndicators::Stochastic(unsigned int K, unsigned int D) {
   linhaSinal.linha.shrink_to_fit();
 
   return std::vector<Line>{linhaFinal, linhaSinal};
+}
+
+/**
+ * @brief RSI
+ *
+ * @param index Valor de dias
+ * @return Line Linha egrada
+ */
+Line ChartIndicators::RSI(unsigned int index) {
+  std::string nomeLinhaFinal = "RSI(";
+  nomeLinhaFinal += std::to_string(index);
+  nomeLinhaFinal += ")";
+  Line linhaFinal(nomeLinhaFinal);
+
+  for (unsigned int i = index; i < grafico->chart.size(); ++i) {
+    if (*grafico->chart.at(i).getStatus()) {
+      price_t menor_valor = 0.0;
+      int tmp_i = i;
+      bool flag = false;
+      for (int j = 0; (i - j) > (tmp_i - index); ++j) {
+        if(((int)i-j) < 0){
+          flag = true;
+          break;
+        }
+        if (*grafico->chart.at(i - j).getStatus()) {
+          if (*grafico->chart.at(i - j).getType() == 1) {
+            menor_valor += *grafico->chart.at(i - j).getClose();
+          }
+        } else {
+          --tmp_i;
+        }
+      }
+      if(flag){
+        continue;
+      }
+      menor_valor = (menor_valor / (float)index);
+
+      price_t maior_valor = 0.0;
+      tmp_i = i;
+      for (int j = 0; (i - j) > (tmp_i - index); ++j) {
+        if(((int)i-j) < 0){
+          flag = true;
+          break;
+        }
+        if (*grafico->chart.at(i - j).getStatus()) {
+          if (*grafico->chart.at(i - j).getType() == 0) {
+            maior_valor += *grafico->chart.at(i - j).getClose();
+          }
+        } else {
+          --tmp_i;
+        }
+      }
+      if(flag){
+        continue;
+      }
+      maior_valor = (maior_valor / (float)index);
+
+      price_t valorFinal = 100-(100/((1+maior_valor)/menor_valor));
+
+      linhaFinal.linha.push_back(
+          PointLine(grafico->chart.at(i).getDate(), &valorFinal));
+    }
+  }
+
+  linhaFinal.linha.shrink_to_fit();
+  return linhaFinal;
 }

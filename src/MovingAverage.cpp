@@ -107,8 +107,9 @@ PointLine MovingAverage::getSMA(Candlestick* vela) {
  * @return Line Linha SMA
  */
 Line MovingAverage::SMA(void) {
-  std::string nomeLinha = "SMA ";
+  std::string nomeLinha = "SMA(";
   nomeLinha += std::to_string(*getNumPeriodo());
+  nomeLinha += ")";
   Line novaLinha(nomeLinha);
 #pragma omp parallel
   {
@@ -132,8 +133,9 @@ Line MovingAverage::SMA(void) {
  * @return Line Linha EMA
  */
 Line MovingAverage::EMA(void) {
-  std::string nomeLinha = "EMA ";
+  std::string nomeLinha = "EMA(";
   nomeLinha += std::to_string(*getNumPeriodo());
+   nomeLinha += ")";
   Line novaLinha(nomeLinha);
   price_t F = (2.0 / (*getNumPeriodo() + 1.0));
   unsigned long corretor = 0;
